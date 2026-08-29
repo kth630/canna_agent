@@ -5,9 +5,9 @@
 Canna는 국내채권, 국내 ETF, 해외 ETF, 공모펀드와 검증된 외부 데이터를 바탕으로
 자연어 질문에 적합한 금융상품을 조회·비교·설명하는 근거 기반 Agent다.
 
-이 문서는 현재 프로젝트가 출발할 때 필요한 공식 사실, 승인된 팀 결정, 관측된 데이터
-상태와 미결 실험을 구분한다. 아키텍처 정본은 `ARCHITECTURE.md`, 질문 의미 구조 정본은
-`QUESTION_STRUCTURE.md`다.
+이 문서는 공식 요구사항, 공식 데이터 기준선, 검증된 데이터 관측, 일정과 provenance를
+기록한다. 팀의 설계 결정은 `ARCHITECTURE.md`, 실험과 구현 순서는
+`IMPLEMENTATION_PLAN.md`, 질문 의미 구조는 `QUESTION_STRUCTURE.md`가 각각 정본이다.
 
 ## 2. 확인된 대회 요구사항
 
@@ -98,29 +98,7 @@ Canna는 국내채권, 국내 ETF, 해외 ETF, 공모펀드와 검증된 외부 
 일부 문제는 normalized v2 재생성으로 해결 가능하지만, 해외 ETF unresolved 원인 분리,
 공모펀드 security ID, 오래된 snapshot의 완전성은 추가 검증이나 수집이 필요하다.
 
-## 6. 승인된 현재 방향
-
-- 범용 Tool→Tool DAG 또는 결과를 보고 재계획하는 다중 호출 Agent를 주 구조로 만들지 않는다.
-- HCX는 질문의 명시적 의미를 bounded semantic refs로 표현하고 서버가 검증·컴파일한다.
-- 관계 조건과 상품 수치 조건은 가능한 한 같은 DuckDB 저장소에서 결정적으로 결합한다.
-- Runtime View가 dataset, field, predicate, entity와 coverage 후보를 제공한다.
-- HCX가 물리 SQL, JOIN, physical column, product ID 목록을 만들지 않는다.
-- semantic registry와 execution registry를 stable ID로 결합하고 build 시 일치 검증한다.
-- 데이터 grain과 coverage에 맞지 않는 주장은 실행 또는 답변 단계에서 제한한다.
-- Evidence에 source, as-of, coverage, universe와 server-applied rules를 포함한다.
-- 사용자와 Codex가 의사결정을 소유하고 Claude가 승인된 계약의 코드를 주로 작성한다.
-
-## 7. 아직 실험으로 확인할 사항
-
-- HCX provider가 nested/flattened opaque ref schema를 수용하는가
-- HCX가 유사 후보 사이에서 ref를 안정적으로 복사하고 모든 명시 requirement를 회계하는가
-- Runtime View retrieval recall과 실제-view/gold-view E2E gap
-- public Tool을 상품군별 thin wrapper로 둘지 하나의 관계 양방향 Tool로 둘지
-- claim type별 coverage 정책의 세부 결과 표현
-- NCP의 cold start, memory, latency, 상시성 제약
-- Ontology/SHACL annotation에서 Semantic Registry를 생성하는 정확한 형식
-
-## 8. 일정과 provenance
+## 6. 일정과 provenance
 
 - 기존 공지 기준 제출 마감: 2026-09-06 23:59
 - 운영 안내 기간: 2026-09-07~2026-09-20
