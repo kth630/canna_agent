@@ -25,7 +25,7 @@ REQUIRED_FIXTURE_FIELDS = {
     "question_structure",
     "expected_decision",
     "falsifies_if",
-    "ambiguity_intentional",
+    "semantic_clarity",
     "provenance",
 }
 
@@ -137,7 +137,7 @@ def test_runtime_does_not_embed_source_workspace_or_fixture_questions() -> None:
     assert not violations, "runtime contains migration residue:\n" + "\n".join(violations)
 
 
-def test_question_fixtures_declare_purpose_and_ambiguity_intent() -> None:
+def test_question_fixtures_declare_purpose_and_explicit_semantics() -> None:
     violations: list[str] = []
     for record in load_question_fixtures():
         location = str(record["_location"])
@@ -145,12 +145,6 @@ def test_question_fixtures_declare_purpose_and_ambiguity_intent() -> None:
         if missing:
             violations.append(f"{location} missing {missing}")
             continue
-        if record["ambiguity_intentional"] is True:
-            purpose = str(record["test_purpose"]).lower()
-            capability = str(record["capability_under_test"]).lower()
-            expected = str(record["expected_decision"]).lower()
-            if "ambig" not in purpose + capability or "refus" not in expected:
-                violations.append(
-                    f"{location} intentional ambiguity must test ambiguity refusal explicitly"
-                )
+        if record["semantic_clarity"] != "explicit":
+            violations.append(f"{location} must declare semantic_clarity: explicit")
     assert not violations, "invalid purpose-based question fixtures:\n" + "\n".join(violations)

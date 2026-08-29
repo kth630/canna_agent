@@ -17,14 +17,16 @@ question_structure:
   comparisons: []
 expected_decision: 구조화된 기대 판정
 falsifies_if: 어떤 관측이면 가설이 깨지는지
-ambiguity_intentional: false
+semantic_clarity: explicit
 provenance: authored | non_authoritative_test_example
 ```
 
 ## 규칙
 
 - 일반 기능 질문은 필요한 상품군, field period/unit, 관계 방향과 결과 범위가 명확해야 한다.
-- `ambiguity_intentional: true`는 ambiguity detection/refusal 테스트에서만 허용한다.
+- 모든 fixture는 `semantic_clarity: explicit`이어야 한다. 애매한 자연어 질문은 등록하지
+  않는다. `ambiguous`는 candidate grounding 또는 source resolution이 결정되지 않을 때
+  서버가 임의 실행을 막기 위한 런타임 상태다.
 - exact question text, test ID 또는 expected decision을 runtime code에서 참조하지 않는다.
 - 기존 35문항은 목적과 구조를 새로 annotation한 뒤에만
   `non_authoritative_test_example`로 가져온다.

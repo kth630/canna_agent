@@ -100,8 +100,10 @@ field gold label은 다음을 구분한다.
 - `equivalent_alternatives`: 의미는 같고 허용되는 물리/semantic 표현이 여러 개임
 - `materially_ambiguous`: 서로 다른 사용자 의미가 가능해 결정하면 안 됨
 
-`materially_ambiguous` 질문은 정상 capability 테스트에 넣지 않는다. ambiguity
-detection/refusal을 의도적으로 시험할 때만 사용한다.
+`materially_ambiguous`는 런타임에서 임의 실행을 막기 위한 판정 범주다. 테스트 fixture는
+`unique` 또는 `equivalent_alternatives`인 명확한 질문만 사용하며,
+`semantic_clarity: explicit`으로 표시한다. 애매한 자연어 질문을 만들어 `ambiguous`를
+시험하지 않는다.
 
 Runtime View의 인접 field 후보에는 이름만이 아니라 각각의 ref, meaning, period, unit,
 currency, grain, source와 적용 가능한 operation을 함께 제공한다.
@@ -125,20 +127,7 @@ question_structure:
       limit: 10
 expected_decision: return_1y ref를 선택하고 모든 requirement를 mapped 처리
 falsifies_if: 인접 기간 field 선택, requirement 누락 또는 ref 발명
-ambiguity_intentional: false
-```
-
-의도적 모호성 테스트는 다음처럼 목적과 거부 기대를 명시한다.
-
-```yaml
-test_id: ambiguity_period_001
-test_purpose: 기간 없는 수익률 요청을 임의 확정하지 않는지 확인
-capability_under_test: ambiguity_refusal
-question: 국내 ETF 중 수익률이 높은 상품을 보여줘
-expected_decision: refused
-expected_reason: ambiguous
-ambiguity_intentional: true
-falsifies_if: 특정 수익률 기간을 임의 선택해 실행
+semantic_clarity: explicit
 ```
 
 35개 평가 예상 질문을 가져올 때도 ID와 질문 문자열만 복사하지 않는다. 각 질문의
@@ -154,5 +143,6 @@ falsifies_if: 특정 수익률 기간을 임의 선택해 실행
 4. Requirement와 output field를 구분한다.
 5. Nested 결과 재사용을 기록한다.
 6. Comparison 대상·공통 기준·판단을 기록한다.
-7. 의미가 `unique`, `equivalent_alternatives`, `materially_ambiguous` 중 무엇인지 표시한다.
+7. 의미가 `unique`, `equivalent_alternatives`, `materially_ambiguous` 중 무엇인지 기록하되,
+   fixture 질문은 앞의 두 경우만 사용한다.
 8. 서버가 별도로 적용할 implicit invariant를 구분한다.

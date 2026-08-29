@@ -61,12 +61,14 @@ expected value, Registry에서 생성된 stable enum뿐이다.
 - `test_purpose`
 - `capability_under_test`
 - 질문 구조와 명시 requirement
+- `semantic_clarity: explicit`
 - expected decision 또는 invariant
 - 실패 시 무엇을 반증하는지
 
-일반 기능 테스트 질문은 의미가 유일하게 결정되도록 작성한다. 의도적으로 애매한 질문은
-ambiguity detection/refusal을 시험할 때만 허용하며 `ambiguity_intentional: true`와 기대
-거부 사유를 명시한다. 평가 질문 35개를 고정 답·고정 계획·런타임 분기의 근거로 쓰지 않는다.
+모든 테스트 질문은 의미가 유일하게 결정되도록 작성한다. 애매한 자연어 질문은 어떤
+fixture에도 등록하지 않는다. `ambiguous`는 candidate grounding 또는 source resolution이
+결정되지 않을 때 서버가 임의 실행을 막기 위한 런타임 상태다. 평가 질문 35개를 고정 답·고정
+계획·런타임 분기의 근거로 쓰지 않는다.
 
 ## 데이터와 변경 규칙
 

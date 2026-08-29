@@ -62,7 +62,7 @@
 2. opaque ref exact copy
 3. nested arrays와 multi-slot consistency
 4. similar candidate discrimination
-5. absent candidate에서 unresolved/ambiguous 처리
+5. absent candidate에서 `unresolved` 처리
 6. explicit span requirement accounting
 7. prompt size와 latency
 8. flat fallback에서도 repeated `requirement_id` grouping 보존
@@ -119,9 +119,10 @@
 
 - 모든 질문은 `test_purpose`, `capability_under_test`, expected invariant,
   falsification condition을 가진다.
-- 일반 기능 질문은 의미가 유일하게 결정되도록 쓴다.
-- 의도적 ambiguity 질문은 ambiguity refusal 실험에만 별도 표시한다.
-- gold는 `unique`, `equivalent_alternatives`, `materially_ambiguous`를 구분한다.
+- 모든 fixture 질문은 의미가 유일하게 결정되며 `semantic_clarity: explicit`으로 표시한다.
+- 애매한 자연어 질문은 fixture에 넣지 않는다.
+- gold는 `unique`, `equivalent_alternatives`, `materially_ambiguous`를 구분하되, 마지막은
+  런타임 안전 판정 분석에만 사용한다.
 
 ### 측정
 

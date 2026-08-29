@@ -62,7 +62,9 @@ Registry-generated stable enum은 근거를 주석 또는 registry metadata로 �
 
 각 질문 기반 테스트 fixture에는 `test_purpose`, `capability_under_test`, 질문 구조,
 명시 requirement, expected decision, falsification condition을 포함한다. 일반 기능을 시험하는
-질문은 모호하지 않게 작성한다. 모호성 거부 테스트만 `ambiguity_intentional: true`를 쓴다.
+질문은 모두 의미가 명확해야 하며 `semantic_clarity: explicit`으로 표시한다. 애매한 자연어
+질문은 어떤 fixture에도 추가하지 않는다. `ambiguous`는 candidate grounding 또는 source
+resolution 실패를 임의 실행하지 않기 위한 런타임 상태로만 보존한다.
 
 테스트는 CQ별 회귀보다 구조 조합과 unseen paraphrase/field-neighbor/coverage boundary를
 우선한다. 실패한 테스트를 통과시키기 위해 질문 문자열을 분기 조건으로 추가하지 않는다.
