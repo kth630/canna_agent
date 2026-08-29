@@ -1,0 +1,26 @@
+# Secrets and local environment
+.env
+.venv/
+
+# Python and tools
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.tmp/
+build/
+dist/
+
+# Immutable local source data and incoming bundles
+data/official_raw/
+data/incoming/
+
+# Reproducible generated data and runtime artifacts
+data/processed/
+data/exports/
+logs/
+
+# Local databases
+*.duckdb
+*.duckdb.wal

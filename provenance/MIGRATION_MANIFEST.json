@@ -1,0 +1,122 @@
+{
+  "manifest_version": 1,
+  "migration_date": "2026-08-30",
+  "source_workspace": "C:\\Users\\user\\asset_agent",
+  "destination_workspace": "C:\\Users\\user\\canna_agent",
+  "source_git_commit": "11dfd6fe340d6cf8881edc5526db5e2fe287dd5b",
+  "source_worktree_was_dirty": true,
+  "migration_principle": "copy verified facts and immutable inputs; rewrite contracts and rules; exclude legacy runtime decisions",
+  "immutable_local_artifacts": [
+    {
+      "source": "canna/data/raw/prbd01n001_data.xlsx",
+      "destination": "data/official_raw/prbd01n001_data.xlsx",
+      "bytes": 5926563,
+      "sha256": "574ae5d6c1d98704712c256ed5352cbaed065ea9c3a6eb7b2a52adb305fa9001",
+      "git_tracked": false
+    },
+    {
+      "source": "canna/data/raw/prbd01n001_schema.xlsx",
+      "destination": "data/official_raw/prbd01n001_schema.xlsx",
+      "bytes": 7863,
+      "sha256": "9965126695066f9dc07951a78054e9e7639b6863d1ad2a9616f7e2d8fcadbc4f",
+      "git_tracked": false
+    },
+    {
+      "source": "canna/data/raw/pref01n001_data.xlsx",
+      "destination": "data/official_raw/pref01n001_data.xlsx",
+      "bytes": 957630,
+      "sha256": "18c4329d8fc8768d030316816f3e6e48226a3c217db3354245b766a2c6f6c592",
+      "git_tracked": false
+    },
+    {
+      "source": "canna/data/raw/pref01n001_schema.xlsx",
+      "destination": "data/official_raw/pref01n001_schema.xlsx",
+      "bytes": 9022,
+      "sha256": "2135081fd8107760d127915147032987ee1d9e7c2ed039665ae4214b96faec5a",
+      "git_tracked": false
+    },
+    {
+      "source": "canna/data/raw/pref02n001_data.xlsx",
+      "destination": "data/official_raw/pref02n001_data.xlsx",
+      "bytes": 2102888,
+      "sha256": "ca6a274aeaf3f884f2f7635d7802558bc6dabf408871ecb1f71e5a50d9d34067",
+      "git_tracked": false
+    },
+    {
+      "source": "canna/data/raw/pref02n001_schema.xlsx",
+      "destination": "data/official_raw/pref02n001_schema.xlsx",
+      "bytes": 7294,
+      "sha256": "32ac732f0501f4ab518682175fecc50756ee1eafde9296801f139d62559b5e64",
+      "git_tracked": false
+    },
+    {
+      "source": "canna/data/raw/prfd01n001_data.xlsx",
+      "destination": "data/official_raw/prfd01n001_data.xlsx",
+      "bytes": 9130974,
+      "sha256": "81b3ce3f1d5042b32fd52a76acff094fc5b8dd9fa36289af2fb54c195eb5d94c",
+      "git_tracked": false
+    },
+    {
+      "source": "canna/data/raw/prfd01n001_schema.xlsx",
+      "destination": "data/official_raw/prfd01n001_schema.xlsx",
+      "bytes": 8306,
+      "sha256": "cfe7be44cbcd9ce349206776a4eb46996162643acbf3ca5a4f74c2886394862b",
+      "git_tracked": false
+    },
+    {
+      "source": "canna/data/exports/holdings_20260829.zip",
+      "destination": "data/incoming/holdings_20260829.zip",
+      "bytes": 116557359,
+      "sha256": "93fc5f2c4c4ee00fe3bf7ac74bade43beb546b7eb36df3cfce4d5cac3d247a29",
+      "git_tracked": false,
+      "note": "copied byte-for-byte; normalized v1 is an inspected input, not the execution schema"
+    }
+  ],
+  "local_secret_copy": {
+    "source": ".env",
+    "destination": ".env",
+    "git_tracked": false,
+    "contents_or_hash_recorded": false,
+    "allowed_keys_observed": [
+      "CLOVA_API_KEY",
+      "CLOVASTUDIO_API_KEY",
+      "KRX_ID",
+      "KRX_PW",
+      "OPENDART_API_KEY"
+    ]
+  },
+  "rewritten_from_current_decisions": [
+    "CONTEXT.md",
+    "QUESTION_STRUCTURE.md",
+    "ARCHITECTURE.md",
+    "IMPLEMENTATION_PLAN.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "contracts/EVALUATION_API.md",
+    "tests/fixtures/README.md",
+    "tests/test_architecture_guards.py",
+    "pyproject.toml",
+    ".gitignore",
+    ".env.example"
+  ],
+  "deferred_requires_review": [
+    "ontology TTL files after portfolio grain, direct/look-through, ID scheme and as-of annotations are defined",
+    "physical field bindings converted to the Execution Registry",
+    "official API implementation adapted to the new architecture",
+    "Excel ingestion extracted without legacy planning/runtime dependencies",
+    "collectors patched for paths, configuration and normalized v2 meanings",
+    "35 evaluation question texts after each receives purpose and structural annotation",
+    "golden examples rewritten as semantic requirements and evidence rather than opaque hashes"
+  ],
+  "excluded": [
+    "old planning.py and runtime.py",
+    "old contracts.py and catalog.py as runtime sources of truth",
+    "evaluation.py and priority.py fixed plans/statuses",
+    "CQ-specific deterministic and paraphrase tests",
+    "old API implementation until adapted",
+    "old README, WORKLOG, operating state and baseline/reference handoff documents",
+    "legacy and nexus trees",
+    "uv.lock, virtual environments, caches, temp files and generated databases",
+    "normalized holdings v1 as an execution-ready schema"
+  ]
+}
