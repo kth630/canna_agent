@@ -41,7 +41,7 @@
    기록하되 하나를 정본으로 확정하거나 원격 실행하지 않는다.
 7. 실제 값이 없는 secret-free configuration template와 archive/image exclusion 검사를 만든다.
 8. 로컬 API를 대상으로 probe를 검증한다.
-9. A~D freeze 후 필요한 integration checklist와 최소 seam 변경을 제안한다.
+9. A~F freeze 후 필요한 integration checklist와 최소 seam 변경을 제안한다.
 10. validation error envelope, retrieved_context size, health endpoint, timeout/concurrency 정책은
     pending 계약이므로 임의 구현하지 않는다.
 
@@ -73,5 +73,5 @@
 - `git diff --check`
 - `git status --short`
 
-원격 변경, packaging, health/validation 계약, public exposure 또는 A~D integration이 필요하면
+원격 변경, packaging, health/validation 계약, public exposure 또는 A~F integration이 필요하면
 즉시 중단해 `INTEGRATION_REQUEST.md`로 보고하라.

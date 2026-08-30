@@ -19,7 +19,8 @@
 
 ## 공통 규칙
 
-1. 단계가 시작될 때 그 단계에 필요한 A/B 항목만 확인한다.
+1. 단계가 시작될 때 그 단계에 필요한 A/B 항목만 확인한다. 현재 데이터·Ontology 정렬
+   단계의 명시적 B 항목은 아래 표를 따른다.
 2. B는 파일 복사가 아니라 현재 정본에 맞춘 재작성이다.
 3. C는 코드, 테스트, fixture 또는 문서 정본으로 사용하지 않는다.
 4. D는 사용자와 Codex가 선행 결정을 마치기 전에는 구현에 사용하지 않는다.
@@ -39,6 +40,16 @@
 | `tests/test_api.py` | B | committed / `4399c446d544958782c16015be32ead3817c3616c401668fde61dbee11e77814` | HTTP 200, UTF-8, 정확한 5개 field, 입력 echo, 미정의 parameter 안전성 | `H01`, `4,450`, 고정 문구, RulePlanner·TemplateAnswerGenerator 의존 |
 
 위 여섯 항목 외의 이전 파일은 지금 단계에서 사용하지 않는다.
+
+## 현재 데이터·Ontology 정렬 단계에서 사용할 B 항목
+
+2026-08-30 최신 사용자 결정에 따라 아래 자료는 읽기 전용 감사와 대조에 사용할 수 있다.
+이는 과거 파일의 복사, 정본 승격 또는 runtime 연결 승인이 아니다.
+
+| source | 판정 | 허용 범위 | 금지 범위 |
+|---|---|---|---|
+| `ontology/common.ttl`, `bond_kr.ttl`, `etf_kr.ttl`, `etf_gl.ttl`, `fund_pub.ttl` | B | class/property/label/관계 inventory, 현재 데이터와 `유지/수정/제외/추가` 대조, 새 Ontology 재작성의 참고 | 파일 전체 복사, 과거 IRI·binding·coverage의 자동 승격, runtime import |
+| `docs/ontology/FIBO_ALIGNMENT.md`, `NAMESPACE_IRI_RULES.md`, `ONTOLOGY_DESIGN.md`, `RDB_ONTOLOGY_MAPPING.md` | B | 과거 결정 근거와 명명·mapping 선택지 감사, 현재 정본에 맞춘 새 제안 작성 | 과거 결정을 현재 계약으로 간주, 물리 binding 복사, 확인되지 않은 의미 확정 |
 
 ## 이후 단계에서 사용할 B 항목
 
@@ -73,12 +84,9 @@
 - `src/canna/catalog.py`의 physical field binding 자료
 - `src/canna/data.py`의 QueryCompiler, Repository와 네 개 entity view
 - `scripts/build_holdings_bundle.py`
-- `ontology/common.ttl`, `bond_kr.ttl`, `etf_kr.ttl`, `etf_gl.ttl`, `fund_pub.ttl`
 - `tests/test_catalog_bindings.py`, `tests/golden_15.json`
 - `tests/test_paraphrases.py`의 질문 문자열과 기존 35개 질문 문자열
 - `docs/COLUMN_REGISTRATION_PLAN.md`
-- `docs/ontology/FIBO_ALIGNMENT.md`, `NAMESPACE_IRI_RULES.md`, `ONTOLOGY_DESIGN.md`,
-  `RDB_ONTOLOGY_MAPPING.md`
 - `docs/reference/gptwork_20260827/data_assessment/`의 분석 결과
 - `docs/reference/gptwork_20260827/project_questions/`의 질문·요구 매핑
 - `docs/reference/gptwork_20260827/reproducibility/stage4/`의 분석 코드

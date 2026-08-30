@@ -4,7 +4,8 @@
 
 ## 목표와 경계
 
-Product/class→Portfolio→Portfolio Observation→Security grain을 보존하는 holdings v2와,
+현재 외부 holdings 전체를 기존 Ontology와 대조하고,
+Product/class→Portfolio→Portfolio Observation→Security grain을 보존하는 holdings v2와
 데이터가 허용하는 ETF 양방향 관계 실행 기반을 만든다. 공모펀드의 미확정 security relation을
 억지로 완성하지 않는다. HCX, Runtime View, Product metric, 공개 API와 공유 Registry는
 담당하지 않는다.
@@ -42,7 +43,8 @@ Product/class→Portfolio→Portfolio Observation→Security grain을 보존하�
 10. 공모펀드는 class→portfolio mapping, source resolution, raw security-name observation,
     direct/look-through 상태를 보존하되 이름 exact/substring match를 검증된 Security relation으로
     승격하지 않는다.
-11. D→A relation catalog fragment와 D→C/E relation result handoff를 제안하되 공유 파일은
+11. F 대조표에 relation/identifier/coverage observation fragment를 제공한다.
+12. D→A relation catalog fragment와 D→C/E relation result handoff를 제안하되 공유 파일은
     직접 수정하지 않는다.
 
 ## 수용 기준

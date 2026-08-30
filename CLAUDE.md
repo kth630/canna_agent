@@ -11,8 +11,9 @@ Claude는 이 저장소의 주 구현자다. 설계와 범위는 사용자와 Co
 2. `QUESTION_STRUCTURE.md`
 3. `ARCHITECTURE.md`
 4. `IMPLEMENTATION_PLAN.md`의 현재 단계
-5. 관련 `contracts/` 문서
-6. `AGENTS.md`
+5. `provenance/workstreams/20260830_preintegration_parallel/DATA_ONTOLOGY_ALIGNMENT_DECISION_20260830.md`
+6. 관련 `contracts/` 문서
+7. `AGENTS.md`
 
 그 뒤 코드에 손대기 전에 아래 형식으로 구현 경계를 보고한다.
 

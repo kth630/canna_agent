@@ -4,8 +4,9 @@
 
 ## 목표와 경계
 
-검증된 registry-bound execution specification을 받아 Product grain으로 filter/order/count/
-aggregate/compare를 실행하고, 결과와 주장 가능 범위를 함께 담는 Evidence core를 만든다.
+검증된 Registry-bound execution specification을 받아 공식 네 상품군의 승인된 Product 또는
+ProductClass grain으로 filter/order/count/aggregate/compare를 실행하고, 결과와 주장 가능
+범위를 함께 담는 Evidence core를 만든다.
 질문 해석, HCX, 공식 원본 ingestion, holdings, 외부 API envelope는 담당하지 않는다.
 
 추가로 읽을 문서:

@@ -1,0 +1,47 @@
+{
+  "generated_at_utc": "2026-08-30T12:10:04.117293+00:00",
+  "generator": "scripts/audit_0d_inventory.py",
+  "read_only_inputs": {
+    "official_raw": {
+      "prbd01n001_data.xlsx": "574ae5d6c1d98704712c256ed5352cbaed065ea9c3a6eb7b2a52adb305fa9001",
+      "prbd01n001_schema.xlsx": "9965126695066f9dc07951a78054e9e7639b6863d1ad2a9616f7e2d8fcadbc4f",
+      "pref01n001_data.xlsx": "18c4329d8fc8768d030316816f3e6e48226a3c217db3354245b766a2c6f6c592",
+      "pref01n001_schema.xlsx": "2135081fd8107760d127915147032987ee1d9e7c2ed039665ae4214b96faec5a",
+      "pref02n001_data.xlsx": "ca6a274aeaf3f884f2f7635d7802558bc6dabf408871ecb1f71e5a50d9d34067",
+      "pref02n001_schema.xlsx": "32ac732f0501f4ab518682175fecc50756ee1eafde9296801f139d62559b5e64",
+      "prfd01n001_data.xlsx": "81b3ce3f1d5042b32fd52a76acff094fc5b8dd9fa36289af2fb54c195eb5d94c",
+      "prfd01n001_schema.xlsx": "cfe7be44cbcd9ce349206776a4eb46996162643acbf3ca5a4f74c2886394862b"
+    },
+    "holdings_zip": {
+      "path": "data\\incoming\\holdings_20260829.zip",
+      "sha256": "93fc5f2c4c4ee00fe3bf7ac74bade43beb546b7eb36df3cfce4d5cac3d247a29"
+    },
+    "legacy_ttl": {
+      "bond_kr.ttl": "97035e2e0e8ff7873e25c3e3a4f08d69c7a7c460624b6255f8a8cdb709ede245",
+      "common.ttl": "fecbda8a67b530c1b3bef71e05bc719554201e5410f3529f0850ff6f380570f6",
+      "etf_gl.ttl": "76f24892f74cddcc20cb59ed49cf80aa4f2409b1f6312c7ff948243b9cbfbeef",
+      "etf_kr.ttl": "1155718204de3e1cceceafc7418d4e83c72d4511c6b2c297a263b050b492dc66",
+      "fund_pub.ttl": "2eaa80a3c83116615f79832e93214ed961a5537415089e8f15ece6cb5644f1d9"
+    },
+    "legacy_mapping": {
+      "path": "C:\\Users\\user\\asset_agent\\canna\\docs\\ontology\\RDB_ONTOLOGY_MAPPING.md",
+      "sha256": "964d85c959810ee9fe7d4a958c7a824afb2c4a2839cf3c19555c42d5e811c53e"
+    }
+  },
+  "counts": {
+    "official_field_rows": 280,
+    "official_source_rows": 4,
+    "ttl_term_rows": 298,
+    "holdings_member_rows": 29,
+    "holdings_normalized_field_rows": 51,
+    "holdings_coverage_rows": 3,
+    "holdings_manifest_file_rows": 28,
+    "holdings_manifest_mismatches": 0
+  },
+  "guarantees": [
+    "All official schema fields are emitted once after data-header/schema-order validation.",
+    "All named legacy declarations of the requested categories, plus ValueStatus/IdentifierScheme/AnnotationProperty declarations, are emitted once.",
+    "All ZIP members are hash-inventoried and all normalized parquet fields are described from temporary copies.",
+    "The script does not write data/official_raw or data/incoming and does not create a DB, Registry, Ontology, or runtime binding."
+  ]
+}

@@ -16,8 +16,9 @@
 6. `AGENTS.md`
 7. `CLAUDE.md`
 8. `provenance/workstreams/20260830_preintegration_parallel/DIRECTION_MEETING.md`
-9. `provenance/workstreams/20260830_preintegration_parallel/COORDINATION.md`
-10. 현재 workstream 프롬프트가 추가로 지정한 문서
+9. `provenance/workstreams/20260830_preintegration_parallel/DATA_ONTOLOGY_ALIGNMENT_DECISION_20260830.md`
+10. `provenance/workstreams/20260830_preintegration_parallel/COORDINATION.md`
+11. 현재 workstream 프롬프트가 추가로 지정한 문서
 
 이후 `git status --short`, 현재 branch와 HEAD를 확인한다. 다른 작업자의 기존 변경을
 삭제·정리·덮어쓰지 않는다.
@@ -57,6 +58,8 @@
 ## 구현 규칙
 
 - owned path 안에서 가장 작은 반증 가능한 수직 슬라이스를 구현한다.
+- 현재 제출 범위 전체를 병렬로 진행하되, 조회용 DB와 실제 Registry의 공유 설계는
+  Ontology×data 대조표와 승인된 조회 grain을 따른다.
 - 확인되지 않은 identifier, unit, code, grain, freshness 의미를 추측하지 않는다.
 - 모든 query는 결정적이어야 하고 사용자 값은 parameter binding으로 전달한다.
 - 동적 coverage/freshness와 현재 source 관측치를 안정 상수로 만들지 않는다.

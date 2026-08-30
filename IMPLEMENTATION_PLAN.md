@@ -8,13 +8,29 @@
 - 계약을 네 개 연속으로 문서화한 뒤 한꺼번에 구현하지 않는다. 가장 싼 반증 실험을 먼저 한다.
 - NCP 배포는 마지막 작업이 아니라 초기부터 병행해 latency/memory/cold-start 제약을 설계에
   되먹인다.
-- 현재 확보한 공식 데이터의 활용과 실제 Evidence 경로를 외부 데이터 보강보다 우선한다.
-- 실제 데이터 검증을 Stage 5까지 미루지 않는다. 전체 데이터 계약을 미리 만들지 않고,
-  구현 중인 capability에 필요한 grain, identifier, field, coverage, freshness만 확인한다.
-- 전체 질문 세트, 전체 Registry, 미래 외부 데이터 계약을 선제적으로 만들지 않는다.
+- 현재 확보한 공식 네 상품군 데이터와 외부 holdings의 활용과 실제 Evidence 경로를 미래
+  외부 데이터 보강보다 우선한다.
+- 기존 Ontology 5개와 현재 공식·외부 데이터의 전체 대조를 조회용 DB와 실제 Registry의
+  공통 선행 작업으로 둔다. 대조 뒤 두 산출물은 병렬 구축한다.
+- 현재 제출 범위의 전체 상품군·지표·관계를 다루되 모든 원본 column을 capability로
+  승격하지 않는다. 부재·부분 coverage·미확정 의미·식별자 실패를 구조화해 남긴다.
+- 전체 질문 세트와 미래 외부 데이터 계약은 선제적으로 만들지 않는다.
 - 새 예시 질문이나 fixture는 목적, capability, expected invariant를 제시해 사용자 검수를
   받은 뒤 사용한다.
 - 다음 단계 구현 전 `AGENTS.md`의 큰그림 게이트를 다시 수행한다.
+
+## 현재 우선 실행 순서 — 2026-08-30 사용자 승인
+
+숫자 단계의 과거 순차 표현보다 다음 실행 순서를 우선한다. 상세 결정은
+`provenance/workstreams/20260830_preintegration_parallel/DATA_ONTOLOGY_ALIGNMENT_DECISION_20260830.md`를
+따른다.
+
+1. 기존 Ontology 5개와 현재 공식·외부 데이터의 전체 대조표 작성
+2. 상품·상품 클래스·포트폴리오·종목·관측의 조회 단위 승인
+3. 조회용 DB·Execution Registry와 새 Ontology/SHACL·Semantic Registry 병렬 구축
+4. 같은 Semantic Registry를 사용하는 규칙 기반+embedding Retriever 구축
+5. HCX 의미 구조화, 서버 검증, Product/Relation Tool과 Evidence 연결
+6. 준비된 범위부터 NCP에 지속 통합하면서 전체 제출 범위 완성
 
 ## M. Clean migration — complete
 
@@ -166,20 +182,19 @@
 - 실제 Runtime View, HCX, DuckDB, source data와 Evidence는 아직 연결되지 않았다.
 - NCP 외부 호출, cold/warm latency, memory, restart와 상시성 검증은 남아 있다.
 
-## 0-C. Official-data discovery and executable slices — active
+## 0-C. Official-data discovery — discovery complete, executable store active
 
 ### 목적
 
-실제 데이터 의미와 실행 가능성을 조기에 확인하고, 공식 Excel에서 Evidence까지 이어지는
-경로를 capability 단위로 만든다. 국내 ETF를 첫 실제 실행 기준선으로 사용하되 다른
-상품군과 workstream의 선행조건으로 만들지 않는다.
+실제 데이터 의미와 실행 가능성을 조기에 확인하고 공식 Excel과 외부 holdings를 전체
+대조의 관측 근거로 만든다. 국내 ETF의 기존 파생 store 초안은 보존하지만, 이를 전체
+조회 단위와 공통 schema의 선행 정답으로 승격하지 않는다.
 
 ### 운영 경계
 
 - 원본은 읽기 전용으로 유지하고 파생 데이터는 재현 가능하게 별도 생성한다.
-- 모든 상품군의 계약을 미리 확정하지 않는다.
-- 현재 구현하는 filter, order, count, aggregate, compare 또는 relation capability에 필요한
-  최소 grain과 binding만 결정한다.
+- 공식 네 상품군과 현재 외부 holdings를 모두 대조 대상으로 포함한다.
+- 조회 단위와 공통 schema는 0-D 대조와 사용자·Codex 승인으로 확정한다.
 - 공식 근거가 없는 단위, 통화, code 의미와 identifier 의미는 추측하지 않는다.
 - 현재 행 수와 coverage를 runtime 일반 규칙으로 고정하지 않는다.
 
@@ -191,29 +206,69 @@
 - 실제 Excel → 파생 적재 → Registry binding → 실행 → Evidence의 end-to-end 경로는
   아직 완료되지 않았다.
 
-### 첫 통과 조건
+### 실행 store 통과 조건
 
-- 공식 Excel에서 재현 가능한 파생 적재가 생성됨
-- 한 개 이상의 도메인적으로 자연스러운 product capability가 filter/order/count와
-  Evidence까지 실제 데이터로 실행됨
+- 공식 네 상품군과 현재 외부 holdings에서 재현 가능한 파생 적재가 생성됨
+- 상품 지표와 관계가 승인된 조회 grain으로 filter/order/count/aggregate/compare 또는
+  relation Evidence까지 실제 데이터로 실행됨
 - 결과 grain, source, effective date, 적용 규칙과 실제 모집단을 추적할 수 있음
 - 불완전하거나 의미가 미확정인 데이터가 완전한 결과로 표현되지 않음
+
+## 0-D. Existing Ontology × current data alignment — complete, Codex-verified 2026-08-30
+
+### 목적
+
+이전 저장소의 Ontology 5개를 읽기 전용으로 감사하고 현재 공식 네 상품군과 외부 holdings의
+관측에 대조한다. 조회용 DB와 Semantic/Execution Registry가 서로 다른 상품·지표·관계
+단위를 만들기 전에 공통 설계 입력을 확정한다.
+
+### 산출물
+
+- 의미·지표·관계별 `유지 | 수정 | 제외 | 추가` 전체 대조표
+- product, product class, portfolio, security, observation 조회 grain 표
+- 공식/외부 source, field/관계, 기준일, coverage, 식별자 상태와 미확정 사항
+- 조회용 DB, Semantic Registry, Execution Registry, Retriever와 Tool별 후속 책임
+- 사용자·Codex 결정이 필요한 항목 목록
+
+### 통과 조건
+
+- 공식 네 상품군과 현재 holdings가 모두 대조 범위에 포함됨
+- 기존 Ontology 파일을 복사하거나 과거 binding을 현재 계약으로 자동 승격하지 않음
+- 데이터에 없는 의미와 Ontology에 없는 실제 데이터 의미가 모두 드러남
+- source row와 사용자 결과 grain, class와 portfolio, direct와 look-through를 구분함
+- 확인되지 않은 의미·단위·식별자·coverage를 추측하지 않음
+- 조회용 DB와 두 Registry가 소비할 공통 조회 단위가 승인됨
+
+### 완료 증거
+
+- `ontology_data_alignment/generated/ttl_term_inventory.csv`: legacy TTL named declaration 298개
+- `ontology_data_alignment/generated/official_field_catalog.csv`: 공식 field 280개
+- holdings ZIP member 29개와 normalized field 51개
+- `uv run python scripts/audit_0d_inventory.py --verify`: `status=ok`, manifest mismatch 0
+- 기존 7개 항목은 아키텍처 확정 사항과 구현 중 evidence 사항으로 재분류됐으며, 0-D에
+  남은 사용자 결정은 없음
+
+기술세션 원본에서 확인한 Knowledge Graph 인스턴스, 문서 Vector와 Federated Query의
+현재 아키텍처 반영 여부는 별도 설계 검토다. 이는 완료된 0-D 감사를 되돌리지 않는다.
 
 ## 제출 전 병렬 workstream — approved
 
 아래 workstream은 메인 조정 작업 아래에서 병렬로 진행한다. 가능하면 독립 worktree와
 서로 겹치지 않는 owned path를 사용한다.
 
-1. **A — 공식 데이터 실행 기반**: 공식 데이터를 실행 가능한 파생 데이터에 연결하고,
-   필요한 capability의 grain, identifier와 field 의미를 확인한다.
-2. **B — 질문 해석과 결정적 compiler**: Runtime View, HCX requirement accounting,
-   검증과 결정적 실행 계획을 담당한다.
+1. **A — 공식 데이터와 조회 저장소**: 공식 네 상품군의 전체 대조 근거, 승인된 조회 grain의
+   재현 가능한 파생 store와 Execution Registry 공식 데이터 부분을 담당한다.
+2. **B — 질문 해석과 결정적 compiler**: F의 Retriever 이후 Runtime View, HCX requirement
+   accounting, 검증과 결정적 실행 계획을 담당한다. Semantic Registry와 Retriever는
+   담당하지 않는다.
 3. **C — Product 조회와 Evidence**: filter, order, count, aggregate, compare와 Evidence를
    실제 상품 데이터에 연결한다.
 4. **D — Holdings와 관계 조회**: Product/class, Portfolio, Security 관계와 양방향 조회를
    담당한다. ETF 관계 작업은 공모펀드의 미확정 security relation을 기다리지 않는다.
 5. **E — NCP 배포·통합·검증**: 원격 배포, `/answer`, 통합, latency, 오류, 회귀와 제출
    리허설을 담당한다.
+6. **F — Ontology·Semantic Registry·Retriever**: 기존 Ontology 감사와 전체 대조표 조정,
+   새 Ontology/SHACL, Semantic Registry generator, 규칙 기반+embedding Retriever를 담당한다.
 
 공모펀드 product metric은 다른 상품군과 함께 진행하고, holdings security relation은
 식별자와 source resolution을 별도 경로에서 해결한다. 이는 기능 포기가 아니라 일정
@@ -221,32 +276,36 @@
 
 ### 4일 통합 흐름
 
-- 1일차: 모든 병렬 workstream 착수와 기반 작업
-- 2일차: 상품군 확장과 첫 실제 통합
-- 3일차: 공식 데이터 기반 capability 폭 확대와 통합 보완
+- 1일차: 전체 데이터·Ontology 대조와 조회 grain 승인, A~F 병렬 작업
+- 2일차: 조회 DB와 두 Registry 생성, Retriever·Product Tool의 첫 실제 통합
+- 3일차: 전체 상품군과 가능한 holdings 관계 연결, NCP 반복 배포
 - 4일차: 사용자 승인 질문을 이용한 전체 리허설, 오류 수정과 최종 배포
 
 blocker가 생기면 기능을 근거 없이 성공 처리하지 않고 메인 조정 작업으로 즉시 반환해
 작업을 재배치한다. 데이터가 지원하지 않는 주장을 만들어 일정 문제를 숨기지 않는다.
 
-## 1. Runtime View contract and retrieval — synthetic experiment complete, actual binding pending
+## 1. Runtime View and hybrid retrieval — synthetic experiment complete, production pending
 
 ### 입력
 
 - 0-A에서 수용된 wire encoding
-- Semantic/Execution Registry의 최소 synthetic slice
-- 0-C에서 capability별로 확인된 실제 data binding
+- 0-D에서 승인된 전체 대조표와 조회 grain
+- F가 생성한 실제 Semantic Registry
+- A/D가 생성한 실제 Execution Registry와 coverage/freshness
 
 ### 산출물
 
 - dataset/field/predicate/entity candidate schema
+- Registry 표준명·승인된 동의어 기반 규칙 검색
+- Registry 의미 설명 기반 embedding 검색
 - structured confusion neighbors
-- 현재 구현하는 capability의 dataset별 coverage
+- 현재 제출 범위의 dataset별 실제 capability coverage
 - explicit requirement span accounting 계약
 
 ### 통과 조건
 
 - Runtime View required candidate recall 측정 가능
+- 규칙 경로와 embedding 경로의 후보 provenance와 recall을 분리 측정 가능
 - 누락된 표현이 조용히 실행으로 사라지지 않음
 - candidate budget과 latency가 기록됨
 
@@ -281,8 +340,8 @@ blocker가 생기면 기능을 근거 없이 성공 처리하지 않고 메인 �
 - positive lookup, global ranking/count/extrema, negative/universal claim 테스트
 - Evidence의 coverage/freshness/applied rules 계약
 
-전체 상품군과 미래 질문의 상태표를 먼저 만들지 않는다. 실제 실행 또는 최종 claim에서
-필요한 범위만 결정하고 확장한다.
+현재 제출 범위의 실제 claim type을 모두 분류하되, 미래 질문이나 아직 확보하지 않은
+외부 source의 상태표를 만들지 않는다.
 
 ### 통과 조건
 
@@ -290,7 +349,7 @@ blocker가 생기면 기능을 근거 없이 성공 처리하지 않고 메인 �
 - observed universe를 global universe로 표현하지 않음
 - target outside coverage를 false로 판정하지 않음
 
-## 4. Registry generation — pending
+## 4. Registry generation — active after 0-D alignment
 
 ### 산출물
 
@@ -300,9 +359,9 @@ blocker가 생기면 기능을 근거 없이 성공 처리하지 않고 메인 �
 - 초기 architecture guards 확장: CQ/exact-text 분기, fixture runtime import, 이전 저장소
   의존, unapproved constants와 Registry 중복 정의
 
-Registry는 현재 구현하는 capability의 semantic 의미와 physical binding부터 증분 생성한다.
-미래 상품군, 외부 source와 아직 사용하지 않는 field를 완성하기 위해 선제적으로 확장하지
-않는다.
+Registry는 현재 제출 범위의 공식 네 상품군과 현재 외부 holdings를 전체 대상으로 생성한다.
+모든 source column을 자동 노출하지 않고 0-D에서 `유지 | 수정 | 제외 | 추가` 판정된 의미와
+미확정 상태를 반영한다. 아직 확보하지 않은 미래 외부 source는 선제적으로 확장하지 않는다.
 
 ### 통과 조건
 

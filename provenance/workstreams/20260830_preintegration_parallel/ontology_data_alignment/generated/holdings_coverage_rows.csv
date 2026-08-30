@@ -1,0 +1,4 @@
+product_family,eligible_count,attempted_count,success_count,failed_count,exact_mapped_count,ambiguous_count,unresolved_count,full_snapshot_count,partial_snapshot_count,unknown_snapshot_count,holding_as_of_min,holding_as_of_max
+domestic_etf,1164,1161,1160,4,1161,0,3,1160,0,0,2026-08-22,2026-08-22
+overseas_etf,5958,5527,4964,994,5527,0,431,4964,0,0,2025-04-30,2026-06-30
+public_fund,8859,8859,8064,795,8415,292,152,0,0,8064,2014-12-19,2026-07-31

@@ -4,8 +4,9 @@
 
 ## 목표와 경계
 
-공식 Excel을 읽기 전용으로 보존하면서, 현재 capability에 필요한 최소 field와 grain만
-검증해 재현 가능한 파생 store와 Execution Catalog slice를 만든다. 질문 해석, HCX,
+공식 Excel을 읽기 전용으로 보존하면서 공식 네 상품군 전체를 기존 Ontology와 대조할
+data evidence를 만들고, 승인된 조회 grain에 따라 재현 가능한 파생 store와 Execution
+Registry의 공식 데이터 부분을 만든다. 질문 해석, HCX,
 Product query/Evidence, holdings, 공개 API는 담당하지 않는다.
 
 추가로 읽을 문서:
@@ -30,8 +31,9 @@ Product query/Evidence, holdings, 공개 API는 담당하지 않는다.
 1. `MIGRATION_MANIFEST.json`을 source discovery/hash 검증의 정본으로 사용한다. hash를 코드에
    중복 복사하지 않는다.
 2. workbook을 read-only/data-only 방식으로 읽고 원본 무결성을 전후 확인한다.
-3. 국내 ETF를 첫 기준선으로 삼되, 도메인적으로 자연스러운 최소 product capability에
-   필요한 field만 선택한다.
+3. 국내채권·국내 ETF·해외 ETF·공모펀드 전체의 field, identifier, source-row/product grain,
+   unit/currency/period, effective date와 queryable universe를 대조표 입력으로 기록한다.
+   국내 ETF 기존 초안은 보존하되 전체 공통 schema의 정답으로 자동 승격하지 않는다.
 4. source-row grain과 product grain, stable identifier 후보를 분리한다.
 5. 각 field의 관측 type, meaning 근거, measure/code 구분, unit/currency/period, source,
    effective date, queryable universe를 기록한다. 근거 없는 항목은 unresolved로 둔다.
@@ -40,7 +42,8 @@ Product query/Evidence, holdings, 공개 API는 담당하지 않는다.
 8. 손상 source, hash mismatch, required field 부재는 fail closed한다.
 9. synthetic workbook으로 filename/column order/schema 변화 테스트를 만들고, 별도
    `real_data` marker로 공식 원본 실행을 검증한다.
-10. B/C가 소비할 최소 handoff를 `HANDOFF.md`에 제안하되 공유 계약으로 선언하지 않는다.
+10. F의 Ontology 대조에 필요한 data fragment와 B/C가 소비할 store/Execution Registry
+    handoff를 `HANDOFF.md`에 제안하되 공유 계약으로 선언하지 않는다.
 
 현재 행 수, coverage, 날짜를 runtime 성공 기준 상수로 사용하지 말라. 국내채권 `pd_no`를
 곧바로 source-row 유일 key로 일반화하거나 공모펀드 총보수를 임의 합성하지 말라.
@@ -49,7 +52,7 @@ Product query/Evidence, holdings, 공개 API는 담당하지 않는다.
 
 - 원본 hash/size/mtime가 작업 전후 동일하다.
 - 동일 입력의 두 build가 논리적으로 동일하다.
-- 최소 한 상품군의 queryable store가 생성된다.
+- 공식 네 상품군의 queryable store와 dataset별 미지원·미확정 상태가 생성된다.
 - source/table/field/grain/freshness/exclusion을 추적할 수 있다.
 - 다른 filename/column order에 위치 하드코딩 없이 대응하거나 명시적으로 실패한다.
 - 미확정 의미를 supported capability로 승격하지 않는다.

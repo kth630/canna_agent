@@ -7,7 +7,8 @@
 2. `QUESTION_STRUCTURE.md`
 3. `ARCHITECTURE.md`
 4. `IMPLEMENTATION_PLAN.md`의 현재 단계
-5. 관련 `contracts/` 문서
+5. `provenance/workstreams/20260830_preintegration_parallel/DATA_ONTOLOGY_ALIGNMENT_DECISION_20260830.md`
+6. 관련 `contracts/` 문서
 
 이전 저장소 `C:\Users\user\asset_agent`의 문서나 코드는 참고 자료일 뿐 이 저장소의
 결정을 덮어쓸 수 없다.
@@ -47,15 +48,24 @@
 이 항목이 답해지지 않으면 구현하지 않는다. 사용자는 언제든
 `구현 전에 큰그림 게이트부터`라고 요구해 구현을 중단시킬 수 있다.
 
-## 필요한 때 필요한 만큼 결정
+## 현재 제출 범위 전체 정렬
 
-- 전체 질문 세트, 전체 상품군 데이터 계약, 전체 Registry와 미래 외부 데이터 계약을
-  구현 전에 한꺼번에 만들지 않는다.
-- 현재 capability를 구현하거나 반증하는 데 필요한 최소 grain, field, binding, coverage,
-  freshness와 실패 의미만 결정한다.
+- 현재 확보한 공식 네 상품군 데이터, 외부 holdings와 기존 Ontology 5개를 먼저 전체
+  대조한다. 의미·지표·관계는 `유지 | 수정 | 제외 | 추가`로 판정하고 조회 grain과 데이터
+  상태를 함께 기록한다.
+- 대조와 조회 단위 승인 뒤 조회용 DB·Execution Registry와 새 Ontology/SHACL·Semantic
+  Registry를 병렬 구축한다. 국내 ETF 최소 slice만 끝낸 뒤 나머지를 시작하는 순차
+  계획으로 운영하지 않는다.
+- 현재 제출 범위 전체를 다루되 모든 원본 column을 무조건 capability로 승격하지 않는다.
+  확인되지 않은 의미, 부재 field, 불완전 관계와 coverage는 그대로 구조화해 남긴다.
+- 규칙 기반 정확 검색과 embedding 의미 검색은 같은 Semantic Registry를 사용한다.
+  embedding과 HCX 선택은 후보·계획 제안이며 서버 검증 없이 실행 근거가 되지 않는다.
+- 전체 질문 세트와 평가 질문 문자열을 제품 계약으로 만들지 않고, 아직 확보하지 않은
+  미래 외부 데이터 계약도 선제적으로 확정하지 않는다.
 - synthetic 계약과 실험 fixture를 실제 제품 계약으로 자동 승격하지 않는다.
-- 공식 제공 데이터의 실행과 Evidence 경로를 우선하고, 외부 데이터는 실제 capability에
-  필요해질 때 source, entity binding, freshness와 실패 의미를 함께 정한다.
+- 공식 제공 데이터와 현재 확보한 외부 데이터를 모두 조회 경로에 포함하되 source,
+  entity binding, freshness, coverage와 실패 의미를 함께 보존한다. 충돌하면 공식 제공
+  데이터를 우선하고 충돌을 기록한다.
 - `supported`, `partial`, `unsupported`, `unresolved`는 실제 실행이나 최종 claim에 필요할
   때 적용한다. semantic mapping 또는 compiler만 검증하는 질문에 데이터 부재만으로 같은
   판정을 강제하지 않는다.
@@ -70,8 +80,9 @@
   작업과 조율한 뒤 수행한다.
 - 전체 아키텍처, 확인되지 않은 데이터 의미, 공유 coverage 정책, 공유 계약, 제출 범위와
   외부 데이터 사용이 전체 방향에 미치는 변경은 사용자와 Codex에 반환한다.
-- 병렬 구조와 현재 합의는
-  `provenance/workstreams/20260830_preintegration_parallel/DIRECTION_MEETING.md`를 따른다.
+- 병렬 구조의 최신 합의는
+  `provenance/workstreams/20260830_preintegration_parallel/DATA_ONTOLOGY_ALIGNMENT_DECISION_20260830.md`를
+  따른다. `DIRECTION_MEETING.md`는 이전 회의의 provenance다.
 
 ## 금지 사항
 

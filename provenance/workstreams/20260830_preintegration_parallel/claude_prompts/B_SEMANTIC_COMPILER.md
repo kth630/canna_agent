@@ -4,9 +4,11 @@
 
 ## 목표와 경계
 
-Runtime View 후보와 HCX semantic query를 서버가 독립 검증하고 Product 실행기가 소비할 수
+F Retriever가 선택한 Runtime View 후보와 HCX semantic query를 서버가 독립 검증하고
+Product 실행기가 소비할 수
 있는 결정적 logical plan으로 변환하는 production core를 만든다. 공식 데이터 적재,
-physical SQL/DuckDB 실행, Evidence, holdings, API 배포는 담당하지 않는다.
+Ontology/SHACL, Semantic Registry 생성, 후보 retrieval, physical SQL/DuckDB 실행, Evidence,
+holdings, API 배포는 담당하지 않는다.
 
 추가로 읽을 문서:
 
@@ -22,7 +24,6 @@ import하지 않는다.
 - `src/canna/runtime_view/**`
 - `src/canna/semantic/**`
 - `src/canna/compiler/**`
-- `src/canna/registry/semantic/**`
 - `tests/runtime_view/**`
 - `tests/semantic/**`
 - `tests/compiler/**`
@@ -30,8 +31,8 @@ import하지 않는다.
 
 ## Batch 1 구현
 
-1. Registry-injected dataset/field/predicate/entity candidate와 request-scoped opaque ref model을
-   만든다. stable semantic ID는 모델 payload에 노출하지 않는다.
+1. F가 handoff한 dataset/field/predicate/entity candidate와 request-scoped opaque ref를
+   소비하는 model을 만든다. stable semantic ID는 모델 payload에 노출하지 않는다.
 2. semantic query에서 target, explicit requirement+source span, ref, filter, relationship,
    grouping/aggregation/order/output/limit, bounded comparison/nested reuse, unresolved/ambiguous
    근거를 묶음 단위로 보존한다.
@@ -65,7 +66,7 @@ import하지 않는다.
 ## 검증
 
 - `uv run pytest -q tests/runtime_view tests/semantic tests/compiler`
-- `uv run ruff check src/canna/runtime_view src/canna/semantic src/canna/compiler src/canna/registry/semantic tests/runtime_view tests/semantic tests/compiler`
+- `uv run ruff check src/canna/runtime_view src/canna/semantic src/canna/compiler tests/runtime_view tests/semantic tests/compiler`
 - `uv run pytest -q tests/test_architecture_guards.py`
 - `git diff --check`
 - `git status --short`

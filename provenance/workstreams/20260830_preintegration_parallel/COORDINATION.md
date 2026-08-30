@@ -1,5 +1,9 @@
 # Parallel coordination — 2026-08-30
 
+> Current execution authority: `DATA_ONTOLOGY_ALIGNMENT_DECISION_20260830.md`.
+> The pre-integration boundaries below are retained as historical evidence where they conflict with
+> the approved ontology-data alignment, full current-scope query store/Registry build, or F workstream.
+
 ## Purpose and boundary
 
 This record coordinates only pre-integration work. It does not approve a
@@ -19,6 +23,8 @@ contract change.
 | 0-A — HCX opaque-ref and requirement-accounting experiment | complete / separately recorded | `src/canna/experiments/semantic_probe/`, `tests/fixtures/semantic_*`, `tests/test_semantic_probe*.py`, `provenance/experiments/stage_0a_semantic_grounding/` | Synthetic Runtime View experiment only; it is not the serving API or a data registry. |
 | 0-B — evaluation API minimum vertical slice | local transport slice verified; deployment validation pending | `src/canna/api.py`, `src/canna/answer_envelope.py`, `tests/test_api.py`, `provenance/workstreams/20260830_preintegration_parallel/evaluation_api_skeleton/` | HTTP/JSON envelope only; no HCX invocation, Runtime View, Registry, DuckDB, source data, holdings, or joins. |
 | 1-A — Runtime View retrieval foundation | active / assigned by user | `src/canna/experiments/runtime_view_probe/`, `tests/test_runtime_view_probe.py`, `tests/fixtures/runtime_view_*`, `scripts/run_runtime_view_probe.py`, `provenance/experiments/stage_1_runtime_view/` | Synthetic Registry and deterministic candidate retrieval only; no HCX invocation, semantic-query generation, compiler, DuckDB, source data, holdings, serving API, or NCP deployment. |
+| 0-D — ontology × current-data alignment | complete / Codex reverified 2026-08-30 | `ontology_data_alignment/` and `scripts/audit_0d_inventory.py` | Five legacy ontologies, all four official families and current holdings were exhaustively catalogued. Verification returned 298 TTL terms, 280 official fields, 29 ZIP members and 51 normalized holdings fields with zero manifest mismatch. This completes the audit, not the DB/Registry binding. |
+| F — Ontology, Semantic Registry and Retriever | approved / prompt prepared | `ontology/**`, `shapes/**`, semantic-registry generator, retrieval runtime, F provenance | Owns new Ontology/SHACL, generated Semantic Registry and rule+embedding candidate retrieval; does not own B logical planning or physical execution. |
 
 ## Isolation rules
 

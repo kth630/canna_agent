@@ -76,9 +76,14 @@ Canna는 국내채권, 국내 ETF, 해외 ETF, 공모펀드와 검증된 외부 
 - 상품군 간 지표의 의미, 단위, 통화, 기간과 모집단이 같다는 근거가 확인되기 전에는
   통합 ranking이나 직접 비교를 지원한다고 가정하지 않는다.
 
-이 관측은 실제 데이터 검증을 늦추지 말아야 한다는 근거지만, 모든 상품군의 데이터 계약을
-미리 확정하라는 의미는 아니다. 각 capability를 구현할 때 필요한 범위만 추가 검증하고
-binding한다.
+이 관측을 바탕으로 2026-08-30 사용자와 Codex는 현재 제출 범위의 공식 네 상품군,
+외부 holdings와 기존 Ontology 5개를 먼저 전체 대조하기로 결정했다. 대조표에서 의미·지표·
+관계를 `유지 | 수정 | 제외 | 추가`로 판정하고 조회 grain을 승인한 뒤, 조회용 DB·Execution
+Registry와 새 Ontology/SHACL·Semantic Registry를 병렬 구축한다. 이는 모든 원본 column을
+지원 의미로 승격하거나 미래 외부 데이터 계약을 미리 만든다는 뜻이 아니다. 최신 실행
+결정은
+`provenance/workstreams/20260830_preintegration_parallel/DATA_ONTOLOGY_ALIGNMENT_DECISION_20260830.md`에
+기록한다.
 
 ## 4. 평가 API의 공식 경계
 
