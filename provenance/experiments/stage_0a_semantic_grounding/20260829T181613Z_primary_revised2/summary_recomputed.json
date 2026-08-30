@@ -1,0 +1,119 @@
+{
+  "recomputed_from": "transcript_*.jsonl",
+  "rule": "order stability counts scored runs only",
+  "encodings": {
+    "delimited": {
+      "transcript": "transcript_delimited.jsonl",
+      "runs": 39,
+      "cases": 13,
+      "scored_runs": 35,
+      "provider_failures": 4,
+      "provider_error_codes": [
+        "40009"
+      ],
+      "model_response_failures": 0,
+      "run_pass_rate": 0.1429,
+      "cases_with_at_least_one_scored_run": 13,
+      "case_pass_rate_all_scored_repeats": 0.0769,
+      "ref_integrity_rate": 0.6,
+      "mean_requirement_recall": 0.1571,
+      "latency_ms_mean": 4602.1,
+      "latency_ms_max": 8773.4,
+      "stable_pass_test_ids": [
+        "sg_field_fee_neighbor_001"
+      ],
+      "stable_fail_test_ids": [
+        "sg_absent_metric_on_relation_001",
+        "sg_comparison_two_entities_001",
+        "sg_field_meaning_neighbor_001",
+        "sg_field_period_neighbor_001",
+        "sg_multi_target_two_requirements_001",
+        "sg_nested_reuse_001",
+        "sg_partial_unresolved_mix_001",
+        "sg_relationship_security_to_product_001",
+        "sg_requirements_three_001",
+        "sg_requirements_two_001"
+      ],
+      "order_sensitive_test_ids": [
+        "sg_absent_field_unresolved_001",
+        "sg_relationship_product_to_security_001"
+      ],
+      "never_scored_test_ids": []
+    },
+    "grouped_flat": {
+      "transcript": "transcript_grouped_flat.jsonl",
+      "runs": 39,
+      "cases": 13,
+      "scored_runs": 39,
+      "provider_failures": 0,
+      "provider_error_codes": [],
+      "model_response_failures": 0,
+      "run_pass_rate": 0.3333,
+      "cases_with_at_least_one_scored_run": 13,
+      "case_pass_rate_all_scored_repeats": 0.1538,
+      "ref_integrity_rate": 0.9744,
+      "mean_requirement_recall": 0.4274,
+      "latency_ms_mean": 6121.0,
+      "latency_ms_max": 10668.8,
+      "stable_pass_test_ids": [
+        "sg_partial_unresolved_mix_001",
+        "sg_relationship_product_to_security_001"
+      ],
+      "stable_fail_test_ids": [
+        "sg_absent_field_unresolved_001",
+        "sg_absent_metric_on_relation_001",
+        "sg_field_meaning_neighbor_001",
+        "sg_multi_target_two_requirements_001",
+        "sg_relationship_security_to_product_001",
+        "sg_requirements_three_001",
+        "sg_requirements_two_001"
+      ],
+      "order_sensitive_test_ids": [
+        "sg_comparison_two_entities_001",
+        "sg_field_fee_neighbor_001",
+        "sg_field_period_neighbor_001",
+        "sg_nested_reuse_001"
+      ],
+      "never_scored_test_ids": []
+    },
+    "nested": {
+      "transcript": "transcript_nested.jsonl",
+      "runs": 39,
+      "cases": 13,
+      "scored_runs": 27,
+      "provider_failures": 12,
+      "provider_error_codes": [
+        "40009"
+      ],
+      "model_response_failures": 0,
+      "run_pass_rate": 0.3333,
+      "cases_with_at_least_one_scored_run": 12,
+      "case_pass_rate_all_scored_repeats": 0.25,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.5,
+      "latency_ms_mean": 5584.2,
+      "latency_ms_max": 8579.7,
+      "stable_pass_test_ids": [
+        "sg_field_period_neighbor_001",
+        "sg_multi_target_two_requirements_001",
+        "sg_relationship_product_to_security_001"
+      ],
+      "stable_fail_test_ids": [
+        "sg_absent_metric_on_relation_001",
+        "sg_comparison_two_entities_001",
+        "sg_field_fee_neighbor_001",
+        "sg_field_meaning_neighbor_001",
+        "sg_nested_reuse_001",
+        "sg_partial_unresolved_mix_001",
+        "sg_relationship_security_to_product_001",
+        "sg_requirements_three_001"
+      ],
+      "order_sensitive_test_ids": [
+        "sg_absent_field_unresolved_001"
+      ],
+      "never_scored_test_ids": [
+        "sg_requirements_two_001"
+      ]
+    }
+  }
+}

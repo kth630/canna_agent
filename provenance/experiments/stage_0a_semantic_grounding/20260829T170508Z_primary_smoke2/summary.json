@@ -1,0 +1,25 @@
+{
+  "stage": "0-A",
+  "split": "primary",
+  "fixture_file": "tests\\fixtures\\semantic_grounding.jsonl",
+  "catalog_file": "tests\\fixtures\\semantic_probe_catalog.json",
+  "case_count": 3,
+  "started_utc": "20260829T170508Z",
+  "encodings": {
+    "nested": {
+      "cases": 3,
+      "provider_failures": 0,
+      "provider_error_codes": [],
+      "model_response_failures": 0,
+      "scored_cases": 3,
+      "case_pass_rate": 1.0,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 1.0,
+      "mean_requirement_precision": 0.8333,
+      "latency_ms_mean": 7197.1,
+      "latency_ms_max": 11449.5,
+      "request_bytes_mean": 2223.3,
+      "failed_test_ids": []
+    }
+  }
+}

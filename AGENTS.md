@@ -12,6 +12,10 @@
 이전 저장소 `C:\Users\user\asset_agent`의 문서나 코드는 참고 자료일 뿐 이 저장소의
 결정을 덮어쓸 수 없다.
 
+이전 저장소를 참고하는 작업은 `provenance/MIGRATION_CHECKLIST.md`를 함께 읽고, 현재
+단계에 필요한 A/B 항목만 그 문서의 허용 범위 안에서 사용한다. B는 파일 전체 복사가
+아니라 현재 정본에 맞춘 재작성이다. C는 가져오지 않고 D는 선행 결정 전까지 보류한다.
+
 ## 역할
 
 - 사용자: 목표·범위·아키텍처의 최종 결정자다.
@@ -22,6 +26,11 @@
 
 결정이 필요한 경우 Claude는 구현을 멈추고 사용자와 Codex에 선택지·영향·근거를
 보고한다. Codex도 승인된 큰그림 없이 국소 구현부터 시작하지 않는다.
+
+승인된 workstream 경계 안에서는 작업자가 세부 컬럼 선택, 내부 모듈 구조, 테스트 방법,
+해당 capability의 최소 data binding과 구현 순서를 증거에 따라 결정할 수 있다. 확인되지
+않은 데이터 의미를 추측하거나 전체 아키텍처, 공유 coverage 정책, 공유 계약 또는 제출
+범위를 바꾸는 결정은 사용자와 Codex에 반환한다.
 
 ## 구현 전 큰그림 게이트
 
@@ -37,6 +46,32 @@
 
 이 항목이 답해지지 않으면 구현하지 않는다. 사용자는 언제든
 `구현 전에 큰그림 게이트부터`라고 요구해 구현을 중단시킬 수 있다.
+
+## 필요한 때 필요한 만큼 결정
+
+- 전체 질문 세트, 전체 상품군 데이터 계약, 전체 Registry와 미래 외부 데이터 계약을
+  구현 전에 한꺼번에 만들지 않는다.
+- 현재 capability를 구현하거나 반증하는 데 필요한 최소 grain, field, binding, coverage,
+  freshness와 실패 의미만 결정한다.
+- synthetic 계약과 실험 fixture를 실제 제품 계약으로 자동 승격하지 않는다.
+- 공식 제공 데이터의 실행과 Evidence 경로를 우선하고, 외부 데이터는 실제 capability에
+  필요해질 때 source, entity binding, freshness와 실패 의미를 함께 정한다.
+- `supported`, `partial`, `unsupported`, `unresolved`는 실제 실행이나 최종 claim에 필요할
+  때 적용한다. semantic mapping 또는 compiler만 검증하는 질문에 데이터 부재만으로 같은
+  판정을 강제하지 않는다.
+- blocker가 생기면 기능을 근거 없이 성공 처리하거나 조용히 제거하지 않는다. 병렬 작업의
+  재배치가 필요하면 메인 조정 작업에 보고하고 해결을 계속한다.
+
+## 병렬 작업 규칙
+
+- 승인된 큰그림 안의 세부 구현은 각 workstream이 자율적으로 수행한다.
+- 가능하면 독립 worktree와 겹치지 않는 owned path를 사용한다.
+- 공유 파일, shared schema, API envelope 또는 cross-workstream interface 변경은 다른
+  작업과 조율한 뒤 수행한다.
+- 전체 아키텍처, 확인되지 않은 데이터 의미, 공유 coverage 정책, 공유 계약, 제출 범위와
+  외부 데이터 사용이 전체 방향에 미치는 변경은 사용자와 Codex에 반환한다.
+- 병렬 구조와 현재 합의는
+  `provenance/workstreams/20260830_preintegration_parallel/DIRECTION_MEETING.md`를 따른다.
 
 ## 금지 사항
 
@@ -69,6 +104,10 @@ expected value, Registry에서 생성된 stable enum뿐이다.
 fixture에도 등록하지 않는다. `ambiguous`는 candidate grounding 또는 source resolution이
 결정되지 않을 때 서버가 임의 실행을 막기 위한 런타임 상태다. 평가 질문 35개를 고정 답·고정
 계획·런타임 분기의 근거로 쓰지 않는다.
+
+새 예시 질문이나 fixture를 만들 때는 위 metadata와 함께 사용자에게 검수를 요청하고,
+승인된 질문만 등록한다. 질문은 도메인적으로 자연스러워야 하며 실제 사용 의미 없이 평가
+복잡성만 높이기 위한 중첩·결합을 만들지 않는다.
 
 ## 데이터와 변경 규칙
 

@@ -1,0 +1,40 @@
+{
+  "stage": "0-A",
+  "split": "primary",
+  "fixture_file": "tests\\fixtures\\semantic_grounding.jsonl",
+  "catalog_file": "tests\\fixtures\\semantic_probe_catalog.json",
+  "case_count": 3,
+  "repeats": 1,
+  "order_seed_base": 20260830,
+  "order_rule": "repeat 0 uses the authored order; later repeats shuffle with (base_seed * 1000003 + crc32(test_id) + repeat_index) % 2**31",
+  "started_utc": "20260829T174919Z",
+  "encodings": {
+    "nested": {
+      "runs": 3,
+      "cases": 3,
+      "repeats_per_case": 1.0,
+      "provider_failures": 1,
+      "provider_error_codes": [
+        "40009"
+      ],
+      "model_response_failures": 0,
+      "scored_runs": 2,
+      "run_pass_rate": 0.5,
+      "case_pass_rate_all_repeats": 0.3333,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.5,
+      "mean_requirement_precision": 0.5,
+      "latency_ms_mean": 5298.5,
+      "latency_ms_max": 5755.2,
+      "request_bytes_mean": 2261.0,
+      "stable_pass_test_ids": [
+        "sg_relationship_product_to_security_001"
+      ],
+      "stable_fail_test_ids": [
+        "sg_absent_metric_on_relation_001",
+        "sg_relationship_security_to_product_001"
+      ],
+      "order_sensitive_test_ids": []
+    }
+  }
+}

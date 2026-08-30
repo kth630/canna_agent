@@ -137,6 +137,39 @@ def test_runtime_does_not_embed_source_workspace_or_fixture_questions() -> None:
     assert not violations, "runtime contains migration residue:\n" + "\n".join(violations)
 
 
+def test_experiment_packages_are_not_imported_by_serving_code() -> None:
+    """Falsification code must never become an implicit runtime contract."""
+    violations: list[str] = []
+    for path in runtime_python_files():
+        relative = path.relative_to(ROOT).as_posix()
+        if "/experiments/" in relative:
+            continue
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        for node in ast.walk(tree):
+            if not isinstance(node, (ast.Import, ast.ImportFrom)):
+                continue
+            if "experiments" in dotted_import_parts(node):
+                violations.append(f"{relative}:{node.lineno}")
+    assert not violations, (
+        "serving code imports an experiment package: " + ", ".join(violations)
+    )
+
+
+def test_experiment_modules_declare_that_they_are_experiments() -> None:
+    experiment_files = [
+        path
+        for path in runtime_python_files()
+        if "/experiments/" in path.relative_to(ROOT).as_posix()
+    ]
+    assert experiment_files, "no experiment modules found"
+    missing = [
+        path.relative_to(ROOT).as_posix()
+        for path in experiment_files
+        if "xperiment" not in (ast.get_docstring(ast.parse(path.read_text(encoding="utf-8"))) or "")
+    ]
+    assert not missing, f"experiment modules without an experiment-only banner: {missing}"
+
+
 def test_question_fixtures_declare_purpose_and_explicit_semantics() -> None:
     violations: list[str] = []
     for record in load_question_fixtures():

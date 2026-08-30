@@ -1,0 +1,68 @@
+{
+  "stage": "0-A",
+  "split": "holdout",
+  "fixture_file": "tests\\fixtures\\semantic_grounding_holdout.jsonl",
+  "catalog_file": "tests\\fixtures\\semantic_probe_catalog.json",
+  "case_count": 8,
+  "started_utc": "20260829T171359Z",
+  "encodings": {
+    "delimited": {
+      "cases": 8,
+      "provider_failures": 0,
+      "provider_error_codes": [],
+      "model_response_failures": 0,
+      "scored_cases": 8,
+      "case_pass_rate": 0.5,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.5,
+      "mean_requirement_precision": 0.5,
+      "latency_ms_mean": 4772.4,
+      "latency_ms_max": 9542.9,
+      "request_bytes_mean": 1957.8,
+      "failed_test_ids": [
+        "ho_cross_dataset_absent_001",
+        "ho_entity_preferred_share_001",
+        "ho_forward_looking_unresolved_001",
+        "ho_requirements_four_001"
+      ]
+    },
+    "grouped_flat": {
+      "cases": 8,
+      "provider_failures": 0,
+      "provider_error_codes": [],
+      "model_response_failures": 0,
+      "scored_cases": 8,
+      "case_pass_rate": 0.5,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.5938,
+      "mean_requirement_precision": 0.5312,
+      "latency_ms_mean": 5404.5,
+      "latency_ms_max": 8821.1,
+      "request_bytes_mean": 2115.8,
+      "failed_test_ids": [
+        "ho_cross_dataset_absent_001",
+        "ho_forward_looking_unresolved_001",
+        "ho_predicate_lookthrough_001",
+        "ho_requirements_four_001"
+      ]
+    },
+    "nested": {
+      "cases": 8,
+      "provider_failures": 0,
+      "provider_error_codes": [],
+      "model_response_failures": 0,
+      "scored_cases": 8,
+      "case_pass_rate": 0.75,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.75,
+      "mean_requirement_precision": 0.75,
+      "latency_ms_mean": 4419.0,
+      "latency_ms_max": 6590.3,
+      "request_bytes_mean": 2068.8,
+      "failed_test_ids": [
+        "ho_cross_dataset_absent_001",
+        "ho_forward_looking_unresolved_001"
+      ]
+    }
+  }
+}

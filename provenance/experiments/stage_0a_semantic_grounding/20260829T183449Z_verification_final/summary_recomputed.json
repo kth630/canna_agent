@@ -1,0 +1,109 @@
+{
+  "recomputed_from": "transcript_*.jsonl",
+  "rule": "order stability counts scored runs only",
+  "encodings": {
+    "delimited": {
+      "transcript": "transcript_delimited.jsonl",
+      "runs": 30,
+      "cases": 10,
+      "scored_runs": 29,
+      "provider_failures": 1,
+      "provider_error_codes": [
+        "40009"
+      ],
+      "model_response_failures": 0,
+      "run_pass_rate": 0.2069,
+      "cases_with_at_least_one_scored_run": 10,
+      "case_pass_rate_all_scored_repeats": 0.1,
+      "ref_integrity_rate": 0.5862,
+      "mean_requirement_recall": 0.2069,
+      "latency_ms_mean": 4519.8,
+      "latency_ms_max": 7055.8,
+      "stable_pass_test_ids": [
+        "vf_condition_on_period_field_001"
+      ],
+      "stable_fail_test_ids": [
+        "vf_condition_with_ascending_limit_001",
+        "vf_dataset_ownership_positive_001",
+        "vf_forward_default_rate_unresolved_001",
+        "vf_multi_target_bond_fund_001",
+        "vf_relationship_with_metric_ranking_001",
+        "vf_requirements_three_with_condition_001"
+      ],
+      "order_sensitive_test_ids": [
+        "vf_comparison_on_fee_001",
+        "vf_dataset_ownership_absent_001",
+        "vf_relationship_lookthrough_forward_001"
+      ],
+      "never_scored_test_ids": []
+    },
+    "grouped_flat": {
+      "transcript": "transcript_grouped_flat.jsonl",
+      "runs": 30,
+      "cases": 10,
+      "scored_runs": 30,
+      "provider_failures": 0,
+      "provider_error_codes": [],
+      "model_response_failures": 0,
+      "run_pass_rate": 0.5,
+      "cases_with_at_least_one_scored_run": 10,
+      "case_pass_rate_all_scored_repeats": 0.3,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.6222,
+      "latency_ms_mean": 6148.4,
+      "latency_ms_max": 9360.4,
+      "stable_pass_test_ids": [
+        "vf_forward_default_rate_unresolved_001",
+        "vf_multi_target_bond_fund_001",
+        "vf_relationship_lookthrough_forward_001"
+      ],
+      "stable_fail_test_ids": [
+        "vf_dataset_ownership_absent_001",
+        "vf_relationship_with_metric_ranking_001",
+        "vf_requirements_three_with_condition_001"
+      ],
+      "order_sensitive_test_ids": [
+        "vf_comparison_on_fee_001",
+        "vf_condition_on_period_field_001",
+        "vf_condition_with_ascending_limit_001",
+        "vf_dataset_ownership_positive_001"
+      ],
+      "never_scored_test_ids": []
+    },
+    "nested": {
+      "transcript": "transcript_nested.jsonl",
+      "runs": 30,
+      "cases": 10,
+      "scored_runs": 23,
+      "provider_failures": 7,
+      "provider_error_codes": [
+        "40009"
+      ],
+      "model_response_failures": 0,
+      "run_pass_rate": 0.6087,
+      "cases_with_at_least_one_scored_run": 10,
+      "case_pass_rate_all_scored_repeats": 0.4,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.7246,
+      "latency_ms_mean": 5401.1,
+      "latency_ms_max": 7750.8,
+      "stable_pass_test_ids": [
+        "vf_condition_on_period_field_001",
+        "vf_dataset_ownership_absent_001",
+        "vf_dataset_ownership_positive_001",
+        "vf_forward_default_rate_unresolved_001"
+      ],
+      "stable_fail_test_ids": [
+        "vf_multi_target_bond_fund_001"
+      ],
+      "order_sensitive_test_ids": [
+        "vf_comparison_on_fee_001",
+        "vf_condition_with_ascending_limit_001",
+        "vf_relationship_lookthrough_forward_001",
+        "vf_relationship_with_metric_ranking_001",
+        "vf_requirements_three_with_condition_001"
+      ],
+      "never_scored_test_ids": []
+    }
+  }
+}

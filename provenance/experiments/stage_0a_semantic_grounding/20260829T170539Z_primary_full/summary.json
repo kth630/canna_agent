@@ -1,0 +1,79 @@
+{
+  "stage": "0-A",
+  "split": "primary",
+  "fixture_file": "tests\\fixtures\\semantic_grounding.jsonl",
+  "catalog_file": "tests\\fixtures\\semantic_probe_catalog.json",
+  "case_count": 13,
+  "started_utc": "20260829T170539Z",
+  "encodings": {
+    "delimited": {
+      "cases": 13,
+      "provider_failures": 0,
+      "provider_error_codes": [],
+      "model_response_failures": 0,
+      "scored_cases": 13,
+      "case_pass_rate": 0.0769,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.0769,
+      "mean_requirement_precision": 0.0769,
+      "latency_ms_mean": 4703.7,
+      "latency_ms_max": 12030.2,
+      "request_bytes_mean": 1989.7,
+      "failed_test_ids": [
+        "sg_absent_metric_on_relation_001",
+        "sg_comparison_two_entities_001",
+        "sg_field_fee_neighbor_001",
+        "sg_field_meaning_neighbor_001",
+        "sg_field_period_neighbor_001",
+        "sg_multi_target_two_requirements_001",
+        "sg_nested_reuse_001",
+        "sg_partial_unresolved_mix_001",
+        "sg_relationship_product_to_security_001",
+        "sg_relationship_security_to_product_001",
+        "sg_requirements_three_001",
+        "sg_requirements_two_001"
+      ]
+    },
+    "grouped_flat": {
+      "cases": 13,
+      "provider_failures": 0,
+      "provider_error_codes": [],
+      "model_response_failures": 0,
+      "scored_cases": 13,
+      "case_pass_rate": 0.6154,
+      "ref_integrity_rate": 0.8462,
+      "mean_requirement_recall": 0.6923,
+      "mean_requirement_precision": 0.6218,
+      "latency_ms_mean": 5334.8,
+      "latency_ms_max": 7601.4,
+      "request_bytes_mean": 2137.7,
+      "failed_test_ids": [
+        "sg_absent_field_unresolved_001",
+        "sg_absent_metric_on_relation_001",
+        "sg_multi_target_two_requirements_001",
+        "sg_partial_unresolved_mix_001",
+        "sg_relationship_product_to_security_001"
+      ]
+    },
+    "nested": {
+      "cases": 13,
+      "provider_failures": 0,
+      "provider_error_codes": [],
+      "model_response_failures": 0,
+      "scored_cases": 13,
+      "case_pass_rate": 0.6923,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.7821,
+      "mean_requirement_precision": 0.8077,
+      "latency_ms_mean": 4769.2,
+      "latency_ms_max": 6739.7,
+      "request_bytes_mean": 2090.7,
+      "failed_test_ids": [
+        "sg_absent_metric_on_relation_001",
+        "sg_comparison_two_entities_001",
+        "sg_multi_target_two_requirements_001",
+        "sg_requirements_three_001"
+      ]
+    }
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "stage": "0-A",
+  "split": "regression",
+  "fixture_file": "tests\\fixtures\\semantic_grounding_regression.jsonl",
+  "catalog_file": "tests\\fixtures\\semantic_probe_catalog.json",
+  "case_count": 8,
+  "repeats": 3,
+  "order_seed_base": 20260830,
+  "order_rule": "repeat 0 uses the authored order; later repeats shuffle with (base_seed * 1000003 + crc32(test_id) + repeat_index) % 2**31",
+  "started_utc": "20260829T180227Z",
+  "encodings": {
+    "delimited": {
+      "runs": 24,
+      "cases": 8,
+      "repeats_per_case": 3.0,
+      "provider_failures": 1,
+      "provider_error_codes": [
+        "40009"
+      ],
+      "model_response_failures": 0,
+      "scored_runs": 23,
+      "run_pass_rate": 0.0,
+      "case_pass_rate_all_repeats": 0.0,
+      "ref_integrity_rate": 0.5652,
+      "mean_requirement_recall": 0.087,
+      "mean_requirement_precision": 0.087,
+      "latency_ms_mean": 4639.0,
+      "latency_ms_max": 10166.2,
+      "request_bytes_mean": 2147.0,
+      "stable_pass_test_ids": [],
+      "stable_fail_test_ids": [
+        "ho_bond_neighbor_flip_001",
+        "ho_cross_dataset_absent_001",
+        "ho_entity_preferred_share_001",
+        "ho_field_fee_flip_001",
+        "ho_forward_looking_unresolved_001",
+        "ho_paraphrase_period_flip_001",
+        "ho_predicate_lookthrough_001",
+        "ho_requirements_four_001"
+      ],
+      "order_sensitive_test_ids": []
+    },
+    "grouped_flat": {
+      "runs": 24,
+      "cases": 8,
+      "repeats_per_case": 3.0,
+      "provider_failures": 0,
+      "provider_error_codes": [],
+      "model_response_failures": 0,
+      "scored_runs": 24,
+      "run_pass_rate": 0.0833,
+      "case_pass_rate_all_repeats": 0.0,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.1771,
+      "mean_requirement_precision": 0.1771,
+      "latency_ms_mean": 6235.0,
+      "latency_ms_max": 10789.2,
+      "request_bytes_mean": 2346.0,
+      "stable_pass_test_ids": [],
+      "stable_fail_test_ids": [
+        "ho_bond_neighbor_flip_001",
+        "ho_cross_dataset_absent_001",
+        "ho_entity_preferred_share_001",
+        "ho_forward_looking_unresolved_001",
+        "ho_paraphrase_period_flip_001",
+        "ho_predicate_lookthrough_001",
+        "ho_requirements_four_001"
+      ],
+      "order_sensitive_test_ids": [
+        "ho_field_fee_flip_001"
+      ]
+    },
+    "nested": {
+      "runs": 24,
+      "cases": 8,
+      "repeats_per_case": 3.0,
+      "provider_failures": 6,
+      "provider_error_codes": [
+        "40009"
+      ],
+      "model_response_failures": 0,
+      "scored_runs": 18,
+      "run_pass_rate": 0.0556,
+      "case_pass_rate_all_repeats": 0.0,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.2222,
+      "mean_requirement_precision": 0.2222,
+      "latency_ms_mean": 5709.4,
+      "latency_ms_max": 11300.6,
+      "request_bytes_mean": 2268.0,
+      "stable_pass_test_ids": [],
+      "stable_fail_test_ids": [
+        "ho_bond_neighbor_flip_001",
+        "ho_cross_dataset_absent_001",
+        "ho_entity_preferred_share_001",
+        "ho_forward_looking_unresolved_001",
+        "ho_paraphrase_period_flip_001",
+        "ho_predicate_lookthrough_001",
+        "ho_requirements_four_001"
+      ],
+      "order_sensitive_test_ids": [
+        "ho_field_fee_flip_001"
+      ]
+    }
+  }
+}

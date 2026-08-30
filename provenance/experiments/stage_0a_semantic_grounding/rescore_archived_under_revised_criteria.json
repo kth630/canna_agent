@@ -1,0 +1,105 @@
+{
+  "purpose": "archived stage 0-A runs re-scored under the current criteria",
+  "detail_slot_checks": "disabled — the archived wire format had no detail slots",
+  "runs": [
+    {
+      "transcript": "provenance\\experiments\\stage_0a_semantic_grounding\\20260829T171026Z_primary_final\\transcript_delimited.jsonl",
+      "records": 13,
+      "rescored": 13,
+      "passed": 5,
+      "pass_rate": 0.3846,
+      "detail_checks": false,
+      "fixtures_not_found": [],
+      "failed_test_ids": [
+        "sg_absent_field_unresolved_001",
+        "sg_absent_metric_on_relation_001",
+        "sg_comparison_two_entities_001",
+        "sg_multi_target_two_requirements_001",
+        "sg_partial_unresolved_mix_001",
+        "sg_relationship_product_to_security_001",
+        "sg_requirements_three_001",
+        "sg_requirements_two_001"
+      ]
+    },
+    {
+      "transcript": "provenance\\experiments\\stage_0a_semantic_grounding\\20260829T171026Z_primary_final\\transcript_grouped_flat.jsonl",
+      "records": 13,
+      "rescored": 12,
+      "passed": 4,
+      "pass_rate": 0.3333,
+      "detail_checks": false,
+      "fixtures_not_found": [],
+      "failed_test_ids": [
+        "sg_absent_field_unresolved_001",
+        "sg_absent_metric_on_relation_001",
+        "sg_comparison_two_entities_001",
+        "sg_multi_target_two_requirements_001",
+        "sg_partial_unresolved_mix_001",
+        "sg_relationship_security_to_product_001",
+        "sg_requirements_three_001",
+        "sg_requirements_two_001"
+      ]
+    },
+    {
+      "transcript": "provenance\\experiments\\stage_0a_semantic_grounding\\20260829T171026Z_primary_final\\transcript_nested.jsonl",
+      "records": 13,
+      "rescored": 13,
+      "passed": 7,
+      "pass_rate": 0.5385,
+      "detail_checks": false,
+      "fixtures_not_found": [],
+      "failed_test_ids": [
+        "sg_absent_field_unresolved_001",
+        "sg_absent_metric_on_relation_001",
+        "sg_comparison_two_entities_001",
+        "sg_multi_target_two_requirements_001",
+        "sg_requirements_three_001",
+        "sg_requirements_two_001"
+      ]
+    },
+    {
+      "transcript": "provenance\\experiments\\stage_0a_semantic_grounding\\20260829T171359Z_holdout_holdout1\\transcript_delimited.jsonl",
+      "records": 8,
+      "rescored": 8,
+      "passed": 4,
+      "pass_rate": 0.5,
+      "detail_checks": false,
+      "fixtures_not_found": [],
+      "failed_test_ids": [
+        "ho_cross_dataset_absent_001",
+        "ho_entity_preferred_share_001",
+        "ho_forward_looking_unresolved_001",
+        "ho_requirements_four_001"
+      ]
+    },
+    {
+      "transcript": "provenance\\experiments\\stage_0a_semantic_grounding\\20260829T171359Z_holdout_holdout1\\transcript_grouped_flat.jsonl",
+      "records": 8,
+      "rescored": 8,
+      "passed": 3,
+      "pass_rate": 0.375,
+      "detail_checks": false,
+      "fixtures_not_found": [],
+      "failed_test_ids": [
+        "ho_bond_neighbor_flip_001",
+        "ho_cross_dataset_absent_001",
+        "ho_forward_looking_unresolved_001",
+        "ho_predicate_lookthrough_001",
+        "ho_requirements_four_001"
+      ]
+    },
+    {
+      "transcript": "provenance\\experiments\\stage_0a_semantic_grounding\\20260829T171359Z_holdout_holdout1\\transcript_nested.jsonl",
+      "records": 8,
+      "rescored": 8,
+      "passed": 6,
+      "pass_rate": 0.75,
+      "detail_checks": false,
+      "fixtures_not_found": [],
+      "failed_test_ids": [
+        "ho_cross_dataset_absent_001",
+        "ho_forward_looking_unresolved_001"
+      ]
+    }
+  ]
+}

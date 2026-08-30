@@ -1,0 +1,116 @@
+{
+  "stage": "0-A",
+  "split": "verification",
+  "fixture_file": "tests\\fixtures\\semantic_grounding_verification.jsonl",
+  "catalog_file": "tests\\fixtures\\semantic_probe_catalog.json",
+  "case_count": 10,
+  "repeats": 3,
+  "order_seed_base": 20260830,
+  "order_rule": "repeat 0 uses the authored order; later repeats shuffle with (base_seed * 1000003 + crc32(test_id) + repeat_index) % 2**31",
+  "started_utc": "20260829T183449Z",
+  "encodings": {
+    "delimited": {
+      "runs": 30,
+      "cases": 10,
+      "repeats_per_case": 3.0,
+      "provider_failures": 1,
+      "provider_error_codes": [
+        "40009"
+      ],
+      "model_response_failures": 0,
+      "scored_runs": 29,
+      "run_pass_rate": 0.2069,
+      "case_pass_rate_all_repeats": 0.1,
+      "ref_integrity_rate": 0.5862,
+      "mean_requirement_recall": 0.2069,
+      "mean_requirement_precision": 0.2069,
+      "latency_ms_mean": 4519.8,
+      "latency_ms_max": 7055.8,
+      "request_bytes_mean": 2247.8,
+      "stable_pass_test_ids": [
+        "vf_condition_on_period_field_001"
+      ],
+      "stable_fail_test_ids": [
+        "vf_condition_with_ascending_limit_001",
+        "vf_dataset_ownership_positive_001",
+        "vf_forward_default_rate_unresolved_001",
+        "vf_multi_target_bond_fund_001",
+        "vf_relationship_with_metric_ranking_001",
+        "vf_requirements_three_with_condition_001"
+      ],
+      "order_sensitive_test_ids": [
+        "vf_comparison_on_fee_001",
+        "vf_dataset_ownership_absent_001",
+        "vf_relationship_lookthrough_forward_001"
+      ]
+    },
+    "grouped_flat": {
+      "runs": 30,
+      "cases": 10,
+      "repeats_per_case": 3.0,
+      "provider_failures": 0,
+      "provider_error_codes": [],
+      "model_response_failures": 0,
+      "scored_runs": 30,
+      "run_pass_rate": 0.5,
+      "case_pass_rate_all_repeats": 0.3,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.6222,
+      "mean_requirement_precision": 0.6333,
+      "latency_ms_mean": 6148.4,
+      "latency_ms_max": 9360.4,
+      "request_bytes_mean": 2446.8,
+      "stable_pass_test_ids": [
+        "vf_forward_default_rate_unresolved_001",
+        "vf_multi_target_bond_fund_001",
+        "vf_relationship_lookthrough_forward_001"
+      ],
+      "stable_fail_test_ids": [
+        "vf_dataset_ownership_absent_001",
+        "vf_relationship_with_metric_ranking_001",
+        "vf_requirements_three_with_condition_001"
+      ],
+      "order_sensitive_test_ids": [
+        "vf_comparison_on_fee_001",
+        "vf_condition_on_period_field_001",
+        "vf_condition_with_ascending_limit_001",
+        "vf_dataset_ownership_positive_001"
+      ]
+    },
+    "nested": {
+      "runs": 30,
+      "cases": 10,
+      "repeats_per_case": 3.0,
+      "provider_failures": 7,
+      "provider_error_codes": [
+        "40009"
+      ],
+      "model_response_failures": 0,
+      "scored_runs": 23,
+      "run_pass_rate": 0.6087,
+      "case_pass_rate_all_repeats": 0.2,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.7246,
+      "mean_requirement_precision": 0.7391,
+      "latency_ms_mean": 5401.1,
+      "latency_ms_max": 7750.8,
+      "request_bytes_mean": 2368.8,
+      "stable_pass_test_ids": [
+        "vf_dataset_ownership_absent_001",
+        "vf_forward_default_rate_unresolved_001"
+      ],
+      "stable_fail_test_ids": [
+        "vf_multi_target_bond_fund_001"
+      ],
+      "order_sensitive_test_ids": [
+        "vf_comparison_on_fee_001",
+        "vf_condition_on_period_field_001",
+        "vf_condition_with_ascending_limit_001",
+        "vf_dataset_ownership_positive_001",
+        "vf_relationship_lookthrough_forward_001",
+        "vf_relationship_with_metric_ranking_001",
+        "vf_requirements_three_with_condition_001"
+      ]
+    }
+  }
+}

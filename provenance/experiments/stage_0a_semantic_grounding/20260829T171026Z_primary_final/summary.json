@@ -1,0 +1,76 @@
+{
+  "stage": "0-A",
+  "split": "primary",
+  "fixture_file": "tests\\fixtures\\semantic_grounding.jsonl",
+  "catalog_file": "tests\\fixtures\\semantic_probe_catalog.json",
+  "case_count": 13,
+  "started_utc": "20260829T171026Z",
+  "encodings": {
+    "delimited": {
+      "cases": 13,
+      "provider_failures": 0,
+      "provider_error_codes": [],
+      "model_response_failures": 0,
+      "scored_cases": 13,
+      "case_pass_rate": 0.3846,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.5,
+      "mean_requirement_precision": 0.5769,
+      "latency_ms_mean": 5314.8,
+      "latency_ms_max": 13802.4,
+      "request_bytes_mean": 1979.7,
+      "failed_test_ids": [
+        "sg_absent_field_unresolved_001",
+        "sg_absent_metric_on_relation_001",
+        "sg_comparison_two_entities_001",
+        "sg_multi_target_two_requirements_001",
+        "sg_partial_unresolved_mix_001",
+        "sg_relationship_product_to_security_001",
+        "sg_requirements_three_001",
+        "sg_requirements_two_001"
+      ]
+    },
+    "grouped_flat": {
+      "cases": 13,
+      "provider_failures": 1,
+      "provider_error_codes": [
+        "40009"
+      ],
+      "model_response_failures": 0,
+      "scored_cases": 12,
+      "case_pass_rate": 0.6667,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.7083,
+      "mean_requirement_precision": 0.5833,
+      "latency_ms_mean": 5505.8,
+      "latency_ms_max": 7653.4,
+      "request_bytes_mean": 2137.7,
+      "failed_test_ids": [
+        "sg_absent_metric_on_relation_001",
+        "sg_multi_target_two_requirements_001",
+        "sg_partial_unresolved_mix_001",
+        "sg_relationship_product_to_security_001",
+        "sg_relationship_security_to_product_001"
+      ]
+    },
+    "nested": {
+      "cases": 13,
+      "provider_failures": 0,
+      "provider_error_codes": [],
+      "model_response_failures": 0,
+      "scored_cases": 13,
+      "case_pass_rate": 0.7692,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.8077,
+      "mean_requirement_precision": 0.7885,
+      "latency_ms_mean": 4724.2,
+      "latency_ms_max": 6610.1,
+      "request_bytes_mean": 2090.7,
+      "failed_test_ids": [
+        "sg_absent_metric_on_relation_001",
+        "sg_comparison_two_entities_001",
+        "sg_multi_target_two_requirements_001"
+      ]
+    }
+  }
+}

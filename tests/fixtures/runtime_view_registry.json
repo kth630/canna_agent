@@ -1,0 +1,546 @@
+{
+  "registry_id": "runtime_view_synthetic_v1",
+  "authority": "non_authoritative_synthetic",
+  "purpose": "stage 1-A only: the single source of truth for candidate semantics used by the Runtime View retrieval experiment",
+  "notes": [
+    "Every label, meaning, surface form, entity, universe count and as-of date below is synthetic. None of it describes official Canna data.",
+    "semantic_id is a stable server-side identifier. It is never sent to the model; the model only ever sees a per-request opaque ref.",
+    "Retrieval code must not contain any alias, field name, predicate name or dataset binding. All of them live in this file.",
+    "capability_coverage partitions every declared capability into supported or unsupported for each product family, so an unsupported capability is explicit rather than a silently missing candidate.",
+    "neighbor_group, label homonymy, predicate_group and dataset ownership are the only structural links retrieval is allowed to follow."
+  ],
+  "retrieval_policy": {
+    "candidate_budget": 24,
+    "normalization": {
+      "casefold": true,
+      "strip_characters": " \t\n·,.()[]/-"
+    },
+    "neighbor_rules": [
+      "same_neighbor_group",
+      "cross_family_homonym",
+      "predicate_sibling"
+    ]
+  },
+  "capabilities": [
+    {
+      "capability_id": "cap.metric_filter",
+      "label": "수치 조건 필터",
+      "meaning": "상품 지표에 비교 조건을 걸어 대상을 선별한다",
+      "surface_forms": []
+    },
+    {
+      "capability_id": "cap.metric_ranking",
+      "label": "수치 정렬과 상위 선택",
+      "meaning": "상품 지표로 정렬해 상위 또는 하위 집합을 만든다",
+      "surface_forms": []
+    },
+    {
+      "capability_id": "cap.metric_aggregation",
+      "label": "수치 집계",
+      "meaning": "선별된 집합의 개수, 합계, 평균, 최대, 최소를 계산한다",
+      "surface_forms": []
+    },
+    {
+      "capability_id": "cap.direct_holding_lookup",
+      "label": "직접 보유 관계 조회",
+      "meaning": "상품 포트폴리오가 직접 보유한 종목 관계를 양방향으로 조회한다",
+      "surface_forms": ["직접 보유", "직접 편입", "구성종목"]
+    },
+    {
+      "capability_id": "cap.lookthrough_exposure_lookup",
+      "label": "간접 노출 관계 조회",
+      "meaning": "다른 상품을 거쳐 형성된 최종 종목 노출을 조회한다",
+      "surface_forms": ["간접 노출", "간접 보유", "룩스루"]
+    },
+    {
+      "capability_id": "cap.holding_weight_ranking",
+      "label": "보유 비중 정렬",
+      "meaning": "포트폴리오 편입 비중으로 종목을 정렬한다",
+      "surface_forms": ["편입 비중", "보유 비중", "비중 상위"]
+    },
+    {
+      "capability_id": "cap.forward_looking_projection",
+      "label": "미래 지표 전망",
+      "meaning": "장래의 수익률, 부도율 또는 가격을 예측한다",
+      "surface_forms": ["예상 수익률", "향후 수익률", "예상 부도율", "전망"]
+    },
+    {
+      "capability_id": "cap.esg_assessment",
+      "label": "ESG 평가",
+      "meaning": "상품 또는 종목의 ESG 등급을 평가한다",
+      "surface_forms": ["esg 등급", "esg 평가"]
+    }
+  ],
+  "datasets": [
+    {
+      "semantic_id": "ds.domestic_bond",
+      "label": "국내채권",
+      "meaning": "국내에서 발행된 채권 상품군",
+      "grain": "product",
+      "surface_forms": ["국내채권", "국내 채권", "원화채권"],
+      "capability_coverage": {
+        "coverage_grain": "product",
+        "observed_universe": {"observed_products": 180, "universe_products": 180, "basis": "synthetic"},
+        "freshness": {"requested_as_of": "2026-08-24", "effective_as_of": "2026-08-22", "as_of_status": "effective_confirmed", "basis": "synthetic"},
+        "supported": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"],
+        "unsupported": ["cap.direct_holding_lookup", "cap.lookthrough_exposure_lookup", "cap.holding_weight_ranking", "cap.forward_looking_projection", "cap.esg_assessment"]
+      }
+    },
+    {
+      "semantic_id": "ds.domestic_etf",
+      "label": "국내 ETF",
+      "meaning": "국내 시장에 상장된 ETF 상품군",
+      "grain": "product",
+      "surface_forms": ["국내 etf", "국내상장 etf", "국내 상장 etf"],
+      "capability_coverage": {
+        "coverage_grain": "product",
+        "observed_universe": {"observed_products": 120, "universe_products": 140, "basis": "synthetic"},
+        "freshness": {"requested_as_of": "2026-08-24", "effective_as_of": "2026-08-21", "as_of_status": "requested_not_confirmed", "basis": "synthetic"},
+        "supported": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation", "cap.direct_holding_lookup"],
+        "unsupported": ["cap.lookthrough_exposure_lookup", "cap.holding_weight_ranking", "cap.forward_looking_projection", "cap.esg_assessment"]
+      }
+    },
+    {
+      "semantic_id": "ds.overseas_etf",
+      "label": "해외 ETF",
+      "meaning": "해외 시장에 상장된 ETF 상품군",
+      "grain": "product",
+      "surface_forms": ["해외 etf", "해외상장 etf", "해외 상장 etf"],
+      "capability_coverage": {
+        "coverage_grain": "product",
+        "observed_universe": {"observed_products": 210, "universe_products": 210, "basis": "synthetic"},
+        "freshness": {"requested_as_of": "2026-08-24", "effective_as_of": "2026-08-23", "as_of_status": "effective_confirmed", "basis": "synthetic"},
+        "supported": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"],
+        "unsupported": ["cap.direct_holding_lookup", "cap.lookthrough_exposure_lookup", "cap.holding_weight_ranking", "cap.forward_looking_projection", "cap.esg_assessment"]
+      }
+    },
+    {
+      "semantic_id": "ds.public_fund",
+      "label": "공모펀드",
+      "meaning": "공모 방식으로 판매되는 펀드 상품군",
+      "grain": "product_class",
+      "surface_forms": ["공모펀드", "공모 펀드"],
+      "capability_coverage": {
+        "coverage_grain": "product_class",
+        "observed_universe": {"observed_products": 90, "universe_products": 260, "basis": "synthetic"},
+        "freshness": {"requested_as_of": "2026-08-24", "effective_as_of": "2026-06-30", "as_of_status": "stale_snapshot", "basis": "synthetic"},
+        "supported": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation", "cap.direct_holding_lookup", "cap.lookthrough_exposure_lookup"],
+        "unsupported": ["cap.holding_weight_ranking", "cap.forward_looking_projection", "cap.esg_assessment"]
+      }
+    }
+  ],
+  "fields": [
+    {
+      "semantic_id": "f.etf_kr.return_1m",
+      "dataset_id": "ds.domestic_etf",
+      "label": "1개월 수익률",
+      "meaning": "최근 1개월 기준가 수익률",
+      "period": "1M", "unit": "percent", "currency": "KRW", "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "etf_kr.return_series",
+      "surface_forms": ["1개월 수익률", "최근 1개월 수익률"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.etf_kr.return_3m",
+      "dataset_id": "ds.domestic_etf",
+      "label": "3개월 수익률",
+      "meaning": "최근 3개월 기준가 수익률",
+      "period": "3M", "unit": "percent", "currency": "KRW", "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "etf_kr.return_series",
+      "surface_forms": ["3개월 수익률", "최근 3개월 수익률"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.etf_kr.return_1y",
+      "dataset_id": "ds.domestic_etf",
+      "label": "1년 수익률",
+      "meaning": "최근 1년 기준가 수익률",
+      "period": "1Y", "unit": "percent", "currency": "KRW", "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "etf_kr.return_series",
+      "surface_forms": ["1년 수익률", "1년간 수익률", "최근 1년 수익률"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.etf_kr.return_3y",
+      "dataset_id": "ds.domestic_etf",
+      "label": "3년 수익률",
+      "meaning": "최근 3년 기준가 수익률",
+      "period": "3Y", "unit": "percent", "currency": "KRW", "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "etf_kr.return_series",
+      "surface_forms": ["3년 수익률", "최근 3년 수익률"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.etf_kr.net_assets",
+      "dataset_id": "ds.domestic_etf",
+      "label": "순자산총액",
+      "meaning": "설정 좌수 기준 순자산의 합계",
+      "period": null, "unit": "currency_amount", "currency": "KRW", "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "etf_kr.size_series",
+      "surface_forms": ["순자산총액", "순자산"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.etf_kr.market_cap",
+      "dataset_id": "ds.domestic_etf",
+      "label": "시가총액",
+      "meaning": "시장 종가와 상장 좌수의 곱",
+      "period": null, "unit": "currency_amount", "currency": "KRW", "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "etf_kr.size_series",
+      "surface_forms": ["시가총액"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.etf_kr.total_expense_ratio",
+      "dataset_id": "ds.domestic_etf",
+      "label": "총보수",
+      "meaning": "연간 총보수 비율",
+      "period": "1Y", "unit": "percent", "currency": "KRW", "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "etf_kr.cost_series",
+      "surface_forms": ["총보수", "보수율"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.etf_kr.tracking_error",
+      "dataset_id": "ds.domestic_etf",
+      "label": "추적오차",
+      "meaning": "기초지수 대비 추적오차",
+      "period": "1Y", "unit": "percent", "currency": "KRW", "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "etf_kr.cost_series",
+      "surface_forms": ["추적오차"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.etf_kr.product_name",
+      "dataset_id": "ds.domestic_etf",
+      "label": "상품명",
+      "meaning": "상품의 표시 이름",
+      "period": null, "unit": null, "currency": null, "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "output"],
+      "neighbor_group": "etf_kr.identity_series",
+      "surface_forms": ["상품명", "상품 이름"],
+      "capability_ids": ["cap.metric_filter"]
+    },
+    {
+      "semantic_id": "f.etf_kr.listing_status",
+      "dataset_id": "ds.domestic_etf",
+      "label": "상장상태",
+      "meaning": "상장 유지 또는 상장폐지 상태",
+      "period": null, "unit": null, "currency": null, "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "output"],
+      "neighbor_group": "etf_kr.identity_series",
+      "surface_forms": ["상장상태", "상장 여부"],
+      "capability_ids": ["cap.metric_filter"]
+    },
+    {
+      "semantic_id": "f.etf_gl.return_3m",
+      "dataset_id": "ds.overseas_etf",
+      "label": "3개월 수익률",
+      "meaning": "최근 3개월 기준가 수익률",
+      "period": "3M", "unit": "percent", "currency": "USD", "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "etf_gl.return_series",
+      "surface_forms": ["3개월 수익률", "최근 3개월 수익률"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.etf_gl.return_1y",
+      "dataset_id": "ds.overseas_etf",
+      "label": "1년 수익률",
+      "meaning": "최근 1년 기준가 수익률",
+      "period": "1Y", "unit": "percent", "currency": "USD", "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "etf_gl.return_series",
+      "surface_forms": ["1년 수익률", "1년간 수익률", "최근 1년 수익률"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.etf_gl.net_assets",
+      "dataset_id": "ds.overseas_etf",
+      "label": "순자산총액",
+      "meaning": "설정 좌수 기준 순자산의 합계",
+      "period": null, "unit": "currency_amount", "currency": "USD", "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "etf_gl.size_series",
+      "surface_forms": ["순자산총액", "순자산"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.etf_gl.expense_ratio",
+      "dataset_id": "ds.overseas_etf",
+      "label": "총보수",
+      "meaning": "연간 총보수 비율",
+      "period": "1Y", "unit": "percent", "currency": "USD", "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "etf_gl.cost_series",
+      "surface_forms": ["총보수", "보수율"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.etf_gl.product_name",
+      "dataset_id": "ds.overseas_etf",
+      "label": "상품명",
+      "meaning": "상품의 표시 이름",
+      "period": null, "unit": null, "currency": null, "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "output"],
+      "neighbor_group": "etf_gl.identity_series",
+      "surface_forms": ["상품명", "상품 이름"],
+      "capability_ids": ["cap.metric_filter"]
+    },
+    {
+      "semantic_id": "f.fund_pub.return_1y",
+      "dataset_id": "ds.public_fund",
+      "label": "1년 수익률",
+      "meaning": "최근 1년 기준가 수익률",
+      "period": "1Y", "unit": "percent", "currency": "KRW", "grain": "product_class", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "fund_pub.return_series",
+      "surface_forms": ["1년 수익률", "1년간 수익률", "최근 1년 수익률"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.fund_pub.return_3y",
+      "dataset_id": "ds.public_fund",
+      "label": "3년 수익률",
+      "meaning": "최근 3년 기준가 수익률",
+      "period": "3Y", "unit": "percent", "currency": "KRW", "grain": "product_class", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "fund_pub.return_series",
+      "surface_forms": ["3년 수익률", "최근 3년 수익률"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.fund_pub.net_assets",
+      "dataset_id": "ds.public_fund",
+      "label": "순자산총액",
+      "meaning": "클래스 기준 순자산의 합계",
+      "period": null, "unit": "currency_amount", "currency": "KRW", "grain": "product_class", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "fund_pub.size_series",
+      "surface_forms": ["순자산총액", "순자산"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.fund_pub.total_expense_ratio",
+      "dataset_id": "ds.public_fund",
+      "label": "총보수",
+      "meaning": "연간 총보수 비율",
+      "period": "1Y", "unit": "percent", "currency": "KRW", "grain": "product_class", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "fund_pub.cost_series",
+      "surface_forms": ["총보수", "보수율"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.fund_pub.product_name",
+      "dataset_id": "ds.public_fund",
+      "label": "상품명",
+      "meaning": "상품의 표시 이름",
+      "period": null, "unit": null, "currency": null, "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "output"],
+      "neighbor_group": "fund_pub.identity_series",
+      "surface_forms": ["상품명", "상품 이름"],
+      "capability_ids": ["cap.metric_filter"]
+    },
+    {
+      "semantic_id": "f.fund_pub.class_name",
+      "dataset_id": "ds.public_fund",
+      "label": "클래스명",
+      "meaning": "같은 상품 안의 판매 클래스 이름",
+      "period": null, "unit": null, "currency": null, "grain": "product_class", "source": "official_table",
+      "allowed_operations": ["filter", "output"],
+      "neighbor_group": "fund_pub.identity_series",
+      "surface_forms": ["클래스명", "클래스 이름"],
+      "capability_ids": ["cap.metric_filter"]
+    },
+    {
+      "semantic_id": "f.bond_kr.ytm",
+      "dataset_id": "ds.domestic_bond",
+      "label": "만기수익률",
+      "meaning": "만기까지 보유할 때의 연 환산 수익률",
+      "period": "to_maturity", "unit": "percent", "currency": "KRW", "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "bond_kr.yield_series",
+      "surface_forms": ["만기수익률", "만기 수익률", "ytm"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.bond_kr.coupon_rate",
+      "dataset_id": "ds.domestic_bond",
+      "label": "표면금리",
+      "meaning": "액면에 대해 지급되는 연 이자율",
+      "period": "annual", "unit": "percent", "currency": "KRW", "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "bond_kr.yield_series",
+      "surface_forms": ["표면금리", "표면 금리", "쿠폰금리"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.bond_kr.maturity_date",
+      "dataset_id": "ds.domestic_bond",
+      "label": "만기일",
+      "meaning": "원금 상환 예정일",
+      "period": null, "unit": "date", "currency": null, "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "output"],
+      "neighbor_group": "bond_kr.term_series",
+      "surface_forms": ["만기일", "만기 일자"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking"]
+    },
+    {
+      "semantic_id": "f.bond_kr.credit_rating",
+      "dataset_id": "ds.domestic_bond",
+      "label": "신용등급",
+      "meaning": "발행 채권에 부여된 신용등급",
+      "period": null, "unit": null, "currency": null, "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "output"],
+      "neighbor_group": "bond_kr.credit_series",
+      "surface_forms": ["신용등급", "신용 등급"],
+      "capability_ids": ["cap.metric_filter"]
+    },
+    {
+      "semantic_id": "f.bond_kr.issue_amount",
+      "dataset_id": "ds.domestic_bond",
+      "label": "발행금액",
+      "meaning": "발행 시점의 총 발행 금액",
+      "period": null, "unit": "currency_amount", "currency": "KRW", "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "sort", "aggregate", "output"],
+      "neighbor_group": "bond_kr.size_series",
+      "surface_forms": ["발행금액", "발행 금액"],
+      "capability_ids": ["cap.metric_filter", "cap.metric_ranking", "cap.metric_aggregation"]
+    },
+    {
+      "semantic_id": "f.bond_kr.product_name",
+      "dataset_id": "ds.domestic_bond",
+      "label": "상품명",
+      "meaning": "채권의 표시 이름",
+      "period": null, "unit": null, "currency": null, "grain": "product", "source": "official_table",
+      "allowed_operations": ["filter", "output"],
+      "neighbor_group": "bond_kr.identity_series",
+      "surface_forms": ["상품명", "상품 이름"],
+      "capability_ids": ["cap.metric_filter"]
+    }
+  ],
+  "predicates": [
+    {
+      "semantic_id": "p.directly_holds_security",
+      "label": "직접 보유",
+      "meaning": "상품의 포트폴리오가 해당 종목을 직접 보유한다",
+      "domain": "product", "range": "security",
+      "subject_role": "보유하는 상품", "object_role": "보유되는 종목",
+      "relation_mode": "direct",
+      "grain": "portfolio_observation",
+      "source": "collected_holdings",
+      "predicate_group": "holding_relation",
+      "dataset_scope": ["ds.domestic_etf", "ds.public_fund"],
+      "evidence_requirements": ["effective_as_of", "source_record_id", "identifier_scheme"],
+      "surface_forms": ["직접 보유", "직접 편입", "보유한", "보유하고 있는", "편입한", "구성종목"],
+      "capability_ids": ["cap.direct_holding_lookup"]
+    },
+    {
+      "semantic_id": "p.lookthrough_exposure_to_security",
+      "label": "간접 노출",
+      "meaning": "상품이 다른 상품을 거쳐 해당 종목에 최종 노출된다",
+      "domain": "product", "range": "security",
+      "subject_role": "노출된 상품", "object_role": "노출 대상 종목",
+      "relation_mode": "look_through",
+      "grain": "portfolio_observation",
+      "source": "collected_holdings",
+      "predicate_group": "holding_relation",
+      "dataset_scope": ["ds.public_fund"],
+      "evidence_requirements": ["effective_as_of", "source_record_id", "identifier_scheme", "intermediate_product_id"],
+      "surface_forms": ["간접 노출", "간접 보유", "최종 노출", "룩스루"],
+      "capability_ids": ["cap.lookthrough_exposure_lookup"]
+    },
+    {
+      "semantic_id": "p.class_maps_to_portfolio",
+      "label": "클래스-포트폴리오 매핑",
+      "meaning": "판매 클래스가 실제 운용 포트폴리오에 대응한다",
+      "domain": "product_class", "range": "portfolio",
+      "subject_role": "판매 클래스", "object_role": "운용 포트폴리오",
+      "relation_mode": "mapping",
+      "grain": "product_class",
+      "source": "collected_holdings",
+      "predicate_group": "mapping_relation",
+      "dataset_scope": ["ds.public_fund"],
+      "evidence_requirements": ["source_record_id"],
+      "surface_forms": ["운용 포트폴리오", "포트폴리오 매핑"],
+      "capability_ids": ["cap.direct_holding_lookup", "cap.lookthrough_exposure_lookup"]
+    }
+  ],
+  "entities": [
+    {
+      "semantic_id": "e.security_alpha_common",
+      "label": "합성종목알파 보통주",
+      "meaning": "합성 종목. 알파 발행사의 보통주",
+      "entity_type": "security",
+      "identifier_scheme": "synthetic_krx",
+      "grain": "security",
+      "dataset_id": null,
+      "neighbor_group": "security.alpha_family",
+      "surface_forms": ["합성종목알파 보통주"]
+    },
+    {
+      "semantic_id": "e.security_alpha_preferred",
+      "label": "합성종목알파 우선주",
+      "meaning": "합성 종목. 알파 발행사의 배당 우선주",
+      "entity_type": "security",
+      "identifier_scheme": "synthetic_krx",
+      "grain": "security",
+      "dataset_id": null,
+      "neighbor_group": "security.alpha_family",
+      "surface_forms": ["합성종목알파 우선주"]
+    },
+    {
+      "semantic_id": "e.security_beta",
+      "label": "합성종목베타",
+      "meaning": "합성 종목. 베타 발행사의 보통주",
+      "entity_type": "security",
+      "identifier_scheme": "synthetic_krx",
+      "grain": "security",
+      "dataset_id": null,
+      "neighbor_group": "security.beta_family",
+      "surface_forms": ["합성종목베타"]
+    },
+    {
+      "semantic_id": "e.product_index_etf",
+      "label": "합성지수복제 ETF",
+      "meaning": "합성 상품. 기초지수를 현물로 복제하는 ETF",
+      "entity_type": "product",
+      "identifier_scheme": "synthetic_product",
+      "grain": "product",
+      "dataset_id": "ds.domestic_etf",
+      "neighbor_group": "product.replication_family",
+      "surface_forms": ["합성지수복제 etf", "합성지수복제"]
+    },
+    {
+      "semantic_id": "e.product_futures_etf",
+      "label": "합성선물복제 ETF",
+      "meaning": "합성 상품. 같은 기초지수를 선물로 복제하는 ETF",
+      "entity_type": "product",
+      "identifier_scheme": "synthetic_product",
+      "grain": "product",
+      "dataset_id": "ds.domestic_etf",
+      "neighbor_group": "product.replication_family",
+      "surface_forms": ["합성선물복제 etf", "합성선물복제"]
+    },
+    {
+      "semantic_id": "e.product_growth_fund",
+      "label": "합성성장형 공모펀드",
+      "meaning": "합성 상품. 성장주 중심의 공모펀드",
+      "entity_type": "product_class",
+      "identifier_scheme": "synthetic_product",
+      "grain": "product_class",
+      "dataset_id": "ds.public_fund",
+      "neighbor_group": "product.growth_family",
+      "surface_forms": ["합성성장형 공모펀드", "합성성장형"]
+    }
+  ]
+}

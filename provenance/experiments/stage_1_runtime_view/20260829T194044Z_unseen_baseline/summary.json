@@ -1,0 +1,190 @@
+{
+  "run": {
+    "started_utc": "2026-08-29T19:40:44+00:00",
+    "split": "unseen",
+    "label": "baseline",
+    "fixtures": "tests/fixtures/runtime_view_probe_unseen.jsonl",
+    "registry": "tests/fixtures/runtime_view_registry.json",
+    "registry_id": "runtime_view_synthetic_v1",
+    "registry_authority": "non_authoritative_synthetic",
+    "repeats": 3,
+    "candidate_budget_default": 24,
+    "neighbor_rules": [
+      "same_neighbor_group",
+      "cross_family_homonym",
+      "predicate_sibling"
+    ]
+  },
+  "determinism": {
+    "cases_with_stable_order": 7,
+    "cases": 7,
+    "refs_never_reused_across_requests": true
+  },
+  "results": {
+    "cases": 7,
+    "recall": {
+      "questions": 7,
+      "required_candidates": 20,
+      "retrieved_candidates": 20,
+      "micro_recall": 1.0,
+      "questions_with_complete_recall": 7,
+      "per_family_recall": {
+        "__unscoped__": 1.0,
+        "ds.domestic_bond": 1.0,
+        "ds.domestic_etf": 1.0,
+        "ds.overseas_etf": 1.0,
+        "ds.public_fund": 1.0
+      },
+      "per_family_required": {
+        "__unscoped__": 2,
+        "ds.domestic_bond": 4,
+        "ds.domestic_etf": 8,
+        "ds.overseas_etf": 1,
+        "ds.public_fund": 7
+      }
+    },
+    "neighbor_recall": {
+      "required": 10,
+      "missing": 0
+    },
+    "executable_cases": 5,
+    "failure_kind_counts": {
+      "capability_unsupported": 2,
+      "no_dataset_match": 1
+    },
+    "candidate_count": {
+      "min": 1,
+      "median": 6,
+      "max": 21,
+      "mean": 7.429
+    },
+    "serialized_bytes": {
+      "min": 300,
+      "median": 2975,
+      "max": 7786,
+      "mean": 3089.143
+    },
+    "total_latency_ms": {
+      "min": 0.466,
+      "median": 1.029,
+      "max": 3.697,
+      "mean": 1.313
+    }
+  },
+  "per_case": {
+    "rv_unseen_bond_neighbor_001": {
+      "question_recall": 1.0,
+      "per_family_recall": {
+        "ds.domestic_bond": 1.0
+      },
+      "missing_required": [],
+      "neighbors_missing": [],
+      "status": "complete",
+      "executable": true,
+      "failure_kinds": [],
+      "candidate_count": 5,
+      "serialized_bytes": 1893,
+      "total_latency_ms": 1.029,
+      "order_stable_across_repeats": true
+    },
+    "rv_unseen_cross_family_expense_001": {
+      "question_recall": 1.0,
+      "per_family_recall": {
+        "ds.domestic_etf": 1.0,
+        "ds.public_fund": 1.0
+      },
+      "missing_required": [],
+      "neighbors_missing": [],
+      "status": "complete",
+      "executable": true,
+      "failure_kinds": [],
+      "candidate_count": 7,
+      "serialized_bytes": 3311,
+      "total_latency_ms": 1.06,
+      "order_stable_across_repeats": true
+    },
+    "rv_unseen_direction_product_to_security_001": {
+      "question_recall": 1.0,
+      "per_family_recall": {
+        "ds.domestic_etf": 1.0,
+        "ds.public_fund": 1.0
+      },
+      "missing_required": [],
+      "neighbors_missing": [],
+      "status": "complete",
+      "executable": true,
+      "failure_kinds": [],
+      "candidate_count": 6,
+      "serialized_bytes": 2975,
+      "total_latency_ms": 0.712,
+      "order_stable_across_repeats": true
+    },
+    "rv_unseen_no_dataset_match_001": {
+      "question_recall": 1.0,
+      "per_family_recall": {
+        "__unscoped__": 1.0
+      },
+      "missing_required": [],
+      "neighbors_missing": [],
+      "status": "incomplete",
+      "executable": false,
+      "failure_kinds": [
+        "capability_unsupported",
+        "no_dataset_match"
+      ],
+      "candidate_count": 1,
+      "serialized_bytes": 300,
+      "total_latency_ms": 0.492,
+      "order_stable_across_repeats": true
+    },
+    "rv_unseen_paraphrase_return_001": {
+      "question_recall": 1.0,
+      "per_family_recall": {
+        "ds.domestic_etf": 1.0
+      },
+      "missing_required": [],
+      "neighbors_missing": [],
+      "status": "complete",
+      "executable": true,
+      "failure_kinds": [],
+      "candidate_count": 11,
+      "serialized_bytes": 4587,
+      "total_latency_ms": 1.733,
+      "order_stable_across_repeats": true
+    },
+    "rv_unseen_relationship_multi_requirement_001": {
+      "question_recall": 1.0,
+      "per_family_recall": {
+        "__unscoped__": 1.0,
+        "ds.domestic_etf": 1.0,
+        "ds.public_fund": 1.0
+      },
+      "missing_required": [],
+      "neighbors_missing": [],
+      "status": "complete",
+      "executable": true,
+      "failure_kinds": [],
+      "candidate_count": 21,
+      "serialized_bytes": 7786,
+      "total_latency_ms": 3.697,
+      "order_stable_across_repeats": true
+    },
+    "rv_unseen_unsupported_esg_001": {
+      "question_recall": 1.0,
+      "per_family_recall": {
+        "ds.overseas_etf": 1.0
+      },
+      "missing_required": [],
+      "neighbors_missing": [],
+      "status": "incomplete",
+      "executable": false,
+      "failure_kinds": [
+        "capability_unsupported"
+      ],
+      "candidate_count": 1,
+      "serialized_bytes": 772,
+      "total_latency_ms": 0.466,
+      "order_stable_across_repeats": true
+    }
+  }
+}

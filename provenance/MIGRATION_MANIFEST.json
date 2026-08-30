@@ -6,6 +6,7 @@
   "source_git_commit": "11dfd6fe340d6cf8881edc5526db5e2fe287dd5b",
   "source_worktree_was_dirty": true,
   "migration_principle": "copy verified facts and immutable inputs; rewrite contracts and rules; exclude legacy runtime decisions",
+  "file_level_audit": "provenance/MIGRATION_CHECKLIST.md",
   "immutable_local_artifacts": [
     {
       "source": "canna/data/raw/prbd01n001_data.xlsx",

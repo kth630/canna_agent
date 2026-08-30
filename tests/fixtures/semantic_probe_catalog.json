@@ -1,0 +1,442 @@
+{
+  "catalog_id": "semantic_probe_synthetic_v1",
+  "purpose": "stage 0-A falsification only: a small synthetic Runtime View whose candidates are deliberately near-identical",
+  "authority": "non_authoritative_synthetic",
+  "notes": [
+    "No candidate here describes official Canna data. Labels, entities and identifiers are invented.",
+    "catalog_key is a scoring handle owned by the harness and is never sent to the provider.",
+    "Refs are minted per request, so a fixture can only be satisfied by reading this request's view.",
+    "Absent capabilities are absent on purpose: ESG assessment, holding weight and forward-looking return have no candidate."
+  ],
+  "candidates": [
+    {
+      "catalog_key": "ds.domestic_bond",
+      "kind": "dataset",
+      "label": "국내채권",
+      "meaning": "국내에서 발행된 채권 상품군",
+      "grain": "product"
+    },
+    {
+      "catalog_key": "ds.domestic_etf",
+      "kind": "dataset",
+      "label": "국내 ETF",
+      "meaning": "국내 상장 ETF 상품군",
+      "grain": "product"
+    },
+    {
+      "catalog_key": "ds.overseas_etf",
+      "kind": "dataset",
+      "label": "해외 ETF",
+      "meaning": "해외 상장 ETF 상품군",
+      "grain": "product"
+    },
+    {
+      "catalog_key": "ds.public_fund",
+      "kind": "dataset",
+      "label": "공모펀드",
+      "meaning": "공모 방식으로 판매되는 펀드 상품군",
+      "grain": "product_class"
+    },
+    {
+      "catalog_key": "f.etf_kr.return_1m",
+      "kind": "field",
+      "dataset_key": "ds.domestic_etf",
+      "label": "1개월 수익률",
+      "meaning": "최근 1개월 기준가 수익률",
+      "period": "1M",
+      "unit": "percent",
+      "currency": "KRW",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.etf_kr.return_3m",
+      "kind": "field",
+      "dataset_key": "ds.domestic_etf",
+      "label": "3개월 수익률",
+      "meaning": "최근 3개월 기준가 수익률",
+      "period": "3M",
+      "unit": "percent",
+      "currency": "KRW",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.etf_kr.return_1y",
+      "kind": "field",
+      "dataset_key": "ds.domestic_etf",
+      "label": "1년 수익률",
+      "meaning": "최근 1년 기준가 수익률",
+      "period": "1Y",
+      "unit": "percent",
+      "currency": "KRW",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.etf_kr.return_3y",
+      "kind": "field",
+      "dataset_key": "ds.domestic_etf",
+      "label": "3년 수익률",
+      "meaning": "최근 3년 기준가 수익률",
+      "period": "3Y",
+      "unit": "percent",
+      "currency": "KRW",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.etf_kr.net_assets",
+      "kind": "field",
+      "dataset_key": "ds.domestic_etf",
+      "label": "순자산총액",
+      "meaning": "설정 좌수 기준 순자산의 합계",
+      "unit": "currency_amount",
+      "currency": "KRW",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.etf_kr.market_cap",
+      "kind": "field",
+      "dataset_key": "ds.domestic_etf",
+      "label": "시가총액",
+      "meaning": "시장 종가와 상장 좌수의 곱",
+      "unit": "currency_amount",
+      "currency": "KRW",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.etf_kr.total_expense_ratio",
+      "kind": "field",
+      "dataset_key": "ds.domestic_etf",
+      "label": "총보수",
+      "meaning": "운용·판매·수탁·사무 보수를 합한 연간 총보수",
+      "unit": "percent",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.etf_kr.management_fee_ratio",
+      "kind": "field",
+      "dataset_key": "ds.domestic_etf",
+      "label": "운용보수",
+      "meaning": "총보수 중 운용사가 수취하는 연간 보수",
+      "unit": "percent",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.etf_kr.tracking_error",
+      "kind": "field",
+      "dataset_key": "ds.domestic_etf",
+      "label": "추적오차",
+      "meaning": "기초지수 수익률과 기준가 수익률 차이의 변동성",
+      "unit": "percent",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.etf_kr.divergence_rate",
+      "kind": "field",
+      "dataset_key": "ds.domestic_etf",
+      "label": "괴리율",
+      "meaning": "시장가격과 기준가의 차이 비율",
+      "unit": "percent",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.etf_kr.product_name",
+      "kind": "field",
+      "dataset_key": "ds.domestic_etf",
+      "label": "상품명",
+      "meaning": "국내 ETF 상품의 표기명",
+      "unit": "text",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.bond_kr.remaining_days",
+      "kind": "field",
+      "dataset_key": "ds.domestic_bond",
+      "label": "잔존만기",
+      "meaning": "기준일부터 만기일까지 남은 일수",
+      "unit": "days",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.bond_kr.issue_term_days",
+      "kind": "field",
+      "dataset_key": "ds.domestic_bond",
+      "label": "발행만기",
+      "meaning": "발행일부터 만기일까지의 전체 일수",
+      "unit": "days",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.bond_kr.coupon_rate",
+      "kind": "field",
+      "dataset_key": "ds.domestic_bond",
+      "label": "표면금리",
+      "meaning": "액면에 대해 지급하기로 정한 연간 이자율",
+      "unit": "percent",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.bond_kr.yield_to_maturity",
+      "kind": "field",
+      "dataset_key": "ds.domestic_bond",
+      "label": "만기수익률",
+      "meaning": "현재 가격으로 만기까지 보유할 때의 연환산 수익률",
+      "unit": "percent",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.bond_kr.credit_rating",
+      "kind": "field",
+      "dataset_key": "ds.domestic_bond",
+      "label": "신용등급",
+      "meaning": "신용평가사가 부여한 등급 표기",
+      "unit": "ordinal_code",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "group",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.bond_kr.bond_class",
+      "kind": "field",
+      "dataset_key": "ds.domestic_bond",
+      "label": "채권종류",
+      "meaning": "발행 주체 기준의 채권 분류 표기",
+      "unit": "text_code",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "group",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.etf_gl.return_1y",
+      "kind": "field",
+      "dataset_key": "ds.overseas_etf",
+      "label": "1년 수익률",
+      "meaning": "최근 1년 기준가 수익률",
+      "period": "1Y",
+      "unit": "percent",
+      "currency": "USD",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.etf_gl.expense_ratio",
+      "kind": "field",
+      "dataset_key": "ds.overseas_etf",
+      "label": "총보수",
+      "meaning": "연간 총 운용 비용 비율",
+      "unit": "percent",
+      "grain": "product",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.fund_pub.return_1y",
+      "kind": "field",
+      "dataset_key": "ds.public_fund",
+      "label": "1년 수익률",
+      "meaning": "최근 1년 기준가 수익률",
+      "period": "1Y",
+      "unit": "percent",
+      "currency": "KRW",
+      "grain": "product_class",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "f.fund_pub.net_assets",
+      "kind": "field",
+      "dataset_key": "ds.public_fund",
+      "label": "순자산총액",
+      "meaning": "클래스 기준 순자산의 합계",
+      "unit": "currency_amount",
+      "currency": "KRW",
+      "grain": "product_class",
+      "source": "official_table",
+      "allowed_operations": [
+        "filter",
+        "sort",
+        "aggregate",
+        "output"
+      ]
+    },
+    {
+      "catalog_key": "p.directly_holds_security",
+      "kind": "predicate",
+      "label": "직접 보유",
+      "meaning": "상품의 포트폴리오가 해당 종목을 직접 보유한다",
+      "grain": "portfolio_observation",
+      "source": "collected_holdings",
+      "subject_role": "상품",
+      "object_role": "종목"
+    },
+    {
+      "catalog_key": "p.lookthrough_exposure",
+      "kind": "predicate",
+      "label": "간접 노출",
+      "meaning": "상품이 다른 상품을 거쳐 해당 종목에 노출된다",
+      "grain": "portfolio_observation",
+      "source": "collected_holdings",
+      "subject_role": "상품",
+      "object_role": "종목"
+    },
+    {
+      "catalog_key": "e.security_alpha_common",
+      "kind": "entity",
+      "label": "가온전자",
+      "meaning": "합성 종목. 보통주",
+      "identifier_scheme": "synthetic_krx",
+      "grain": "security"
+    },
+    {
+      "catalog_key": "e.security_alpha_preferred",
+      "kind": "entity",
+      "label": "가온전자우",
+      "meaning": "합성 종목. 위 보통주와 같은 발행사의 우선주",
+      "identifier_scheme": "synthetic_krx",
+      "grain": "security"
+    },
+    {
+      "catalog_key": "e.product_index_replication",
+      "kind": "entity",
+      "label": "청람 대표지수 지수형 ETF",
+      "meaning": "합성 상품. 기초지수를 현물로 복제한다",
+      "dataset_key": "ds.domestic_etf",
+      "identifier_scheme": "synthetic_product",
+      "grain": "product"
+    },
+    {
+      "catalog_key": "e.product_futures_replication",
+      "kind": "entity",
+      "label": "청람 대표지수 선물형 ETF",
+      "meaning": "합성 상품. 같은 기초지수를 선물로 복제한다",
+      "dataset_key": "ds.domestic_etf",
+      "identifier_scheme": "synthetic_product",
+      "grain": "product"
+    }
+  ]
+}

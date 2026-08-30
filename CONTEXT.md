@@ -54,6 +54,32 @@ Canna는 국내채권, 국내 ETF, 해외 ETF, 공모펀드와 검증된 외부 
   종목 외에는 구매 가능한 것으로 간주한다.
 - 외부 데이터에는 source와 기준일을 보존한다.
 
+### 2026-08-30 read-only data discovery 관측
+
+`data/official_raw/`와 `data/incoming/`을 수정하지 않고 schema, 행 수, 결측, 중복,
+식별자 후보와 날짜 범위를 조사했다. 상세 근거는
+`provenance/experiments/stage_0c_data_discovery/FINDINGS.md`에 있다.
+
+- 국내채권은 21,882개 source row와 `pd_no` 20,497개가 일치하지 않는다. 현재 파일에서
+  (`pd_no`, `pd_exg_mkt`, `info_seq`)는 source-row 식별에 사용할 수 있지만, 이를 곧바로
+  product grain이나 영구 canonical identifier로 일반화하지 않는다.
+- 국내 ETF의 현재 sentinel-active 관측 모집단 1,161개 중 `du_er_1y`를 0·결측 제외 후
+  사용할 수 있는 행은 964개, `cu_charge_rt`는 67개였다. 이 수치는 현재 source hash에
+  대한 관측값이며 runtime 상수나 일반 coverage 규칙이 아니다.
+- 해외 ETF 공식 표에는 다기간 수익률 field가 없고 1일 수익률만 있다. 공모펀드에는
+  승인된 단일 총보수 field가 없으며 여러 보수 구성요소가 따로 있다. 없는 기간이나
+  합성 지표를 의미 확인 없이 만들지 않는다.
+- 한 상품 row 안에서도 업무 field별 effective date가 다를 수 있다. freshness는 파일명이나
+  배포일 하나가 아니라 실제 capability가 사용하는 field와 source 기준으로 확인한다.
+- 0·결측 제외 규칙은 수치 연산에 사용하는 measure에 적용한다. `0`이 정상 code나 flag인
+  field에 같은 규칙을 적용하지 않는다.
+- 상품군 간 지표의 의미, 단위, 통화, 기간과 모집단이 같다는 근거가 확인되기 전에는
+  통합 ranking이나 직접 비교를 지원한다고 가정하지 않는다.
+
+이 관측은 실제 데이터 검증을 늦추지 말아야 한다는 근거지만, 모든 상품군의 데이터 계약을
+미리 확정하라는 의미는 아니다. 각 capability를 구현할 때 필요한 범위만 추가 검증하고
+binding한다.
+
 ## 4. 평가 API의 공식 경계
 
 - `GET /answer`

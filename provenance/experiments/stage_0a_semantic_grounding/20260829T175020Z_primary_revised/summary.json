@@ -1,0 +1,127 @@
+{
+  "stage": "0-A",
+  "split": "primary",
+  "fixture_file": "tests\\fixtures\\semantic_grounding.jsonl",
+  "catalog_file": "tests\\fixtures\\semantic_probe_catalog.json",
+  "case_count": 13,
+  "repeats": 3,
+  "order_seed_base": 20260830,
+  "order_rule": "repeat 0 uses the authored order; later repeats shuffle with (base_seed * 1000003 + crc32(test_id) + repeat_index) % 2**31",
+  "started_utc": "20260829T175020Z",
+  "encodings": {
+    "delimited": {
+      "runs": 39,
+      "cases": 13,
+      "repeats_per_case": 3.0,
+      "provider_failures": 4,
+      "provider_error_codes": [
+        "40009"
+      ],
+      "model_response_failures": 0,
+      "scored_runs": 35,
+      "run_pass_rate": 0.1429,
+      "case_pass_rate_all_repeats": 0.0769,
+      "ref_integrity_rate": 0.6,
+      "mean_requirement_recall": 0.2286,
+      "mean_requirement_precision": 0.2286,
+      "latency_ms_mean": 4693.1,
+      "latency_ms_max": 9420.8,
+      "request_bytes_mean": 2184.1,
+      "stable_pass_test_ids": [
+        "sg_field_fee_neighbor_001"
+      ],
+      "stable_fail_test_ids": [
+        "sg_absent_metric_on_relation_001",
+        "sg_comparison_two_entities_001",
+        "sg_field_meaning_neighbor_001",
+        "sg_field_period_neighbor_001",
+        "sg_multi_target_two_requirements_001",
+        "sg_nested_reuse_001",
+        "sg_partial_unresolved_mix_001",
+        "sg_relationship_product_to_security_001",
+        "sg_relationship_security_to_product_001",
+        "sg_requirements_three_001",
+        "sg_requirements_two_001"
+      ],
+      "order_sensitive_test_ids": [
+        "sg_absent_field_unresolved_001"
+      ]
+    },
+    "grouped_flat": {
+      "runs": 39,
+      "cases": 13,
+      "repeats_per_case": 3.0,
+      "provider_failures": 6,
+      "provider_error_codes": [
+        "40009"
+      ],
+      "model_response_failures": 0,
+      "scored_runs": 33,
+      "run_pass_rate": 0.3636,
+      "case_pass_rate_all_repeats": 0.2308,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.3788,
+      "mean_requirement_precision": 0.3788,
+      "latency_ms_mean": 5974.2,
+      "latency_ms_max": 8421.5,
+      "request_bytes_mean": 2383.1,
+      "stable_pass_test_ids": [
+        "sg_field_fee_neighbor_001",
+        "sg_field_period_neighbor_001",
+        "sg_partial_unresolved_mix_001"
+      ],
+      "stable_fail_test_ids": [
+        "sg_absent_field_unresolved_001",
+        "sg_absent_metric_on_relation_001",
+        "sg_field_meaning_neighbor_001",
+        "sg_multi_target_two_requirements_001",
+        "sg_nested_reuse_001",
+        "sg_relationship_security_to_product_001",
+        "sg_requirements_three_001",
+        "sg_requirements_two_001"
+      ],
+      "order_sensitive_test_ids": [
+        "sg_comparison_two_entities_001",
+        "sg_relationship_product_to_security_001"
+      ]
+    },
+    "nested": {
+      "runs": 39,
+      "cases": 13,
+      "repeats_per_case": 3.0,
+      "provider_failures": 7,
+      "provider_error_codes": [
+        "40009"
+      ],
+      "model_response_failures": 0,
+      "scored_runs": 32,
+      "run_pass_rate": 0.5,
+      "case_pass_rate_all_repeats": 0.1538,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.6094,
+      "mean_requirement_precision": 0.5885,
+      "latency_ms_mean": 5764.9,
+      "latency_ms_max": 13870.6,
+      "request_bytes_mean": 2305.1,
+      "stable_pass_test_ids": [
+        "sg_field_period_neighbor_001",
+        "sg_relationship_product_to_security_001"
+      ],
+      "stable_fail_test_ids": [
+        "sg_absent_metric_on_relation_001",
+        "sg_nested_reuse_001",
+        "sg_relationship_security_to_product_001",
+        "sg_requirements_three_001",
+        "sg_requirements_two_001"
+      ],
+      "order_sensitive_test_ids": [
+        "sg_absent_field_unresolved_001",
+        "sg_comparison_two_entities_001",
+        "sg_field_fee_neighbor_001",
+        "sg_field_meaning_neighbor_001",
+        "sg_multi_target_two_requirements_001",
+        "sg_partial_unresolved_mix_001"
+      ]
+    }
+  }
+}

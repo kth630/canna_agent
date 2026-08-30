@@ -15,6 +15,7 @@ dependencies = [
 
 [tool.pytest.ini_options]
 addopts = "--basetemp=.tmp/pytest -p no:cacheprovider"
+pythonpath = ["src"]
 markers = [
     "real_data: uses ignored immutable local source data",
     "hcx_live: calls HyperCLOVA X and requires credentials and network",

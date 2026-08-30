@@ -1,0 +1,99 @@
+{
+  "recomputed_from": "transcript_*.jsonl",
+  "rule": "order stability counts scored runs only",
+  "encodings": {
+    "delimited": {
+      "transcript": "transcript_delimited.jsonl",
+      "runs": 24,
+      "cases": 8,
+      "scored_runs": 24,
+      "provider_failures": 0,
+      "provider_error_codes": [],
+      "model_response_failures": 0,
+      "run_pass_rate": 0.125,
+      "cases_with_at_least_one_scored_run": 8,
+      "case_pass_rate_all_scored_repeats": 0.0,
+      "ref_integrity_rate": 0.5833,
+      "mean_requirement_recall": 0.125,
+      "latency_ms_mean": 4975.6,
+      "latency_ms_max": 10302.6,
+      "stable_pass_test_ids": [],
+      "stable_fail_test_ids": [
+        "ho_entity_preferred_share_001",
+        "ho_field_fee_flip_001",
+        "ho_forward_looking_unresolved_001",
+        "ho_paraphrase_period_flip_001",
+        "ho_predicate_lookthrough_001",
+        "ho_requirements_four_001"
+      ],
+      "order_sensitive_test_ids": [
+        "ho_bond_neighbor_flip_001",
+        "ho_cross_dataset_absent_001"
+      ],
+      "never_scored_test_ids": []
+    },
+    "grouped_flat": {
+      "transcript": "transcript_grouped_flat.jsonl",
+      "runs": 24,
+      "cases": 8,
+      "scored_runs": 24,
+      "provider_failures": 0,
+      "provider_error_codes": [],
+      "model_response_failures": 0,
+      "run_pass_rate": 0.0833,
+      "cases_with_at_least_one_scored_run": 8,
+      "case_pass_rate_all_scored_repeats": 0.0,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.125,
+      "latency_ms_mean": 6231.9,
+      "latency_ms_max": 10830.9,
+      "stable_pass_test_ids": [],
+      "stable_fail_test_ids": [
+        "ho_bond_neighbor_flip_001",
+        "ho_cross_dataset_absent_001",
+        "ho_entity_preferred_share_001",
+        "ho_forward_looking_unresolved_001",
+        "ho_paraphrase_period_flip_001",
+        "ho_predicate_lookthrough_001",
+        "ho_requirements_four_001"
+      ],
+      "order_sensitive_test_ids": [
+        "ho_field_fee_flip_001"
+      ],
+      "never_scored_test_ids": []
+    },
+    "nested": {
+      "transcript": "transcript_nested.jsonl",
+      "runs": 24,
+      "cases": 8,
+      "scored_runs": 19,
+      "provider_failures": 5,
+      "provider_error_codes": [
+        "40009"
+      ],
+      "model_response_failures": 0,
+      "run_pass_rate": 0.1579,
+      "cases_with_at_least_one_scored_run": 8,
+      "case_pass_rate_all_scored_repeats": 0.125,
+      "ref_integrity_rate": 1.0,
+      "mean_requirement_recall": 0.3158,
+      "latency_ms_mean": 5419.2,
+      "latency_ms_max": 9053.3,
+      "stable_pass_test_ids": [
+        "ho_bond_neighbor_flip_001"
+      ],
+      "stable_fail_test_ids": [
+        "ho_entity_preferred_share_001",
+        "ho_forward_looking_unresolved_001",
+        "ho_paraphrase_period_flip_001",
+        "ho_predicate_lookthrough_001",
+        "ho_requirements_four_001"
+      ],
+      "order_sensitive_test_ids": [
+        "ho_cross_dataset_absent_001",
+        "ho_field_fee_flip_001"
+      ],
+      "never_scored_test_ids": []
+    }
+  }
+}
