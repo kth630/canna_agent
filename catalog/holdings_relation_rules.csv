@@ -1,0 +1,5 @@
+product_family,source_pattern,relation_kind,parent_group_index,evidence
+public_fund,\[level([0-9]+):direct\],direct_holding,,번들 README 는 level1:direct 를 결산보고서의 직접 보유로 문서화한다
+public_fund,\[level([0-9]+):lookthrough parent=([^\]]+)\],look_through_exposure,2,번들 README 는 level2 행이 모펀드를 들여다본 종목이며 모펀드 표준코드가 parent 에 있다고 문서화한다
+domestic_etp,.,direct_holding,,번들 README 는 납부자산구성내역이 CU 구성 전량의 직접 보유임을 문서화한다
+overseas_etp,.,direct_holding,,번들 README 는 N-PORT-P 가 보고기준일 현재 전체 보유내역 공시임을 문서화한다

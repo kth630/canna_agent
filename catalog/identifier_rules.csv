@@ -1,0 +1,8 @@
+scope,pattern,scheme_id,resolution_status,promote_to_security,checksum,evidence
+held_security,^$,cnn:NoIdentifierProvided,absent,false,,원천이 종목 식별자를 제공하지 않은 관측이며 이름만 남는다
+held_security,"^[A-Z]{2}[A-Z0-9]{9}[0-9]$",cnn:IsinIdentifier,format_matched,true,isin_mod10,ISO 6166 ISIN 형식과 검사숫자
+held_security,^[0-9]{6}$,cnn:KrxShortCodeIdentifier,format_matched,true,,국내 상장 종목의 6자리 단축코드 형식
+held_security,"^[A-Z0-9]{6}$",cnn:SourceTickerIdentifierRaw,unverified_scheme,false,,여섯 자리 원천 코드이나 scheme 근거가 없어 Security 로 승격하지 않는다
+held_security,.*,cnn:SourceDeclaredIdentifierRaw,unverified_scheme,false,,형식 근거가 없어 Security 로 승격하지 않는다
+official_identifier,^[A-Za-z]*0+$,,placeholder,false,,자릿수 채움용 0 값은 식별자가 아니다
+official_identifier,.*,,declared_by_source,false,,공식 표가 선언한 식별자 값이며 scheme 은 binding 이 정한다

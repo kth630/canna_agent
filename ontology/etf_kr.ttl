@@ -1,0 +1,538 @@
+@prefix etkr: <https://canna.local/ontology/etf-kr#> .
+@prefix cnn:  <https://canna.local/ontology/core#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+<https://canna.local/ontology/etf-kr>
+    a owl:Ontology ;
+    owl:imports <https://canna.local/ontology/core> ;
+    rdfs:label "국내 상장지수상품 온톨로지"@ko ;
+    rdfs:comment """공식 국내 상장지수상품 표는 ETF 와 ETN 을 함께 담는다. 기간별 지표는 서로 다른
+기준일과 모집단을 가지며, 보유내역은 상품이 아니라 포트폴리오 관측에 붙는다."""@ko .
+
+##  1. 개체와 식별자
+
+etkr:DomesticExchangeTradedProduct a owl:Class ;
+    rdfs:subClassOf cnn:ProjectProduct ;
+    rdfs:label "국내 상장지수상품"@ko ;
+    cnn:approvedAlias "국내 ETF"@ko , "국내 ETN"@ko , "상장지수상품"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ;
+    cnn:semanticGrain cnn:ProductGrain ;
+    cnn:alignmentDecision "유지" ;
+    rdfs:comment "ETF 와 ETN 을 구분하는 근거는 상품군 종류 원값이며 임의 분류를 만들지 않는다."@ko .
+
+etkr:DomesticExchangeTradedProductNumber a cnn:IdentifierScheme ;
+    rdfs:label "국내 상장지수상품 번호"@ko ; cnn:approvedAlias "상품번호"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+##  2. 상품 속성
+
+etkr:PensionTradingRiskCategory a cnn:AttributeType ;
+    rdfs:label "연금거래 위험구분"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+etkr:SectorCodeRaw a cnn:AttributeType ;
+    rdfs:label "섹터 코드 원값"@ko ; cnn:approvedAlias "ETF 섹터"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "미확정" ;
+    rdfs:comment "섹터 의미를 확정하지 않고 원문만 보존한다."@ko .
+
+etkr:SpacFlagRaw a cnn:AttributeType ;
+    rdfs:label "SPAC 여부 원값"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "flag_polarity_unverified" ; cnn:alignmentDecision "수정" .
+
+etkr:CoreProductFlagRaw a cnn:AttributeType ;
+    rdfs:label "핵심 상품 여부 원값"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "flag_polarity_unverified" ; cnn:alignmentDecision "수정" .
+
+etkr:BaseIndexNameRaw a cnn:AttributeType ;
+    rdfs:label "기초지수명 원값"@ko ; cnn:approvedAlias "기초지수"@ko , "추종지수"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "entity_resolution_pending" ; cnn:alignmentDecision "미확정" .
+
+etkr:RefinitivBaseIndexNameRaw a cnn:AttributeType ;
+    rdfs:label "외부 출처 기초지수명 원값"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "entity_resolution_pending" ; cnn:alignmentDecision "미확정" ;
+    rdfs:comment "같은 의미의 두 번째 출처이며 값이 다르면 충돌로 기록한다."@ko .
+
+etkr:RefinitivManagementCompanyNameRaw a cnn:AttributeType ;
+    rdfs:label "외부 출처 운용사명 원값"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "entity_resolution_pending" ; cnn:alignmentDecision "미확정" .
+
+etkr:RefinitivAssetTypeRaw a cnn:AttributeType ;
+    rdfs:label "외부 출처 자산유형 원값"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+etkr:RefinitivGeographicFocusRaw a cnn:AttributeType ;
+    rdfs:label "외부 출처 투자지역 원값"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+etkr:StrategyRaw a cnn:AttributeType ;
+    rdfs:label "운용전략 원값"@ko ; cnn:approvedAlias "전략"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+etkr:LeverageFactorRaw a cnn:AttributeType ;
+    rdfs:label "배수 원값"@ko ; cnn:approvedAlias "레버리지"@ko , "인버스"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "text_encoded_number" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "국내 표에서는 text 로 제공되어 수치 연산 대상으로 승격하지 않는다."@ko .
+
+etkr:PortfolioAverageCreditQuality a cnn:AttributeType ;
+    rdfs:label "포트폴리오 평균 신용품질"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "rating_scale_unverified" ; cnn:alignmentDecision "수정" .
+
+etkr:DistributionCycleRaw a cnn:AttributeType ;
+    rdfs:label "분배주기 원값"@ko ; cnn:approvedAlias "분배주기"@ko , "월배당"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+etkr:DistributionPaymentMonthsRaw a cnn:AttributeType ;
+    rdfs:label "분배 지급월 원값"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+etkr:DistributionTaxBasisRaw a cnn:AttributeType ;
+    rdfs:label "분배 과세기준 원값"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+##  3. 기간 수익률 - 기간마다 별도 의미이며 같은 모집단이 아니다
+
+etkr:Return1D a cnn:MetricType ;
+    rdfs:label "1일 수익률"@ko ; cnn:approvedAlias "일간 수익률"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period1D ;
+    cnn:comparisonGroup "domestic_etp:return" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "유지" .
+
+etkr:Return1M a cnn:MetricType ;
+    rdfs:label "1개월 수익률"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period1M ;
+    cnn:comparisonGroup "domestic_etp:return" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "유지" .
+
+etkr:Return3M a cnn:MetricType ;
+    rdfs:label "3개월 수익률"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period3M ;
+    cnn:comparisonGroup "domestic_etp:return" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "유지" .
+
+etkr:Return6M a cnn:MetricType ;
+    rdfs:label "6개월 수익률"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period6M ;
+    cnn:comparisonGroup "domestic_etp:return" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "유지" .
+
+etkr:Return1Y a cnn:MetricType ;
+    rdfs:label "1년 수익률"@ko ; cnn:approvedAlias "연간 수익률"@ko , "1년 성과"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period1Y ;
+    cnn:comparisonGroup "domestic_etp:return" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "유지" .
+
+etkr:ReturnYTD a cnn:MetricType ;
+    rdfs:label "연초 이후 수익률"@ko ; cnn:approvedAlias "YTD 수익률"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:PeriodYTD ;
+    cnn:comparisonGroup "domestic_etp:return" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "유지" .
+
+##  4. 위험과 추적 지표
+
+etkr:Volatility1M a cnn:MetricType ;
+    rdfs:label "1개월 변동성"@ko ; cnn:approvedAlias "변동성"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period1M ;
+    cnn:comparisonGroup "domestic_etp:volatility" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "annualized_from_recent_trading_days" ; cnn:alignmentDecision "수정" .
+
+etkr:Volatility3M a cnn:MetricType ;
+    rdfs:label "3개월 변동성"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period3M ;
+    cnn:comparisonGroup "domestic_etp:volatility" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "annualized_from_recent_trading_days" ; cnn:alignmentDecision "수정" .
+
+etkr:Volatility6M a cnn:MetricType ;
+    rdfs:label "6개월 변동성"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period6M ;
+    cnn:comparisonGroup "domestic_etp:volatility" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "annualized_from_recent_trading_days" ; cnn:alignmentDecision "수정" .
+
+etkr:Volatility1Y a cnn:MetricType ;
+    rdfs:label "1년 변동성"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period1Y ;
+    cnn:comparisonGroup "domestic_etp:volatility" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "annualized_from_recent_trading_days" ; cnn:alignmentDecision "수정" .
+
+etkr:TrackingErrorRate a cnn:MetricType ;
+    rdfs:label "추적오차율"@ko ; cnn:approvedAlias "추적오차"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "domestic_etp:tracking_error" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "유지" .
+
+etkr:PremiumDiscountRate a cnn:MetricType ;
+    rdfs:label "괴리율"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "domestic_etp:premium_discount" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "유지" .
+
+etkr:TotalExpenseRate a cnn:MetricType ;
+    rdfs:label "총보수율"@ko ; cnn:approvedAlias "총보수"@ko , "보수율"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "domestic_etp:expense_rate" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation ;
+    cnn:evidenceRequirement cnn:RequiresValueStatus , cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "text_parsed_unit_unverified" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "원문이 text 이고 관측 가능한 행이 적어 완전 모집단 주장에 쓰지 않는다."@ko .
+
+##  5. 규모·가격·거래 지표
+
+etkr:AssetsUnderManagement a cnn:MetricType ;
+    rdfs:label "순자산 규모"@ko ; cnn:approvedAlias "AUM"@ko , "운용규모"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CurrencyAmount ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "domestic_etp:aum" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresUnitAndCurrency ,
+        cnn:RequiresValueStatus ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "유지" .
+
+etkr:NetAssetsTotal a cnn:MetricType ;
+    rdfs:label "순자산총액"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CurrencyAmount ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "domestic_etp:net_assets" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresUnitAndCurrency ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etkr:CirculatingNetAssets a cnn:MetricType ;
+    rdfs:label "유통순자산총액"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CurrencyAmount ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "domestic_etp:net_assets" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etkr:NetAssetValuePerShare a cnn:MetricType ;
+    rdfs:label "주당 순자산가치"@ko ; cnn:approvedAlias "NAV"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "domestic_etp:nav_per_share" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresUnitAndCurrency ;
+    cnn:meaningStatus "per_share_inferred_from_magnitude" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "순자산총액과 다른 지표이며 관측 크기가 기준가와 같은 자릿수다."@ko .
+
+etkr:NetAssetValuePerSharePreviousDay a cnn:MetricType ;
+    rdfs:label "전일 주당 순자산가치"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "domestic_etp:nav_per_share_previous" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf ;
+    cnn:meaningStatus "per_share_inferred_from_magnitude" ; cnn:alignmentDecision "수정" .
+
+etkr:NetAssetValueChangeAmount a cnn:MetricType ;
+    rdfs:label "전일 대비 NAV 등락금액"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:Period1D ; cnn:comparisonGroup "domestic_etp:nav_change" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etkr:BasePrice a cnn:MetricType ;
+    rdfs:label "기준가"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "domestic_etp:price" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresUnitAndCurrency ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etkr:ClosePrice a cnn:MetricType ;
+    rdfs:label "종가"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "domestic_etp:price" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresUnitAndCurrency ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etkr:HighPrice a cnn:MetricType ;
+    rdfs:label "고가"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:Period1D ; cnn:comparisonGroup "domestic_etp:price" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etkr:MarketPrice a cnn:MetricType ;
+    rdfs:label "현재가"@ko ; cnn:approvedAlias "시장가격"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "domestic_etp:price" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresUnitAndCurrency ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etkr:MarketVolume a cnn:MetricType ;
+    rdfs:label "거래량"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CountUnit ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "domestic_etp:volume" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etkr:TradingValue1D a cnn:MetricType ;
+    rdfs:label "일 거래대금"@ko ; cnn:approvedAlias "거래대금"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CurrencyAmount ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:Period1D ; cnn:comparisonGroup "domestic_etp:trading_value" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "유지" .
+
+etkr:TradingValueAverage5D a cnn:MetricType ;
+    rdfs:label "5거래일 평균 거래대금"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CurrencyAmount ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:Period5D ; cnn:comparisonGroup "domestic_etp:trading_value" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "유지" .
+
+etkr:TradingValueAverage1M a cnn:MetricType ;
+    rdfs:label "1개월 평균 거래대금"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CurrencyAmount ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:Period1M ; cnn:comparisonGroup "domestic_etp:trading_value" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "유지" .
+
+etkr:TradingVolume1D a cnn:MetricType ;
+    rdfs:label "일 거래량"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CountUnit ; cnn:observationPeriod cnn:Period1D ;
+    cnn:comparisonGroup "domestic_etp:volume" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "유지" .
+
+etkr:TradingVolumeAverage5D a cnn:MetricType ;
+    rdfs:label "5거래일 평균 거래량"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CountUnit ; cnn:observationPeriod cnn:Period5D ;
+    cnn:comparisonGroup "domestic_etp:volume" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "유지" .
+
+etkr:TradingVolumeAverage1M a cnn:MetricType ;
+    rdfs:label "1개월 평균 거래량"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CountUnit ; cnn:observationPeriod cnn:Period1M ;
+    cnn:comparisonGroup "domestic_etp:volume" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "유지" .
+
+etkr:ListedShareCount a cnn:MetricType ;
+    rdfs:label "상품 상장주식수"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CountUnit ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "domestic_etp:share_count" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etkr:ExchangeListedShareCount a cnn:MetricType ;
+    rdfs:label "상장주식수"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CountUnit ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "domestic_etp:share_count" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etkr:CirculatingShareCount a cnn:MetricType ;
+    rdfs:label "유통주식수"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CountUnit ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "domestic_etp:share_count" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+##  6. 분배 지표
+
+etkr:DistributionYield a cnn:MetricType ;
+    rdfs:label "분배수익률"@ko ; cnn:approvedAlias "배당수익률"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period1Y ;
+    cnn:comparisonGroup "domestic_etp:distribution_yield" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "annualized_estimate" ; cnn:alignmentDecision "수정" .
+
+etkr:AnnualEstimatedDistributionAmount a cnn:MetricType ;
+    rdfs:label "연간 추정 분배금"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:Period1Y ; cnn:comparisonGroup "domestic_etp:distribution_amount" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "estimate" ; cnn:alignmentDecision "수정" .
+
+etkr:DistributionAmountPerShare a cnn:MetricType ;
+    rdfs:label "주당 분배금"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "domestic_etp:distribution_amount" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "source_priority_documented" ; cnn:alignmentDecision "수정" .
+
+etkr:DistributionBaseNav a cnn:MetricType ;
+    rdfs:label "분배금 계산 기준 NAV"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "domestic_etp:distribution_base_nav" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etkr:DistributionPaymentCountAnnual a cnn:MetricType ;
+    rdfs:label "연간 분배 지급횟수"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CountUnit ; cnn:observationPeriod cnn:Period1Y ;
+    cnn:comparisonGroup "domestic_etp:distribution_count" ;
+    cnn:allowedOperation cnn:FilterOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "zero_meaning_unverified" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "원천이 소수점 없는 정수라 0 의 의미가 확인되기 전에는 정렬·집계를 열지 않는다."@ko .
+
+##  7. 포트폴리오 펀더멘털 지표
+
+etkr:PortfolioAverageCoupon a cnn:MetricType ;
+    rdfs:label "포트폴리오 평균 쿠폰이자율"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "domestic_etp:portfolio_coupon" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "수정" .
+
+etkr:PortfolioEffectiveMaturity a cnn:MetricType ;
+    rdfs:label "포트폴리오 실질만기"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NumberUnit ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "domestic_etp:portfolio_maturity" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_unverified" ; cnn:alignmentDecision "수정" .
+
+etkr:PortfolioNominalMaturity a cnn:MetricType ;
+    rdfs:label "포트폴리오 명목만기"@ko ;
+    cnn:appliesToFamily cnn:DomesticExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NumberUnit ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "domestic_etp:portfolio_maturity" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_unverified" ; cnn:alignmentDecision "수정" .
+
+##  8. SHACL
+
+etkr:DomesticExchangeTradedProductShape a sh:NodeShape ;
+    sh:targetClass etkr:DomesticExchangeTradedProduct ;
+    sh:property [ sh:path cnn:familyOfSubject ; sh:hasValue "domestic_etp" ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:hasIdentifier ; sh:class cnn:Identifier ; sh:minCount 1 ] ;
+    sh:property [ sh:path cnn:mapsToPortfolio ; sh:class cnn:Portfolio ;
+                  sh:description "보유내역이 수집되지 않은 상품도 유효하다"@ko ] .

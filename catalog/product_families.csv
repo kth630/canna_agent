@@ -1,0 +1,5 @@
+family_id,label_ko,official_table_id,holdings_family,result_grain,official_key_field,holdings_join_field,portfolio_id_scheme,namespace_prefix,collection_scope_note,holdings_as_of_role,holdings_as_of_evidence
+domestic_bond,국내채권,PRBD01N001,,product,pd_no,,,bdkr,외부 holdings 수집 대상이 아니다,,
+domestic_etp,국내 ETF·ETN,PREF01N001,domestic_etf,product,pd_itm_no,project_product_id,krx_etf_ticker,etkr,번들 README 기준 pd_grp_no 가 ETF 인 상장 상품만 수집했다,requested,번들 README 는 응답에 기준일 메타데이터가 없어 요청일만 알 수 있다고 기록한다
+overseas_etp,해외 ETF·ETN,PREF02N001,overseas_etf,product,pd_itm_no,project_product_id,sec_series_id,etgl,번들 README 기준 ETN 제외 및 판매·거래 상태 조건으로 수집했다,effective,번들 README 는 N-PORT 보고기준일을 실효일로 기록한다
+public_fund,공모펀드,PRFD01N001,public_fund,product_class,itm_no,project_product_id,ksd_representative_item_number,fdpb,번들 README 기준 판매중·공모·대표펀드 보유 클래스만 수집했다,effective,번들 README 는 결산일을 실효일로 기록하며 상품마다 다르다

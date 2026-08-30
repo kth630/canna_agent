@@ -1,0 +1,52 @@
+normalized_table,field,semantic_id,role,target_table,target_column,note
+product_mapping,product_family,,scope,product_portfolio_map,product_family,수집 상품군 구분
+product_mapping,source_product_id,cnn:SourceProductIdentifierRaw,identifier,product_portfolio_map,source_product_id_raw,수집기가 사용한 원천 상품 식별자
+product_mapping,project_product_id,,join_key,product_portfolio_map,subject_key,공식 상품·클래스 key와 값이 일치하는 조인 key
+product_mapping,portfolio_id,cnn:PortfolioIdentifier,identifier,portfolio,portfolio_id_raw,portfolio 식별자 원값
+product_mapping,product_name,cnn:ExternalProductNameRaw,attribute,product_portfolio_map,external_product_name,공식 상품명과 충돌하면 공식을 우선하고 충돌을 기록한다
+product_mapping,isin,cnn:IsinIdentifier,identifier,product_portfolio_map,external_isin,외부 출처가 제시한 ISIN 후보
+product_mapping,ticker,cnn:TickerIdentifier,identifier,product_portfolio_map,external_ticker,외부 출처가 제시한 티커 후보
+product_mapping,cik,etgl:SecCikIdentifier,identifier,product_portfolio_map,external_cik,외부 출처가 제시한 CIK 후보
+product_mapping,mapping_status,cnn:MappingStatusType,status,product_portfolio_map,mapping_status,exact·ambiguous·unresolved 를 구분해 보존한다
+product_mapping,mapping_basis,cnn:MappingBasisType,provenance,product_portfolio_map,mapping_basis,매핑 근거 원문
+product_mapping,source,cnn:SourceReferenceType,provenance,product_portfolio_map,source_reference,수집 원천 표기
+holdings,product_family,,scope,holding_observation,product_family,
+holdings,source_product_id,cnn:SourceProductIdentifierRaw,identifier,holding_observation,source_product_id_raw,실제 호출에 사용한 원천 상품 식별자
+holdings,project_product_id,,join_key,holding_observation,called_subject_key,실제 호출 대상이며 공모펀드는 대표 클래스만 들어 있다
+holdings,portfolio_id,cnn:PortfolioIdentifier,identifier,holding_observation,portfolio_id_raw,portfolio 조인 key
+holdings,held_security_id,cnn:HeldSecurityIdentifierRaw,identifier,holding_observation,held_security_id_raw,scheme 은 원값 형태만으로 확정하지 않는다
+holdings,security_name,cnn:HeldSecurityNameRawType,attribute,holding_observation,security_name_raw,이름만으로 Security 관계를 만들지 않는다
+holdings,isin,cnn:IsinIdentifier,identifier,holding_observation,held_isin_raw,
+holdings,ticker,cnn:TickerIdentifier,identifier,holding_observation,held_ticker_raw,
+holdings,weight_value,cnn:HoldingWeightType,measure,holding_observation,weight_value,국내 ETF 는 대부분 0 이라 weight capability 를 노출하지 않는다
+holdings,weight_unit,,unit,holding_observation,weight_unit,
+holdings,quantity_value,cnn:HoldingQuantityType,measure,holding_observation,quantity_value,
+holdings,quantity_unit,,unit,holding_observation,quantity_unit,원천 단위 표기를 그대로 보존한다
+holdings,value_amount,cnn:HoldingValueAmountType,measure,holding_observation,value_amount,
+holdings,value_amount_unit,,unit,holding_observation,value_amount_unit,
+holdings,currency,,unit,holding_observation,currency,
+holdings,holding_as_of,,as_of,holding_observation,holding_as_of_raw,상품군에 따라 요청일 또는 실효일이며 as_of_status 로 구분한다
+holdings,source,cnn:SourceReferenceType,provenance,holding_observation,source_reference,공모펀드는 이 값에서 관계 종류와 상위 포트폴리오를 파싱한다
+holdings,source_record_id,cnn:SourceRecordIdentifierType,provenance,holding_observation,source_record_id,
+holdings,snapshot_scope,cnn:SnapshotScopeType,status,holding_observation,snapshot_scope,full·partial·unknown 을 완전성 주장으로 승격하지 않는다
+coverage,product_family,,scope,holdings_coverage,product_family,
+coverage,eligible_count,,coverage_measure,holdings_coverage,eligible_count,상품군마다 모집단 정의가 달라 직접 비교하지 않는다
+coverage,attempted_count,,coverage_measure,holdings_coverage,attempted_count,
+coverage,success_count,,coverage_measure,holdings_coverage,success_count,
+coverage,failed_count,,coverage_measure,holdings_coverage,failed_count,
+coverage,exact_mapped_count,,coverage_measure,holdings_coverage,exact_mapped_count,
+coverage,ambiguous_count,,coverage_measure,holdings_coverage,ambiguous_count,
+coverage,unresolved_count,,coverage_measure,holdings_coverage,unresolved_count,
+coverage,full_snapshot_count,,coverage_measure,holdings_coverage,full_snapshot_count,
+coverage,partial_snapshot_count,,coverage_measure,holdings_coverage,partial_snapshot_count,
+coverage,unknown_snapshot_count,,coverage_measure,holdings_coverage,unknown_snapshot_count,
+coverage,holding_as_of_min,,coverage_as_of,holdings_coverage,holding_as_of_min,
+coverage,holding_as_of_max,,coverage_as_of,holdings_coverage,holding_as_of_max,
+failures,product_family,,scope,collection_failure,product_family,
+failures,source_product_id,cnn:SourceProductIdentifierRaw,identifier,collection_failure,source_product_id_raw,
+failures,project_product_id,,join_key,collection_failure,subject_key,
+failures,stage,cnn:FailureStageType,status,collection_failure,stage,
+failures,error_code,cnn:FailureCodeType,status,collection_failure,error_code,수집 실패를 값 상태나 거짓 관계로 바꾸지 않는다
+failures,error_message,,provenance,collection_failure,error_message,
+failures,retryable,,provenance,collection_failure,retryable,
+failures,attempted_at,,as_of,collection_failure,attempted_at,

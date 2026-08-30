@@ -1,0 +1,281 @@
+table_id,field,semantic_id,role,value_slot,subject_grain,unit_code,currency_source,period_code,as_of_field,alignment_decision,conflict_group,note
+PRBD01N001,pd_no,bdkr:BondProductNumber,identity_key,key,product,none,none,none,info_base_dt,유지,,공식 상품번호를 product key로 사용한다
+PRBD01N001,pd_exg_mkt,bdkr:TradeSegment,observation_context,label,source_row,none,none,none,info_base_dt,유지,,source row를 구분하는 거래구분
+PRBD01N001,info_seq,bdkr:LotSequence,observation_context,value,source_row,count,none,none,info_base_dt,유지,,동일 종목·시장·기준일 내 판매 LOT 순번
+PRBD01N001,pd_nm,cnn:ProductName,identity_attribute,label,product,none,none,none,info_base_dt,유지,,
+PRBD01N001,pd_abrv_nm,cnn:ProductShortName,identity_attribute,label,product,none,none,none,info_base_dt,유지,,
+PRBD01N001,pd_eng_nm,cnn:ProductNameEnglish,identity_attribute,label,product,none,none,none,info_base_dt,유지,,
+PRBD01N001,pd_abrv_eng_nm,cnn:ProductShortNameEnglish,identity_attribute,label,product,none,none,none,info_base_dt,유지,,
+PRBD01N001,curr_cd,cnn:ProductCurrency,attribute,code,product,none,none,none,info_base_dt,유지,,금액 계열 metric의 currency source
+PRBD01N001,pd_ctry_cd,cnn:ProductCountryCode,attribute,code,product,none,none,none,info_base_dt,수정,,종목번호 앞 두 자리에서 파생된 원문 코드
+PRBD01N001,isu_dt,bdkr:IssueDate,attribute,date,product,none,none,none,info_base_dt,유지,,
+PRBD01N001,mat_dt,bdkr:MaturityDate,attribute,date,product,none,none,none,info_base_dt,수정,,영구채는 1차 콜행사개시일이라는 source 주석을 보존한다
+PRBD01N001,srfc_irt,bdkr:CouponRate,metric,value,product,percent_observed,none,none,info_base_dt,유지,,
+PRBD01N001,bd_knd,bdkr:BondKind,attribute,label,product,none,none,none,info_base_dt,유지,,예탁원 기준 채권종류명
+PRBD01N001,bd_inrt_tcd,bdkr:InterestRateType,attribute,code,product,none,none,none,info_base_dt,수정,,코드 값 의미는 미확정
+PRBD01N001,bd_intp_tcd,bdkr:InterestPaymentType,attribute,code,product,none,none,none,info_base_dt,수정,,코드 값 의미는 미확정
+PRBD01N001,bd_ofr_tcd,bdkr:OfferingType,attribute,code,product,none,none,none,info_base_dt,수정,,코드 값 의미는 미확정
+PRBD01N001,std_pd_mcls_nm,cnn:ProductMidCategoryName,attribute,label,product,none,none,none,info_base_dt,유지,,
+PRBD01N001,std_pd_scls_nm,cnn:ProductSubCategoryName,attribute,label,product,none,none,none,info_base_dt,유지,,
+PRBD01N001,pd_risk_gcd,cnn:ProductRiskGrade,attribute,code,product,none,none,none,info_base_dt,유지,,
+PRBD01N001,pd_risk_nm,cnn:ProductRiskGrade,attribute,label,product,none,none,none,info_base_dt,유지,,
+PRBD01N001,pd_pen_tr_yn,cnn:PensionTradingFlagRaw,attribute,code,product,none,none,none,info_base_dt,수정,,여부 코드의 극성이 미확정이므로 원문만 보존한다
+PRBD01N001,pd_pbcm,bdkr:IssuerNameRaw,attribute,label,product,none,none,none,info_base_dt,미확정,,Organization entity resolution 미완료
+PRBD01N001,bdbns_abl_chnl_tcd,bdkr:TradeChannel,attribute,code,product,none,none,none,sale_yield_base_dt,수정,,판매 계열 행에만 존재한다
+PRBD01N001,bdbns_abl_chnl_nm,bdkr:TradeChannel,attribute,label,product,none,none,none,sale_yield_base_dt,수정,,
+PRBD01N001,crd_grd,bdkr:CreditRating,attribute,label,product,none,none,none,crd_grd_dt,유지,,
+PRBD01N001,crd_grd_dt,,as_of,date,product,none,none,none,,수정,,신용등급 적용일자
+PRBD01N001,info_base_dt,,as_of,date,product,none,none,none,,수정,,판매·민평 공통 기준일
+PRBD01N001,pd_std_info_update,,as_of,date,product,none,none,none,,수정,,민평정보 최근 업데이트 일자
+PRBD01N001,sale_yield_base_dt,,as_of,date,product,none,none,none,,수정,,판매수익률 기준일
+PRBD01N001,exg_close_price_base_dt,,as_of,date,product,none,none,none,,수정,,장내 종가·종가수익률 기준일
+PRBD01N001,applied_yield,bdkr:AppliedYield,metric,value,product,percent_observed,none,none,info_base_dt,유지,,민평수익률
+PRBD01N001,ndy_applied_yield,bdkr:NextDayAppliedYield,metric,value,product,percent_observed,none,none,info_base_dt,유지,,
+PRBD01N001,buy_yield,bdkr:BuyYield,metric,value,product,percent_observed,none,none,sale_yield_base_dt,유지,,
+PRBD01N001,after_tax_yield,bdkr:IndividualAfterTaxYield,metric,value,product,percent_observed,none,none,sale_yield_base_dt,유지,,
+PRBD01N001,pref_tax_yield,bdkr:PreferentialTaxYield,metric,value,product,percent_observed,none,none,sale_yield_base_dt,유지,,
+PRBD01N001,corp_after_tax_yield,bdkr:CorporateAfterTaxYield,metric,value,product,percent_observed,none,none,sale_yield_base_dt,유지,,
+PRBD01N001,corp_pretax_yield,bdkr:CorporatePretaxYield,metric,value,product,percent_observed,none,none,sale_yield_base_dt,유지,,
+PRBD01N001,depo_equiv_yield_154,bdkr:DepositEquivalentYield154,metric,value,product,percent_observed,none,none,sale_yield_base_dt,유지,,세율 15.4 기준 환산
+PRBD01N001,depo_equiv_yield_495,bdkr:DepositEquivalentYield495,metric,value,product,percent_observed,none,none,sale_yield_base_dt,유지,,세율 49.5 기준 환산
+PRBD01N001,avg_annual_tax_yield,,unbound,value,product,none,none,none,sale_yield_base_dt,제외,,값이 있는 행이 모두 0이라 유효 수치 capability로 승격하지 않는다
+PRBD01N001,exg_close_yield,bdkr:ExchangeCloseYield,metric,value,product,percent_observed,none,none,exg_close_price_base_dt,수정,,0 제외 모집단이 다른 metric과 다르다
+PRBD01N001,exg_close_price,bdkr:ExchangeClosePrice,metric,value,product,price,field:curr_cd,none,exg_close_price_base_dt,수정,,
+PRBD01N001,eval_price,bdkr:EvaluationPrice,metric,value,product,price,field:curr_cd,none,info_base_dt,유지,,평가일단가
+PRBD01N001,ndy_eval_price,bdkr:NextDayEvaluationPrice,metric,value,product,price,field:curr_cd,none,info_base_dt,유지,,
+PRBD01N001,dirty,bdkr:DirtyPrice,metric,value,product,price,field:curr_cd,none,info_base_dt,유지,,
+PRBD01N001,ndy_dirty,bdkr:NextDayDirtyPrice,metric,value,product,price,field:curr_cd,none,info_base_dt,유지,,
+PRBD01N001,trade_price,bdkr:TradePrice,metric,value,product,price,field:curr_cd,none,sale_yield_base_dt,유지,,매매단가
+PRBD01N001,dur,bdkr:Duration,metric,value,product,number,none,none,info_base_dt,유지,,단위 선언이 없어 number로 둔다
+PRBD01N001,ndy_dur,bdkr:NextDayDuration,metric,value,product,number,none,none,info_base_dt,유지,,
+PRBD01N001,cov,bdkr:Convexity,metric,value,product,number,none,none,info_base_dt,유지,,
+PRBD01N001,ndy_cov,bdkr:NextDayConvexity,metric,value,product,number,none,none,info_base_dt,유지,,
+PRBD01N001,remaining_days,bdkr:RemainingDays,metric,value,product,days,none,none,info_base_dt,유지,,
+PRBD01N001,isu_bal_amt,bdkr:IssueBalanceAmount,metric,value,product,currency_amount,field:curr_cd,none,info_base_dt,유지,,
+PRBD01N001,bd_tisu_a,bdkr:TotalIssueAmount,metric,value,product,currency_amount,field:curr_cd,none,info_base_dt,유지,,
+PRBD01N001,exrt_grte_ern_r,bdkr:MaturityGuaranteedYield,metric,value,product,percent_observed,none,none,info_base_dt,수정,,대부분의 행이 0이며 구분코드와 함께 해석한다
+PRBD01N001,exrt_grte_ern_r_tcd,bdkr:MaturityGuaranteedYieldType,attribute,code,product,none,none,none,info_base_dt,수정,,
+PRBD01N001,exrt_rpy_r,bdkr:MaturityRedemptionRate,metric,value,product,percent_observed,none,none,info_base_dt,수정,,
+PRBD01N001,buyable_quantity,,unbound,value,product,none,none,none,sale_yield_base_dt,제외,,CONTEXT 규칙에 따라 매수가능수량을 판매가능성 근거로 쓰지 않는다
+PREF01N001,pd_itm_no,etkr:DomesticExchangeTradedProductNumber,identity_key,key,product,none,none,none,du_upt_dt,수정,,공식 상품번호를 product key로 사용한다
+PREF01N001,pd_itm_no_ma,cnn:HouseProductNumber,identifier,value,product,none,none,none,du_upt_dt,수정,,사내 상품번호 scheme
+PREF01N001,pd_isin_cd,cnn:IsinIdentifier,identifier,value,product,none,none,none,ref_base_dt,수정,,Refinitiv 제공 ISIN이며 일부 행에만 존재한다
+PREF01N001,pd_ric,cnn:RicIdentifier,identifier,value,product,none,none,none,ref_base_dt,수정,,
+PREF01N001,pd_ticker,cnn:TickerIdentifier,identifier,value,product,none,none,none,ref_base_dt,수정,,외부 holdings mapping이 사용한 티커
+PREF01N001,pd_nm,cnn:ProductName,identity_attribute,label,product,none,none,none,du_upt_dt,유지,official_product_name,
+PREF01N001,pd_abrv_nm,cnn:ProductShortName,identity_attribute,label,product,none,none,none,du_upt_dt,유지,,
+PREF01N001,pd_grp_no,cnn:ProductGroupKindRaw,attribute,label,product,none,none,none,du_upt_dt,수정,,ETF와 ETN을 구분하는 원문 값
+PREF01N001,pd_curr_cd,cnn:ProductCurrency,attribute,code,product,none,none,none,du_upt_dt,유지,,
+PREF01N001,pd_curr_nm,cnn:ProductCurrency,attribute,label,product,none,none,none,du_upt_dt,유지,,
+PREF01N001,pd_exg_mkt_cd,cnn:ExchangeCodeRaw,attribute,code,product,none,none,none,du_upt_dt,미확정,,Exchange entity resolution 미완료
+PREF01N001,pd_exg_mkt_nm,cnn:ExchangeCodeRaw,attribute,label,product,none,none,none,du_upt_dt,미확정,,
+PREF01N001,pd_mkt_id,cnn:MarketCodeRaw,attribute,code,product,none,none,none,du_upt_dt,미확정,,
+PREF01N001,pd_mkt_nm,cnn:MarketCodeRaw,attribute,label,product,none,none,none,du_upt_dt,미확정,,
+PREF01N001,pd_lstg_dt,cnn:ListingStartDate,attribute,date,product,none,none,none,du_upt_dt,유지,,상품거래가능일자
+PREF01N001,pd_lste_dt,cnn:ListingEndDate,attribute,date,product,none,none,none,du_upt_dt,유지,,상품거래종료일자
+PREF01N001,pd_sale_yn,cnn:SaleStatusRaw,attribute,code,product,none,none,none,du_upt_dt,유지,,판매여부 원문 코드
+PREF01N001,pd_tr_yn,cnn:TradingStatusRaw,attribute,code,product,none,none,none,du_upt_dt,유지,,거래정지여부 원문 코드
+PREF01N001,pd_risk_cd,cnn:ProductRiskGrade,attribute,code,product,none,none,none,du_upt_dt,유지,,
+PREF01N001,pd_risk_nm,cnn:ProductRiskGrade,attribute,label,product,none,none,none,du_upt_dt,유지,,
+PREF01N001,pd_pen_risk_nm,etkr:PensionTradingRiskCategory,attribute,label,product,none,none,none,du_upt_dt,수정,,
+PREF01N001,pd_pen_tr_yn,cnn:PensionTradingFlagRaw,attribute,code,product,none,none,none,du_upt_dt,수정,,
+PREF01N001,pd_sect_cd,etkr:SectorCodeRaw,attribute,code,product,none,none,none,du_upt_dt,미확정,,sector 의미를 확정하지 않고 원문만 보존한다
+PREF01N001,pd_spac_yn,etkr:SpacFlagRaw,attribute,code,product,none,none,none,du_upt_dt,수정,,
+PREF01N001,wu_core_yn,etkr:CoreProductFlagRaw,attribute,code,product,none,none,none,wu_upt_dt,수정,,
+PREF01N001,wu_inv_ast_type,cnn:InvestmentAssetTypeRaw,attribute,label,product,none,none,none,wu_upt_dt,수정,,
+PREF01N001,wu_inv_rgn,cnn:InvestmentRegionRaw,attribute,label,product,none,none,none,wu_upt_dt,수정,,
+PREF01N001,cu_fund_mgmt_co,cnn:ManagementCompanyNameRaw,attribute,label,product,none,none,none,cu_upt_dt,미확정,management_company,Organization entity resolution 미완료
+PREF01N001,ref_fund_mgmt_co,etkr:RefinitivManagementCompanyNameRaw,attribute,label,product,none,none,none,ref_base_dt,미확정,management_company,같은 의미의 두 번째 출처
+PREF01N001,cu_base_index,etkr:BaseIndexNameRaw,attribute,label,product,none,none,none,cu_upt_dt,미확정,base_index,Benchmark entity resolution 미완료
+PREF01N001,ref_base_index,etkr:RefinitivBaseIndexNameRaw,attribute,label,product,none,none,none,ref_base_dt,미확정,base_index,같은 의미의 두 번째 출처
+PREF01N001,cu_strtegy,etkr:StrategyRaw,attribute,label,product,none,none,none,cu_upt_dt,수정,,
+PREF01N001,cu_lev_fector,etkr:LeverageFactorRaw,attribute,label,product,none,none,none,cu_upt_dt,수정,,국내 표에서는 text로 제공된다
+PREF01N001,ref_ast_type,etkr:RefinitivAssetTypeRaw,attribute,label,product,none,none,none,ref_base_dt,수정,,
+PREF01N001,ref_geo_focus,etkr:RefinitivGeographicFocusRaw,attribute,label,product,none,none,none,ref_base_dt,수정,,
+PREF01N001,cu_charge_rt,etkr:TotalExpenseRate,metric,value,product,percent_observed,none,none,cu_upt_dt,수정,,text 원문을 수치로 parse하고 실패는 value status로 남긴다
+PREF01N001,cu_charge_etc_rt,,unbound,value,product,none,none,none,cu_upt_dt,제외,,값이 있는 행이 모두 0이라 binding을 만들지 않는다
+PREF01N001,du_er_1d,etkr:Return1D,metric,value,product,percent_observed,none,P1D,du_upt_dt,유지,,
+PREF01N001,du_er_1m,etkr:Return1M,metric,value,product,percent_observed,none,P1M,du_upt_dt,유지,,
+PREF01N001,du_er_3m,etkr:Return3M,metric,value,product,percent_observed,none,P3M,du_upt_dt,유지,,
+PREF01N001,du_er_6m,etkr:Return6M,metric,value,product,percent_observed,none,P6M,du_upt_dt,유지,,
+PREF01N001,du_er_1y,etkr:Return1Y,metric,value,product,percent_observed,none,P1Y,du_upt_dt,유지,,
+PREF01N001,du_er_ytd,etkr:ReturnYTD,metric,value,product,percent_observed,none,YTD,du_upt_dt,유지,,
+PREF01N001,du_vlty_1m,etkr:Volatility1M,metric,value,product,percent_observed,none,P1M,du_vlty_base_dt,수정,,최근 20거래일 연환산
+PREF01N001,du_vlty_3m,etkr:Volatility3M,metric,value,product,percent_observed,none,P3M,du_vlty_base_dt,수정,,최근 60거래일 연환산
+PREF01N001,du_vlty_6m,etkr:Volatility6M,metric,value,product,percent_observed,none,P6M,du_vlty_base_dt,수정,,최근 120거래일 연환산
+PREF01N001,du_vlty_1y,etkr:Volatility1Y,metric,value,product,percent_observed,none,P1Y,du_vlty_base_dt,수정,,최근 252거래일 연환산
+PREF01N001,du_chas_errt,etkr:TrackingErrorRate,metric,value,product,percent_observed,none,none,du_chas_errt_base_dt,유지,,
+PREF01N001,du_diff_rt,etkr:PremiumDiscountRate,metric,value,product,percent_observed,none,none,du_diff_rt_base_dt,유지,,
+PREF01N001,du_last_aum,etkr:AssetsUnderManagement,metric,value,product,currency_amount,field:pd_curr_cd,none,du_upt_dt,유지,,
+PREF01N001,pd_net_tamt,etkr:NetAssetsTotal,metric,value,product,currency_amount,field:pd_curr_cd,none,du_upt_dt,수정,,순자산총액
+PREF01N001,pd_circ_net_tamt,etkr:CirculatingNetAssets,metric,value,product,currency_amount,field:pd_curr_cd,none,du_upt_dt,수정,,유통순자산총액
+PREF01N001,du_last_nav,etkr:NetAssetValuePerShare,metric,value,product,price,field:pd_curr_cd,none,du_nav_base_dt,수정,,관측 크기가 기준가와 같은 자릿수여서 주당 값으로 본다
+PREF01N001,du_nav_yday,etkr:NetAssetValuePerSharePreviousDay,metric,value,product,price,field:pd_curr_cd,none,du_nav_base_dt,수정,,
+PREF01N001,du_nav_rnf_amt,etkr:NetAssetValueChangeAmount,metric,value,product,price,field:pd_curr_cd,P1D,du_nav_base_dt,수정,,
+PREF01N001,du_bpr,etkr:BasePrice,metric,value,product,price,field:pd_curr_cd,none,du_upt_dt,수정,,
+PREF01N001,du_clpr,etkr:ClosePrice,metric,value,product,price,field:pd_curr_cd,none,du_upt_dt,수정,,
+PREF01N001,du_hpr,etkr:HighPrice,metric,value,product,price,field:pd_curr_cd,P1D,du_upt_dt,수정,,
+PREF01N001,du_lpr,,unbound,value,product,none,none,none,du_upt_dt,미확정,,field명은 저가이나 schema 주석은 시가여서 의미 확정 전까지 승격하지 않는다
+PREF01N001,ru_mkt_price,etkr:MarketPrice,metric,value,product,price,field:pd_curr_cd,none,du_upt_dt,수정,,
+PREF01N001,ru_mkt_volume,etkr:MarketVolume,metric,value,product,count,none,none,du_upt_dt,수정,,
+PREF01N001,du_val_1d,etkr:TradingValue1D,metric,value,product,currency_amount,field:pd_curr_cd,P1D,du_upt_dt,유지,,
+PREF01N001,du_val_5d,etkr:TradingValueAverage5D,metric,value,product,currency_amount,field:pd_curr_cd,P5D,du_upt_dt,유지,,
+PREF01N001,du_val_1m,etkr:TradingValueAverage1M,metric,value,product,currency_amount,field:pd_curr_cd,P1M,du_upt_dt,유지,,
+PREF01N001,du_vol_1d,etkr:TradingVolume1D,metric,value,product,count,none,P1D,du_upt_dt,유지,,
+PREF01N001,du_vol_avg_5d,etkr:TradingVolumeAverage5D,metric,value,product,count,none,P5D,du_upt_dt,유지,,
+PREF01N001,du_vol_avg_1m,etkr:TradingVolumeAverage1M,metric,value,product,count,none,P1M,du_upt_dt,유지,,
+PREF01N001,pd_lst_stk_cnt,etkr:ListedShareCount,metric,value,product,count,none,none,du_upt_dt,수정,,상품상장주식수
+PREF01N001,pd_stk_cnt,etkr:ExchangeListedShareCount,metric,value,product,count,none,none,du_upt_dt,수정,,상장주식수
+PREF01N001,pd_circ_stk_cnt,etkr:CirculatingShareCount,metric,value,product,count,none,none,du_upt_dt,수정,,
+PREF01N001,pd_divd_amt_ann,etkr:AnnualEstimatedDistributionAmount,metric,value,product,price,field:pd_curr_cd,P1Y,pd_dvid_base_dt,수정,,
+PREF01N001,pd_divd_amt_pshr,etkr:DistributionAmountPerShare,metric,value,product,price,field:pd_curr_cd,none,pd_dvid_base_dt,수정,,
+PREF01N001,pd_dvid_yield,etkr:DistributionYield,metric,value,product,percent_observed,none,P1Y,pd_dvid_base_dt,수정,,연환산 분배수익률
+PREF01N001,pd_dvid_nav,etkr:DistributionBaseNav,metric,value,product,price,field:pd_curr_cd,none,pd_dvid_prc_base_dt,수정,,
+PREF01N001,pd_dvid_pay_cnt,etkr:DistributionPaymentCountAnnual,metric,value,product,count,none,P1Y,pd_dvid_base_dt,수정,,
+PREF01N001,pd_dvid_cycl,etkr:DistributionCycleRaw,attribute,code,product,none,none,none,pd_dvid_base_dt,수정,,
+PREF01N001,pd_dvid_pay_months,etkr:DistributionPaymentMonthsRaw,attribute,label,product,none,none,none,pd_dvid_base_dt,수정,,
+PREF01N001,pd_dvid_tax_basis,etkr:DistributionTaxBasisRaw,attribute,label,product,none,none,none,pd_dvid_base_dt,수정,,
+PREF01N001,pd_dvid_inc_dist,,unbound,value,product,none,none,none,pd_dvid_base_dt,제외,,전 행 결측이라 binding을 만들지 않는다
+PREF01N001,fn_average_coupon,etkr:PortfolioAverageCoupon,metric,value,product,percent_observed,none,none,fn_base_dt,수정,,
+PREF01N001,fn_average_quality,etkr:PortfolioAverageCreditQuality,attribute,label,product,none,none,none,fn_base_dt,수정,,
+PREF01N001,fn_effective_maturity,etkr:PortfolioEffectiveMaturity,metric,value,product,number,none,none,fn_base_dt,수정,,단위 선언이 없어 number로 둔다
+PREF01N001,fn_nominal_maturity,etkr:PortfolioNominalMaturity,metric,value,product,number,none,none,fn_base_dt,수정,,
+PREF01N001,fn_average_maturity,,unbound,value,product,none,none,none,fn_base_dt,제외,,전 행 결측
+PREF01N001,fn_effective_duration,,unbound,value,product,none,none,none,fn_base_dt,제외,,전 행 결측
+PREF01N001,fn_modified_duration,,unbound,value,product,none,none,none,fn_base_dt,제외,,전 행 결측
+PREF01N001,du_upt_dt,,as_of,date,product,none,none,none,,수정,,일간갱신일자
+PREF01N001,cu_upt_dt,,as_of,date,product,none,none,none,,수정,,변동갱신일자
+PREF01N001,wu_upt_dt,,as_of,date,product,none,none,none,,수정,,주간갱신일자
+PREF01N001,du_nav_base_dt,,as_of,date,product,none,none,none,,수정,,NAV 기준일
+PREF01N001,du_vlty_base_dt,,as_of,date,product,none,none,none,,수정,,변동성 산출 기준일
+PREF01N001,du_chas_errt_base_dt,,as_of,date,product,none,none,none,,수정,,추적오차율 기준일
+PREF01N001,du_diff_rt_base_dt,,as_of,date,product,none,none,none,,수정,,괴리율 기준일
+PREF01N001,fn_base_dt,,as_of,date,product,none,none,none,,수정,,펀더멘털 기준일
+PREF01N001,fn_portfolio_dt,,as_of,date,product,none,none,none,,수정,,포트폴리오 기준일
+PREF01N001,pd_dvid_base_dt,,as_of,date,product,none,none,none,,수정,,분배정보 기준일
+PREF01N001,pd_dvid_prc_base_dt,,as_of,date,product,none,none,none,,수정,,분배금 계산 NAV 기준일
+PREF01N001,ref_base_dt,,as_of,date,product,none,none,none,,수정,,Refinitiv 기준일
+PREF02N001,pd_itm_no,etgl:GlobalExchangeTradedProductNumber,identity_key,key,product,none,none,none,du_upt_dt,수정,,공식 상품번호를 product key로 사용한다
+PREF02N001,pd_itm_no_ma,cnn:HouseProductNumber,identifier,value,product,none,none,none,du_upt_dt,수정,,사내 조인키 scheme
+PREF02N001,pd_isin_cd,cnn:IsinIdentifier,identifier,value,product,none,none,none,du_upt_dt,수정,,같은 ISIN이 복수 행에 나타나므로 행 병합 key가 아니다
+PREF02N001,pd_lipper_id,etgl:LipperIdentifier,identifier,value,product,none,none,none,du_upt_dt,수정,,
+PREF02N001,pd_us_cik,etgl:SecCikIdentifier,identifier,value,product,none,none,none,du_upt_dt,수정,,원문에 선행 0이 없어 SEC 표기와 자릿수가 다르다
+PREF02N001,pd_nm,cnn:ProductName,identity_attribute,label,product,none,none,none,du_upt_dt,유지,official_product_name,
+PREF02N001,pd_abrv_nm,cnn:ProductShortName,identity_attribute,label,product,none,none,none,du_upt_dt,유지,,티커 형태의 약어명
+PREF02N001,pd_grp_no,cnn:ProductGroupKindRaw,attribute,label,product,none,none,none,du_upt_dt,수정,,ETF와 ETN을 구분하는 원문 값
+PREF02N001,cu_etn_yn,etgl:EtnFlagRaw,attribute,code,product,none,none,none,cu_upt_dt,수정,,
+PREF02N001,pd_curr_cd,cnn:ProductCurrency,attribute,code,product,none,none,none,du_upt_dt,유지,,펀드통화코드
+PREF02N001,pd_trd_ccy,etgl:TradingCurrency,attribute,code,product,none,none,none,du_upt_dt,수정,,거래통화코드
+PREF02N001,pd_exg_mkt_cd,cnn:ExchangeCodeRaw,attribute,code,product,none,none,none,du_upt_dt,미확정,,Exchange entity resolution 미완료
+PREF02N001,pd_mkt_id,cnn:MarketCodeRaw,attribute,code,product,none,none,none,du_upt_dt,미확정,,거래소국가코드
+PREF02N001,pd_lstg_dt,etgl:FundInceptionDate,attribute,date,product,none,none,none,du_upt_dt,수정,,설정일
+PREF02N001,pd_sale_yn,cnn:SaleStatusRaw,attribute,code,product,none,none,none,du_upt_dt,유지,,
+PREF02N001,pd_tr_yn,cnn:TradingStatusRaw,attribute,code,product,none,none,none,du_upt_dt,유지,,
+PREF02N001,cu_fund_mgmt_co,cnn:ManagementCompanyNameRaw,attribute,label,product,none,none,none,cu_upt_dt,미확정,,Organization entity resolution 미완료
+PREF02N001,cu_base_index,etgl:BaseIndexNameRaw,attribute,label,product,none,none,none,cu_upt_dt,미확정,,Benchmark entity resolution 미완료
+PREF02N001,cu_strtegy,etgl:StrategyRaw,attribute,label,product,none,none,none,cu_upt_dt,수정,,
+PREF02N001,cu_index_repl_mthd,etgl:IndexReplicationMethodRaw,attribute,label,product,none,none,none,cu_upt_dt,수정,,
+PREF02N001,cu_index_tracking_yn,etgl:IndexTrackingFlagRaw,attribute,code,product,none,none,none,cu_upt_dt,수정,,
+PREF02N001,cu_inverse_short_yn,etgl:InverseOrShortFlagRaw,attribute,code,product,none,none,none,cu_upt_dt,수정,,
+PREF02N001,cu_lev_fector,etgl:LeverageFactor,metric,value,product,multiplier,none,none,cu_upt_dt,수정,,해외 표에서는 수치로 제공된다
+PREF02N001,cu_charge_rt,etgl:AnnualExpenseRate,metric,value,product,percent_observed,none,P1Y,cu_upt_dt,수정,,연간보수율
+PREF02N001,du_er_1d,etgl:Return1D,metric,value,product,percent_observed,none,P1D,du_upt_dt,유지,,공식 표에 다기간 수익률이 없다
+PREF02N001,du_last_aum,etgl:AssetsUnderManagement,metric,value,product,currency_amount,field:pd_curr_cd,none,du_upt_dt,유지,,
+PREF02N001,du_last_nav,etgl:EstimatedNetAssetValuePerShare,metric,value,product,price,field:pd_curr_cd,none,du_nav_base_dt,수정,,추정 주당 NAV
+PREF02N001,du_bpr,etgl:BasePrice,metric,value,product,price,field:pd_trd_ccy,none,du_clpr_base_dt,수정,,
+PREF02N001,du_clpr,etgl:ClosePrice,metric,value,product,price,field:pd_trd_ccy,none,du_clpr_base_dt,수정,,
+PREF02N001,du_hpr,etgl:HighPrice,metric,value,product,price,field:pd_trd_ccy,P1D,du_clpr_base_dt,수정,,
+PREF02N001,du_lpr,etgl:LowPrice,metric,value,product,price,field:pd_trd_ccy,P1D,du_clpr_base_dt,수정,,
+PREF02N001,du_opr,etgl:OpenPrice,metric,value,product,price,field:pd_trd_ccy,P1D,du_clpr_base_dt,수정,,
+PREF02N001,du_diff_rt,etgl:PremiumDiscountRate,metric,value,product,percent_observed,none,none,du_clpr_base_dt,수정,,관측 행이 매우 적다
+PREF02N001,du_val_1d,etgl:TradingValue1D,metric,value,product,currency_amount,field:pd_trd_ccy,P1D,du_upt_dt,수정,,외화거래대금
+PREF02N001,du_vol_1d,etgl:TradingVolume1D,metric,value,product,count,none,P1D,du_upt_dt,수정,,
+PREF02N001,ru_mkt_price,etgl:RealtimeMarketPrice,metric,value,product,price,field:pd_trd_ccy,none,du_upt_dt,수정,,
+PREF02N001,ru_mkt_volume,etgl:RealtimeMarketVolume,metric,value,product,count,none,none,du_upt_dt,수정,,
+PREF02N001,pd_lst_stk_cnt,etgl:ListedShareCount,metric,value,product,count,none,none,du_upt_dt,수정,,
+PREF02N001,pd_lst_price,etgl:FaceValue,metric,value,product,price,field:pd_trd_ccy,none,du_upt_dt,수정,,대부분 0이라 0 제외 모집단이 작다
+PREF02N001,du_clpr_src,etgl:ClosePriceSourceColumnRaw,attribute,label,product,none,none,none,du_clpr_base_dt,추가,,선택된 종가의 원천 컬럼 provenance
+PREF02N001,du_base_dt_match_yn,etgl:NavCloseDateMatchFlagRaw,attribute,code,product,none,none,none,du_upt_dt,추가,,NAV와 종가 기준일 일치 여부
+PREF02N001,wu_core_yn,etgl:CoreProductFlagRaw,attribute,code,product,none,none,none,wu_upt_dt,수정,,
+PREF02N001,wu_inv_ast_type,cnn:InvestmentAssetTypeRaw,attribute,label,product,none,none,none,wu_upt_dt,수정,,
+PREF02N001,wu_inv_rgn,cnn:InvestmentRegionRaw,attribute,label,product,none,none,none,wu_upt_dt,수정,,
+PREF02N001,du_upt_dt,,as_of,date,product,none,none,none,,수정,,일간갱신일자
+PREF02N001,cu_upt_dt,,as_of,date,product,none,none,none,,수정,,변동갱신일자
+PREF02N001,wu_upt_dt,,as_of,date,product,none,none,none,,수정,,주간갱신일자
+PREF02N001,du_nav_base_dt,,as_of,date,product,none,none,none,,수정,,NAV 원천 기준일
+PREF02N001,du_clpr_base_dt,,as_of,date,product,none,none,none,,수정,,선택된 종가의 원천 기준일
+PRFD01N001,itm_no,fdpb:PublicFundShareClassNumber,identity_key,key,product_class,none,none,none,fd_daily_bas_dt,유지,,공식 종목번호를 class key로 사용한다
+PRFD01N001,std_itm_no,fdpb:StandardItemNumber,identifier,value,product_class,none,none,none,fd_daily_bas_dt,수정,,외부 holdings 수집이 사용한 표준종목번호
+PRFD01N001,ksd_itm_no,fdpb:KsdItemNumber,identifier,value,product_class,none,none,none,fd_daily_bas_dt,수정,,
+PRFD01N001,fss_itm_no,fdpb:FssItemNumber,identifier,value,product_class,none,none,none,fd_daily_bas_dt,수정,,0으로만 이루어진 값은 식별자가 아니다
+PRFD01N001,mtco_itm_no,fdpb:ManagementCompanyItemNumber,identifier,value,product_class,none,none,none,fd_daily_bas_dt,수정,,
+PRFD01N001,rptt_ksd_itm_no,fdpb:RepresentativeClassGroupKey,class_group,value,product_class,none,none,none,fd_daily_bas_dt,수정,,class grouping 후보이며 portfolio와 동일시하지 않는다
+PRFD01N001,itm_nm,cnn:ProductName,identity_attribute,label,product_class,none,none,none,fd_daily_bas_dt,유지,official_product_name,
+PRFD01N001,itm_abrv_nm,cnn:ProductShortName,identity_attribute,label,product_class,none,none,none,fd_daily_bas_dt,유지,,
+PRFD01N001,itm_eng_nm,cnn:ProductNameEnglish,identity_attribute,label,product_class,none,none,none,fd_daily_bas_dt,유지,,
+PRFD01N001,itm_eabrv_nm,cnn:ProductShortNameEnglish,identity_attribute,label,product_class,none,none,none,fd_daily_bas_dt,유지,,
+PRFD01N001,han_clas_nm,fdpb:ShareClassDisplayName,attribute,label,product_class,none,none,none,fd_daily_bas_dt,유지,,
+PRFD01N001,han_clas_fee_type,fdpb:ShareClassFeeTypeRaw,attribute,label,product_class,none,none,none,fd_daily_bas_dt,유지,,
+PRFD01N001,han_clas_sales_channel,fdpb:ShareClassSalesChannelRaw,attribute,label,product_class,none,none,none,fd_daily_bas_dt,유지,,
+PRFD01N001,han_clas_policies,fdpb:ShareClassAdditionalPolicyRaw,attribute,label,product_class,none,none,none,fd_daily_bas_dt,유지,,
+PRFD01N001,curr_cd,cnn:ProductCurrency,attribute,code,product_class,none,none,none,fd_daily_bas_dt,유지,,금액 계열 metric의 currency source
+PRFD01N001,sale_yn,cnn:SaleStatusRaw,attribute,label,product_class,none,none,none,fd_daily_bas_dt,수정,,수집 scope 표현이며 공식 eligibility로 해석하지 않는다
+PRFD01N001,thco_sale_yn,fdpb:HouseSaleStatusRaw,attribute,code,product_class,none,none,none,fd_daily_bas_dt,수정,,당사판매여부는 판매여부와 별개 축이다
+PRFD01N001,prvo_pbff_desc,fdpb:PublicOrPrivateOfferingRaw,attribute,label,product_class,none,none,none,fd_daily_bas_dt,추가,,공모와 사모를 구분하는 원문 설명
+PRFD01N001,prvo_fd_desc,fdpb:PrivateFundCategoryRaw,attribute,label,product_class,none,none,none,fd_daily_bas_dt,수정,,
+PRFD01N001,ovrs_fd_desc,fdpb:OverseasFundCategoryRaw,attribute,label,product_class,none,none,none,fd_daily_bas_dt,수정,,
+PRFD01N001,pers_corp_desc,fdpb:IndividualOrCorporateRaw,attribute,label,product_class,none,none,none,fd_daily_bas_dt,수정,,
+PRFD01N001,int_dvd_desc,fdpb:InterestOrDividendCategoryRaw,attribute,label,product_class,none,none,none,fd_daily_bas_dt,수정,,
+PRFD01N001,or_attr_desc,fdpb:ManagementAttributeRaw,attribute,label,product_class,none,none,none,fd_daily_bas_dt,수정,,
+PRFD01N001,fd_ivst_rgn_desc,cnn:InvestmentRegionRaw,attribute,label,product_class,none,none,none,fd_daily_bas_dt,수정,,
+PRFD01N001,fd_set_pcd,fdpb:FundEstablishmentTypeRaw,attribute,code,product_class,none,none,none,fd_daily_bas_dt,수정,,
+PRFD01N001,fd_estb_ctry_cd,cnn:ProductCountryCode,attribute,code,product_class,none,none,none,fd_daily_bas_dt,수정,,펀드설립국가코드
+PRFD01N001,kofia_fd_ccd,fdpb:KofiaFundClassificationRaw,attribute,code,product_class,none,none,none,fd_daily_bas_dt,수정,,
+PRFD01N001,pfiv_sale_cntl_tcd,fdpb:ProfessionalInvestorSaleControlRaw,attribute,code,product_class,none,none,none,fd_daily_bas_dt,수정,,
+PRFD01N001,ofsfd_yn,fdpb:OffshoreFundFlagRaw,attribute,code,product_class,none,none,none,fd_daily_bas_dt,수정,,
+PRFD01N001,hdge_fd_yn,fdpb:HedgeFundFlagRaw,attribute,code,product_class,none,none,none,fd_daily_bas_dt,수정,,
+PRFD01N001,exchdg_yn,fdpb:CurrencyHedgedFlagRaw,attribute,code,product_class,none,none,none,fd_daily_bas_dt,수정,,
+PRFD01N001,frc_bpr_itm_yn,fdpb:ForeignCurrencyBasePriceFlagRaw,attribute,code,product_class,none,none,none,fd_daily_bas_dt,수정,,
+PRFD01N001,bmrk_nm,fdpb:BenchmarkNameRaw,attribute,label,product_class,none,none,none,fd_daily_bas_dt,미확정,,Benchmark entity resolution 미완료
+PRFD01N001,bmrk_eng_nm,fdpb:BenchmarkNameEnglishRaw,attribute,label,product_class,none,none,none,fd_daily_bas_dt,미확정,,
+PRFD01N001,or_co_xtn_itt_cd,fdpb:ManagementCompanyExternalCodeRaw,attribute,code,product_class,none,none,none,fd_daily_bas_dt,미확정,,Organization entity resolution 미완료
+PRFD01N001,trusc_xtn_itt_cd,fdpb:TrusteeCompanyExternalCodeRaw,attribute,code,product_class,none,none,none,fd_daily_bas_dt,미확정,,
+PRFD01N001,fd_nast_suma,fdpb:FundNetAssets,metric,value,product_class,currency_amount,field:curr_cd,none,fd_daily_bas_dt,유지,,
+PRFD01N001,bns_bpr,fdpb:TradingBasePrice,metric,value,product_class,price,field:curr_cd,none,fd_price_bas_dt,수정,,매매기준가
+PRFD01N001,fd_sbpr,fdpb:MarketValuationAmount,metric,value,product_class,price,field:curr_cd,none,fd_price_bas_dt,수정,,시가평가금액
+PRFD01N001,fd_mm1_ern_r,fdpb:Return1M,metric,value,product_class,percent_observed,none,P1M,fd_price_bas_dt,유지,,
+PRFD01N001,fd_mm3_ern_r,fdpb:Return3M,metric,value,product_class,percent_observed,none,P3M,fd_price_bas_dt,유지,,
+PRFD01N001,fd_mm6_ern_r,fdpb:Return6M,metric,value,product_class,percent_observed,none,P6M,fd_price_bas_dt,유지,,
+PRFD01N001,fd_mm18_ern_r,fdpb:Return18M,metric,value,product_class,percent_observed,none,P18M,fd_price_bas_dt,유지,,
+PRFD01N001,fd_yr1_ern_r,fdpb:Return1Y,metric,value,product_class,percent_observed,none,P1Y,fd_price_bas_dt,유지,,
+PRFD01N001,fd_yr2_ern_r,fdpb:Return2Y,metric,value,product_class,percent_observed,none,P2Y,fd_price_bas_dt,유지,,
+PRFD01N001,fd_yr3_ern_r,fdpb:Return3Y,metric,value,product_class,percent_observed,none,P3Y,fd_price_bas_dt,유지,,
+PRFD01N001,fd_yr5_ern_r,fdpb:Return5Y,metric,value,product_class,percent_observed,none,P5Y,fd_price_bas_dt,유지,,
+PRFD01N001,fd_wk1_ern_r,,unbound,value,product_class,none,none,none,fd_price_bas_dt,제외,,전 행 결측이라 binding을 만들지 않는다
+PRFD01N001,or_co_rwrd_r,fdpb:ManagementFeeRate,metric,value,product_class,percent_observed,none,P1Y,fd_daily_bas_dt,유지,,집합투자업자보수
+PRFD01N001,sale_co_rwrd_r,fdpb:DistributorFeeRate,metric,value,product_class,percent_observed,none,P1Y,fd_daily_bas_dt,유지,,판매회사보수
+PRFD01N001,trusc_rwrd_r,fdpb:TrusteeFeeRate,metric,value,product_class,percent_observed,none,P1Y,fd_daily_bas_dt,유지,,신탁업자보수
+PRFD01N001,ofwk_trus_rwrd_r,fdpb:GeneralAdministrationFeeRate,metric,value,product_class,percent_observed,none,P1Y,fd_daily_bas_dt,유지,,일반사무관리보수
+PRFD01N001,fd_prsv_r,fdpb:PreservationRate,metric,value,product_class,percent_observed,none,none,fd_daily_bas_dt,수정,,
+PRFD01N001,fd_last_dstb_r,fdpb:LastDistributionRate,metric,value,product_class,percent_observed,none,none,fd_last_dstb_actg_eot_dt,수정,,
+PRFD01N001,zrin_dmst_stk_cmst_rt,fdpb:DomesticEquityShare,metric,value,product_class,percent_observed,none,none,fd_price_bas_dt,수정,,제로인 자산구성비율
+PRFD01N001,zrin_dmst_bd_cmst_rt,fdpb:DomesticBondShare,metric,value,product_class,percent_observed,none,none,fd_price_bas_dt,수정,,
+PRFD01N001,zrin_ovrs_stk_cmst_rt,fdpb:OverseasEquityShare,metric,value,product_class,percent_observed,none,none,fd_price_bas_dt,수정,,
+PRFD01N001,zrin_ovrs_bd_cmst_rt,fdpb:OverseasBondShare,metric,value,product_class,percent_observed,none,none,fd_price_bas_dt,수정,,
+PRFD01N001,zrin_fd_cmst_rt,fdpb:FundShare,metric,value,product_class,percent_observed,none,none,fd_price_bas_dt,수정,,
+PRFD01N001,zrin_liqt_cmst_rt,fdpb:LiquidityShare,metric,value,product_class,percent_observed,none,none,fd_price_bas_dt,수정,,
+PRFD01N001,zrin_etc_ast_cmst_rt,fdpb:OtherAssetShare,metric,value,product_class,percent_observed,none,none,fd_price_bas_dt,수정,,
+PRFD01N001,zrin_fd_ivst_risk_gcd,fdpb:InvestmentRiskGrade,attribute,code,product_class,none,none,none,fd_price_bas_dt,수정,,제로인 투자위험등급
+PRFD01N001,zrin_fd_ivst_risk_grd_nm,fdpb:InvestmentRiskGrade,attribute,label,product_class,none,none,none,fd_price_bas_dt,수정,,
+PRFD01N001,zrin_btyp_cd,fdpb:ZeroinMajorTypeRaw,attribute,code,product_class,none,none,none,fd_price_bas_dt,수정,,
+PRFD01N001,zrin_btyp_nm,fdpb:ZeroinMajorTypeRaw,attribute,label,product_class,none,none,none,fd_price_bas_dt,수정,,
+PRFD01N001,zrin_pcd,fdpb:ZeroinTypeRaw,attribute,code,product_class,none,none,none,fd_price_bas_dt,수정,,
+PRFD01N001,zrin_ptn_nm,fdpb:ZeroinTypeRaw,attribute,label,product_class,none,none,none,fd_price_bas_dt,수정,,
+PRFD01N001,zrin_attr_nms,fdpb:ZeroinAttributeNamesRaw,attribute,label,product_class,none,none,none,fd_price_bas_dt,수정,,
+PRFD01N001,prfd_attr_cds,fdpb:FundAttributeCodesRaw,attribute,label,product_class,none,none,none,fd_daily_bas_dt,수정,,쉼표로 구분된 원문 목록
+PRFD01N001,prfd_attr_search_text,fdpb:FundAttributeSearchTextRaw,attribute,label,product_class,none,none,none,fd_daily_bas_dt,수정,,
+PRFD01N001,prfd_attr_cnt,fdpb:FundAttributeCountRaw,attribute,code,product_class,none,none,none,fd_daily_bas_dt,수정,,text로 제공되어 수치 연산을 허용하지 않는다
+PRFD01N001,fd_daily_bas_dt,,as_of,date,product_class,none,none,none,,수정,,펀드데일리정보 기준일자
+PRFD01N001,fd_price_bas_dt,,as_of,date,product_class,none,none,none,,수정,,펀드 기준가·수익률 기준일자
+PRFD01N001,fd_last_dstb_actg_bss_dt,,as_of,date,product_class,none,none,none,,수정,,최근 분배 회계기초일자
+PRFD01N001,fd_last_dstb_actg_eot_dt,,as_of,date,product_class,none,none,none,,수정,,최근 분배 회계기말일자

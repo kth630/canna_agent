@@ -1,0 +1,522 @@
+@prefix fdpb: <https://canna.local/ontology/fund-pub#> .
+@prefix cnn:  <https://canna.local/ontology/core#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+<https://canna.local/ontology/fund-pub>
+    a owl:Ontology ;
+    owl:imports <https://canna.local/ontology/core> ;
+    rdfs:label "공모펀드 온톨로지"@ko ;
+    rdfs:comment """공식 표의 행은 판매 클래스 단위다. 대표 클래스 묶음, 운용 포트폴리오, 보유내역은
+서로 다른 단위이며 합치지 않는다. 승인된 단일 총보수 정의가 없으므로 보수는 구성요소로만 둔다."""@ko .
+
+##  1. 개체와 식별자
+
+fdpb:PubliclyOfferedFund a owl:Class ;
+    rdfs:subClassOf cnn:ProjectProduct ;
+    rdfs:label "공모펀드"@ko ;
+    cnn:approvedAlias "펀드"@ko , "공모 집합투자기구"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ;
+    cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:alignmentDecision "유지" ;
+    rdfs:comment "공식 표에는 공모와 사모가 함께 있으므로 구분 원값으로 판단한다."@ko .
+
+fdpb:PublicFundShareClass a owl:Class ;
+    rdfs:subClassOf cnn:ProductClass , fdpb:PubliclyOfferedFund ;
+    rdfs:label "공모펀드 판매 클래스"@ko ;
+    cnn:approvedAlias "펀드 클래스"@ko , "클래스"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ;
+    cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:alignmentDecision "유지" ;
+    rdfs:comment "사용자에게 반환하는 기본 단위이며 같은 포트폴리오를 여러 클래스가 공유한다."@ko .
+
+fdpb:RepresentativeClassGroup a owl:Class ;
+    rdfs:subClassOf cnn:ProductClassGroup ;
+    rdfs:label "대표 클래스 묶음"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ;
+    cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:alignmentDecision "수정" ;
+    rdfs:comment "대표 예탁원 종목번호 기준 묶음이며 운용 포트폴리오와 자동으로 같지 않다."@ko .
+
+fdpb:PublicFundShareClassNumber a cnn:IdentifierScheme ;
+    rdfs:label "펀드 종목번호"@ko ; cnn:approvedAlias "종목번호"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "유지" .
+
+fdpb:StandardItemNumber a cnn:IdentifierScheme ;
+    rdfs:label "표준종목번호"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "외부 보유내역 수집이 클래스 조회 key 로 사용한 값이다."@ko .
+
+fdpb:KsdItemNumber a cnn:IdentifierScheme ;
+    rdfs:label "예탁원 종목번호"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+fdpb:FssItemNumber a cnn:IdentifierScheme ;
+    rdfs:label "금융감독원 종목번호"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ;
+    cnn:meaningStatus "placeholder_values_present" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "0 으로만 이루어진 값은 식별자가 아니라 자리채움이다."@ko .
+
+fdpb:ManagementCompanyItemNumber a cnn:IdentifierScheme ;
+    rdfs:label "운용사 종목번호"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+fdpb:RepresentativeClassGroupKey a cnn:IdentifierScheme ;
+    rdfs:label "대표 예탁원 종목번호"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ;
+    cnn:meaningStatus "placeholder_values_present" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "외부 보유내역 수집의 포트폴리오 식별자와 값이 일치하는 것으로 관측됐다."@ko .
+
+##  2. 클래스 속성
+
+fdpb:ShareClassDisplayName a cnn:AttributeType ;
+    rdfs:label "클래스 표기"@ko ; cnn:approvedAlias "클래스명"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "유지" .
+
+fdpb:ShareClassFeeTypeRaw a cnn:AttributeType ;
+    rdfs:label "클래스 수수료 부과 유형"@ko ; cnn:approvedAlias "선취"@ko , "후취"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "유지" .
+
+fdpb:ShareClassSalesChannelRaw a cnn:AttributeType ;
+    rdfs:label "클래스 판매채널"@ko ; cnn:approvedAlias "온라인 클래스"@ko , "판매채널"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "유지" .
+
+fdpb:ShareClassAdditionalPolicyRaw a cnn:AttributeType ;
+    rdfs:label "클래스 부가 정책"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "유지" .
+
+fdpb:HouseSaleStatusRaw a cnn:AttributeType ;
+    rdfs:label "당사 판매여부 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:CountOperation ;
+    cnn:meaningStatus "flag_polarity_unverified" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "판매여부와 다른 축이므로 하나로 합치지 않는다."@ko .
+
+fdpb:PublicOrPrivateOfferingRaw a cnn:AttributeType ;
+    rdfs:label "공모·사모 구분 원값"@ko ; cnn:approvedAlias "공모"@ko , "사모"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "추가" .
+
+fdpb:PrivateFundCategoryRaw a cnn:AttributeType ;
+    rdfs:label "사모펀드 구분 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+fdpb:OverseasFundCategoryRaw a cnn:AttributeType ;
+    rdfs:label "해외펀드 구분 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+fdpb:IndividualOrCorporateRaw a cnn:AttributeType ;
+    rdfs:label "개인·법인 구분 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+fdpb:InterestOrDividendCategoryRaw a cnn:AttributeType ;
+    rdfs:label "이자·배당 구분 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+fdpb:ManagementAttributeRaw a cnn:AttributeType ;
+    rdfs:label "운용속성 구분 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+fdpb:FundEstablishmentTypeRaw a cnn:AttributeType ;
+    rdfs:label "펀드 설정유형 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+fdpb:KofiaFundClassificationRaw a cnn:AttributeType ;
+    rdfs:label "금융투자협회 펀드분류 원값"@ko ; cnn:approvedAlias "펀드 유형"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+fdpb:ProfessionalInvestorSaleControlRaw a cnn:AttributeType ;
+    rdfs:label "전문투자자 판매제어 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+fdpb:OffshoreFundFlagRaw a cnn:AttributeType ;
+    rdfs:label "역외펀드 여부 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:CountOperation ;
+    cnn:meaningStatus "flag_polarity_unverified" ; cnn:alignmentDecision "수정" .
+
+fdpb:HedgeFundFlagRaw a cnn:AttributeType ;
+    rdfs:label "헤지펀드 여부 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:CountOperation ;
+    cnn:meaningStatus "flag_polarity_unverified" ; cnn:alignmentDecision "수정" .
+
+fdpb:CurrencyHedgedFlagRaw a cnn:AttributeType ;
+    rdfs:label "환헤지 여부 원값"@ko ; cnn:approvedAlias "환헤지"@ko , "헤지형"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:CountOperation ;
+    cnn:meaningStatus "flag_polarity_unverified" ; cnn:alignmentDecision "수정" .
+
+fdpb:ForeignCurrencyBasePriceFlagRaw a cnn:AttributeType ;
+    rdfs:label "외화 기준가 종목 여부 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:evidenceRequirement cnn:RequiresUnitAndCurrency ;
+    cnn:meaningStatus "flag_polarity_unverified" ; cnn:alignmentDecision "수정" .
+
+fdpb:BenchmarkNameRaw a cnn:AttributeType ;
+    rdfs:label "벤치마크명 원값"@ko ; cnn:approvedAlias "벤치마크"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "entity_resolution_pending" ; cnn:alignmentDecision "미확정" .
+
+fdpb:BenchmarkNameEnglishRaw a cnn:AttributeType ;
+    rdfs:label "벤치마크 영문명 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "entity_resolution_pending" ; cnn:alignmentDecision "미확정" .
+
+fdpb:ManagementCompanyExternalCodeRaw a cnn:AttributeType ;
+    rdfs:label "운용회사 대외기관코드 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "entity_resolution_pending" ; cnn:alignmentDecision "미확정" .
+
+fdpb:TrusteeCompanyExternalCodeRaw a cnn:AttributeType ;
+    rdfs:label "수탁회사 대외기관코드 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "entity_resolution_pending" ; cnn:alignmentDecision "미확정" .
+
+fdpb:InvestmentRiskGrade a cnn:AttributeType ;
+    rdfs:label "펀드 투자위험등급"@ko ; cnn:approvedAlias "위험등급"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "external_provider_scale" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "외부 평가사 등급이며 공식 상품 위험등급과 같은 척도로 취급하지 않는다."@ko .
+
+fdpb:ZeroinMajorTypeRaw a cnn:AttributeType ;
+    rdfs:label "외부 평가사 대유형 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "external_provider_taxonomy" ; cnn:alignmentDecision "수정" .
+
+fdpb:ZeroinTypeRaw a cnn:AttributeType ;
+    rdfs:label "외부 평가사 유형 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "external_provider_taxonomy" ; cnn:alignmentDecision "수정" .
+
+fdpb:ZeroinAttributeNamesRaw a cnn:AttributeType ;
+    rdfs:label "외부 평가사 속성명 목록 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "external_provider_taxonomy" ; cnn:alignmentDecision "수정" .
+
+fdpb:FundAttributeCodesRaw a cnn:AttributeType ;
+    rdfs:label "펀드 속성코드 목록 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+fdpb:FundAttributeSearchTextRaw a cnn:AttributeType ;
+    rdfs:label "상품검색용 속성 텍스트 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+fdpb:FundAttributeCountRaw a cnn:AttributeType ;
+    rdfs:label "펀드 속성 개수 원값"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "text_encoded_number" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "원문이 text 라 수치 연산 대상으로 승격하지 않는다."@ko .
+
+##  3. 기간 수익률
+
+fdpb:Return1M a cnn:MetricType ;
+    rdfs:label "1개월 수익률"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period1M ;
+    cnn:comparisonGroup "public_fund:return" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "유지" .
+
+fdpb:Return3M a cnn:MetricType ;
+    rdfs:label "3개월 수익률"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period3M ;
+    cnn:comparisonGroup "public_fund:return" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "유지" .
+
+fdpb:Return6M a cnn:MetricType ;
+    rdfs:label "6개월 수익률"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period6M ;
+    cnn:comparisonGroup "public_fund:return" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "유지" .
+
+fdpb:Return18M a cnn:MetricType ;
+    rdfs:label "18개월 수익률"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period18M ;
+    cnn:comparisonGroup "public_fund:return" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "유지" .
+
+fdpb:Return1Y a cnn:MetricType ;
+    rdfs:label "1년 수익률"@ko ; cnn:approvedAlias "연간 수익률"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period1Y ;
+    cnn:comparisonGroup "public_fund:return" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "유지" .
+
+fdpb:Return2Y a cnn:MetricType ;
+    rdfs:label "2년 수익률"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period2Y ;
+    cnn:comparisonGroup "public_fund:return" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "유지" .
+
+fdpb:Return3Y a cnn:MetricType ;
+    rdfs:label "3년 수익률"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period3Y ;
+    cnn:comparisonGroup "public_fund:return" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "유지" .
+
+fdpb:Return5Y a cnn:MetricType ;
+    rdfs:label "5년 수익률"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period5Y ;
+    cnn:comparisonGroup "public_fund:return" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "유지" .
+
+##  4. 보수 구성요소 - 승인된 합계 정의가 없다
+
+fdpb:ManagementFeeRate a cnn:MetricType ;
+    rdfs:label "집합투자업자보수"@ko ; cnn:approvedAlias "운용보수"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period1Y ;
+    cnn:comparisonGroup "public_fund:fee_component" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation ;
+    cnn:evidenceRequirement cnn:RequiresValueStatus ;
+    cnn:meaningStatus "component_only_no_official_total" ; cnn:alignmentDecision "유지" ;
+    rdfs:comment "구성요소를 임의로 합산해 총보수라고 부르지 않는다."@ko .
+
+fdpb:DistributorFeeRate a cnn:MetricType ;
+    rdfs:label "판매회사보수"@ko ; cnn:approvedAlias "판매보수"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period1Y ;
+    cnn:comparisonGroup "public_fund:fee_component" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation ;
+    cnn:evidenceRequirement cnn:RequiresValueStatus ;
+    cnn:meaningStatus "component_only_no_official_total" ; cnn:alignmentDecision "유지" .
+
+fdpb:TrusteeFeeRate a cnn:MetricType ;
+    rdfs:label "신탁업자보수"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period1Y ;
+    cnn:comparisonGroup "public_fund:fee_component" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresValueStatus ;
+    cnn:meaningStatus "component_only_no_official_total" ; cnn:alignmentDecision "유지" .
+
+fdpb:GeneralAdministrationFeeRate a cnn:MetricType ;
+    rdfs:label "일반사무관리보수"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period1Y ;
+    cnn:comparisonGroup "public_fund:fee_component" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresValueStatus ;
+    cnn:meaningStatus "component_only_no_official_total" ; cnn:alignmentDecision "유지" .
+
+##  5. 규모·가격·분배 지표
+
+fdpb:FundNetAssets a cnn:MetricType ;
+    rdfs:label "펀드 순자산"@ko ; cnn:approvedAlias "설정액"@ko , "순자산"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:CurrencyAmount ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "public_fund:net_assets" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresUnitAndCurrency ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "currency_mixed" ; cnn:alignmentDecision "유지" ;
+    rdfs:comment "통화가 섞여 있으므로 통화 확인 없이 합산하지 않는다."@ko .
+
+fdpb:TradingBasePrice a cnn:MetricType ;
+    rdfs:label "매매기준가"@ko ; cnn:approvedAlias "기준가"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "public_fund:base_price" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresUnitAndCurrency ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+fdpb:MarketValuationAmount a cnn:MetricType ;
+    rdfs:label "시가평가금액"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "public_fund:valuation" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+fdpb:PreservationRate a cnn:MetricType ;
+    rdfs:label "보전율"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "public_fund:preservation_rate" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresValueStatus ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "수정" .
+
+fdpb:LastDistributionRate a cnn:MetricType ;
+    rdfs:label "최근 분배율"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "public_fund:distribution_rate" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "회계 기간이 상품마다 달라 기준일을 반드시 함께 제시한다."@ko .
+
+##  6. 자산구성 비율 - 외부 평가사 관측
+
+fdpb:DomesticEquityShare a cnn:MetricType ;
+    rdfs:label "국내주식 구성비율"@ko ; cnn:approvedAlias "국내주식 비중"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "public_fund:asset_share" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "external_provider_estimate" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "보유내역 관측이 아니라 외부 평가사가 계산한 구성비율이다."@ko .
+
+fdpb:DomesticBondShare a cnn:MetricType ;
+    rdfs:label "국내채권 구성비율"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "public_fund:asset_share" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "external_provider_estimate" ; cnn:alignmentDecision "수정" .
+
+fdpb:OverseasEquityShare a cnn:MetricType ;
+    rdfs:label "해외주식 구성비율"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "public_fund:asset_share" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "external_provider_estimate" ; cnn:alignmentDecision "수정" .
+
+fdpb:OverseasBondShare a cnn:MetricType ;
+    rdfs:label "해외채권 구성비율"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "public_fund:asset_share" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "external_provider_estimate" ; cnn:alignmentDecision "수정" .
+
+fdpb:FundShare a cnn:MetricType ;
+    rdfs:label "펀드 구성비율"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "public_fund:asset_share" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "external_provider_estimate" ; cnn:alignmentDecision "수정" .
+
+fdpb:LiquidityShare a cnn:MetricType ;
+    rdfs:label "유동성 구성비율"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "public_fund:asset_share" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "external_provider_estimate" ; cnn:alignmentDecision "수정" .
+
+fdpb:OtherAssetShare a cnn:MetricType ;
+    rdfs:label "기타자산 구성비율"@ko ;
+    cnn:appliesToFamily cnn:PublicFundFamily ; cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "public_fund:asset_share" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "external_provider_estimate" ; cnn:alignmentDecision "수정" .
+
+##  7. SHACL
+
+fdpb:PublicFundShareClassShape a sh:NodeShape ;
+    sh:targetClass fdpb:PublicFundShareClass ;
+    sh:property [ sh:path cnn:familyOfSubject ; sh:hasValue "public_fund" ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:hasIdentifier ; sh:class cnn:Identifier ; sh:minCount 1 ] ;
+    sh:property [ sh:path cnn:memberOfClassGroup ; sh:class cnn:ProductClassGroup ;
+                  sh:maxCount 1 ;
+                  sh:description "대표 묶음이 없는 클래스도 유효하다"@ko ] .
+
+fdpb:RepresentativeClassGroupShape a sh:NodeShape ;
+    sh:targetClass fdpb:RepresentativeClassGroup ;
+    sh:property [ sh:path cnn:identifierValue ; sh:datatype xsd:string ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:mapsToPortfolio ; sh:class cnn:Portfolio ; sh:maxCount 1 ;
+                  sh:description "묶음과 포트폴리오를 자동으로 동일시하지 않는다"@ko ] .

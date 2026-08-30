@@ -1,0 +1,812 @@
+@prefix cnn:  <https://canna.local/ontology/core#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+<https://canna.local/ontology/core>
+    a owl:Ontology ;
+    rdfs:label "Canna 공통 금융상품 온톨로지"@ko ;
+    rdfs:comment """공식 네 상품군과 외부 holdings 관측이 공유하는 개념·관계·관측 모델의 TBox다.
+물리 table/column, 실행 시점 coverage 와 freshness 는 이 온톨로지에 넣지 않고 Data Catalog 와
+Execution Registry 가 소유한다."""@ko .
+
+##  1. 등록 어휘 - Semantic Registry 가 읽는 주석 속성
+
+cnn:semanticGrain a owl:AnnotationProperty ;
+    rdfs:label "의미 grain"@ko ;
+    rdfs:comment "이 용어가 서술하는 대상의 조회 단위다."@ko .
+
+cnn:appliesToFamily a owl:AnnotationProperty ;
+    rdfs:label "적용 상품군"@ko .
+
+cnn:observationPeriod a owl:AnnotationProperty ;
+    rdfs:label "관측 기간"@ko .
+
+cnn:unitKind a owl:AnnotationProperty ;
+    rdfs:label "단위 종류"@ko .
+
+cnn:currencyPolicy a owl:AnnotationProperty ;
+    rdfs:label "통화 결정 방식"@ko .
+
+cnn:allowedOperation a owl:AnnotationProperty ;
+    rdfs:label "허용 연산"@ko ;
+    rdfs:comment "의미상 허용되는 연산이며 실제 실행 가능 여부는 Execution Registry 가 결정한다."@ko .
+
+cnn:approvedAlias a owl:AnnotationProperty ;
+    rdfs:label "승인된 별칭"@ko ;
+    rdfs:comment "규칙 검색과 embedding 검색이 함께 사용하는 승인된 표현이다."@ko .
+
+cnn:evidenceRequirement a owl:AnnotationProperty ;
+    rdfs:label "Evidence 요구"@ko .
+
+cnn:comparisonGroup a owl:AnnotationProperty ;
+    rdfs:label "비교 가능 그룹"@ko ;
+    rdfs:comment "같은 그룹의 용어끼리만 직접 비교·통합 순위를 시도할 수 있다."@ko .
+
+cnn:meaningStatus a owl:AnnotationProperty ;
+    rdfs:label "의미 확정 상태"@ko .
+
+cnn:alignmentDecision a owl:AnnotationProperty ;
+    rdfs:label "0-D 정렬 판정"@ko ;
+    rdfs:comment "기존 Ontology 대조에서 기록한 유지·수정·제외·추가·미확정 판정이다."@ko .
+
+cnn:familyId a owl:AnnotationProperty ;
+    rdfs:label "상품군 식별자"@ko .
+
+cnn:periodCode a owl:AnnotationProperty ;
+    rdfs:label "기간 코드"@ko .
+
+cnn:unitCode a owl:AnnotationProperty ;
+    rdfs:label "단위 코드"@ko .
+
+cnn:operationCode a owl:AnnotationProperty ;
+    rdfs:label "연산 코드"@ko .
+
+cnn:statusCode a owl:AnnotationProperty ;
+    rdfs:label "상태 코드"@ko .
+
+##  2. 등록 어휘의 값 집합
+
+cnn:SemanticGrain a owl:Class ; rdfs:label "의미 grain"@ko .
+cnn:ProductGrain a cnn:SemanticGrain ; cnn:statusCode "product" ;
+    rdfs:label "상품"@ko .
+cnn:ProductClassGrain a cnn:SemanticGrain ; cnn:statusCode "product_class" ;
+    rdfs:label "상품 클래스"@ko .
+cnn:PortfolioGrain a cnn:SemanticGrain ; cnn:statusCode "portfolio" ;
+    rdfs:label "포트폴리오"@ko .
+cnn:SecurityGrain a cnn:SemanticGrain ; cnn:statusCode "security" ;
+    rdfs:label "종목"@ko .
+cnn:SourceRowGrain a cnn:SemanticGrain ; cnn:statusCode "source_row" ;
+    rdfs:label "원본 행"@ko .
+cnn:HoldingObservationGrain a cnn:SemanticGrain ; cnn:statusCode "raw_holding_observation" ;
+    rdfs:label "원시 보유 관측"@ko .
+cnn:CollectionFailureGrain a cnn:SemanticGrain ; cnn:statusCode "collection_failure" ;
+    rdfs:label "수집 실패 기록"@ko .
+
+cnn:ProductFamily a owl:Class ; rdfs:label "상품군"@ko .
+cnn:DomesticBondFamily a cnn:ProductFamily ; cnn:familyId "domestic_bond" ;
+    rdfs:label "국내채권"@ko .
+cnn:DomesticExchangeTradedFamily a cnn:ProductFamily ; cnn:familyId "domestic_etp" ;
+    rdfs:label "국내 ETF·ETN"@ko .
+cnn:OverseasExchangeTradedFamily a cnn:ProductFamily ; cnn:familyId "overseas_etp" ;
+    rdfs:label "해외 ETF·ETN"@ko .
+cnn:PublicFundFamily a cnn:ProductFamily ; cnn:familyId "public_fund" ;
+    rdfs:label "공모펀드"@ko .
+
+cnn:Period a owl:Class ; rdfs:label "관측 기간"@ko .
+cnn:Period1D a cnn:Period ; cnn:periodCode "P1D" ; rdfs:label "1일"@ko .
+cnn:Period5D a cnn:Period ; cnn:periodCode "P5D" ; rdfs:label "5거래일"@ko .
+cnn:Period1M a cnn:Period ; cnn:periodCode "P1M" ; rdfs:label "1개월"@ko .
+cnn:Period3M a cnn:Period ; cnn:periodCode "P3M" ; rdfs:label "3개월"@ko .
+cnn:Period6M a cnn:Period ; cnn:periodCode "P6M" ; rdfs:label "6개월"@ko .
+cnn:Period18M a cnn:Period ; cnn:periodCode "P18M" ; rdfs:label "18개월"@ko .
+cnn:Period1Y a cnn:Period ; cnn:periodCode "P1Y" ; rdfs:label "1년"@ko .
+cnn:Period2Y a cnn:Period ; cnn:periodCode "P2Y" ; rdfs:label "2년"@ko .
+cnn:Period3Y a cnn:Period ; cnn:periodCode "P3Y" ; rdfs:label "3년"@ko .
+cnn:Period5Y a cnn:Period ; cnn:periodCode "P5Y" ; rdfs:label "5년"@ko .
+cnn:PeriodYTD a cnn:Period ; cnn:periodCode "YTD" ; rdfs:label "연초 이후"@ko .
+cnn:PeriodPointInTime a cnn:Period ; cnn:periodCode "none" ; rdfs:label "시점"@ko .
+
+cnn:Unit a owl:Class ; rdfs:label "단위"@ko .
+cnn:PercentObserved a cnn:Unit ; cnn:unitCode "percent_observed" ;
+    rdfs:label "백분율(관측 기준)"@ko ;
+    rdfs:comment "공식 스키마가 단위를 선언하지 않았고 관측된 값의 크기가 백분율 표기와 일치한다."@ko .
+cnn:CurrencyAmount a cnn:Unit ; cnn:unitCode "currency_amount" ;
+    rdfs:label "통화 금액"@ko .
+cnn:PriceUnit a cnn:Unit ; cnn:unitCode "price" ; rdfs:label "단가"@ko .
+cnn:CountUnit a cnn:Unit ; cnn:unitCode "count" ; rdfs:label "수량"@ko .
+cnn:DaysUnit a cnn:Unit ; cnn:unitCode "days" ; rdfs:label "일수"@ko .
+cnn:MultiplierUnit a cnn:Unit ; cnn:unitCode "multiplier" ; rdfs:label "배수"@ko .
+cnn:NumberUnit a cnn:Unit ; cnn:unitCode "number" ;
+    rdfs:label "단위 미선언 수치"@ko ;
+    rdfs:comment "원천이 단위를 선언하지 않아 수치로만 보존한다."@ko .
+cnn:NoUnit a cnn:Unit ; cnn:unitCode "none" ; rdfs:label "해당 없음"@ko .
+
+cnn:Operation a owl:Class ; rdfs:label "연산"@ko .
+cnn:FilterOperation a cnn:Operation ; cnn:operationCode "filter" ; rdfs:label "조건"@ko .
+cnn:OrderOperation a cnn:Operation ; cnn:operationCode "order" ; rdfs:label "정렬"@ko .
+cnn:AggregateOperation a cnn:Operation ; cnn:operationCode "aggregate" ; rdfs:label "집계"@ko .
+cnn:CountOperation a cnn:Operation ; cnn:operationCode "count" ; rdfs:label "개수"@ko .
+cnn:GroupOperation a cnn:Operation ; cnn:operationCode "group" ; rdfs:label "그룹"@ko .
+cnn:CompareOperation a cnn:Operation ; cnn:operationCode "compare" ; rdfs:label "비교"@ko .
+cnn:ExistsOperation a cnn:Operation ; cnn:operationCode "exists" ; rdfs:label "존재"@ko .
+
+cnn:EvidenceRequirementKind a owl:Class ; rdfs:label "Evidence 요구 종류"@ko .
+cnn:RequiresSourceRecord a cnn:EvidenceRequirementKind ; cnn:statusCode "source_record" ;
+    rdfs:label "원본 record 식별자"@ko .
+cnn:RequiresEffectiveAsOf a cnn:EvidenceRequirementKind ; cnn:statusCode "effective_as_of" ;
+    rdfs:label "실효 기준일"@ko .
+cnn:RequiresRequestedAsOf a cnn:EvidenceRequirementKind ; cnn:statusCode "requested_as_of" ;
+    rdfs:label "요청 기준일"@ko .
+cnn:RequiresValueStatus a cnn:EvidenceRequirementKind ; cnn:statusCode "value_status" ;
+    rdfs:label "값 상태"@ko .
+cnn:RequiresUnitAndCurrency a cnn:EvidenceRequirementKind ; cnn:statusCode "unit_currency" ;
+    rdfs:label "단위와 통화"@ko .
+cnn:RequiresCoverageUniverse a cnn:EvidenceRequirementKind ; cnn:statusCode "coverage_universe" ;
+    rdfs:label "coverage 모집단"@ko .
+cnn:RequiresRelationKind a cnn:EvidenceRequirementKind ; cnn:statusCode "relation_kind" ;
+    rdfs:label "관계 종류"@ko .
+cnn:RequiresIdentifierScheme a cnn:EvidenceRequirementKind ; cnn:statusCode "identifier_scheme" ;
+    rdfs:label "식별자 scheme 과 상태"@ko .
+cnn:RequiresProductGrainDedup a cnn:EvidenceRequirementKind ; cnn:statusCode "product_grain_dedup" ;
+    rdfs:label "상품 grain 중복 제거"@ko .
+
+cnn:ValueStatus a owl:Class ; rdfs:label "값 상태"@ko .
+cnn:ValidStatus a cnn:ValueStatus ; cnn:statusCode "valid" ; rdfs:label "유효"@ko .
+cnn:ZeroExcludedStatus a cnn:ValueStatus ; cnn:statusCode "zero_excluded" ;
+    rdfs:label "0 제외"@ko ;
+    rdfs:comment "원본값 0 을 보존하되 조건·정렬·비교·집계 모집단에서 제외한다."@ko .
+cnn:ParseFailedStatus a cnn:ValueStatus ; cnn:statusCode "parse_failed" ;
+    rdfs:label "수치 해석 실패"@ko .
+cnn:DateParseFailedStatus a cnn:ValueStatus ; cnn:statusCode "date_parse_failed" ;
+    rdfs:label "일자 해석 실패"@ko .
+
+cnn:AsOfStatus a owl:Class ; rdfs:label "기준일 상태"@ko .
+cnn:EffectiveDeclaredStatus a cnn:AsOfStatus ; cnn:statusCode "effective_declared" ;
+    rdfs:label "실효일 선언됨"@ko .
+cnn:EffectiveReportedStatus a cnn:AsOfStatus ; cnn:statusCode "effective_reported" ;
+    rdfs:label "원천 보고 실효일"@ko .
+cnn:RequestedOnlyStatus a cnn:AsOfStatus ; cnn:statusCode "requested_only" ;
+    rdfs:label "요청일만 확인됨"@ko ;
+    rdfs:comment "실효일이 확인되지 않았으므로 현재 시점 주장으로 승격하지 않는다."@ko .
+cnn:AsOfUnknownStatus a cnn:AsOfStatus ; cnn:statusCode "unknown" ; rdfs:label "미확인"@ko .
+cnn:AsOfNotDeclaredStatus a cnn:AsOfStatus ; cnn:statusCode "not_declared" ;
+    rdfs:label "선언 없음"@ko .
+
+cnn:ResolutionStatus a owl:Class ; rdfs:label "식별 해석 상태"@ko .
+cnn:ChecksumVerified a cnn:ResolutionStatus ; cnn:statusCode "checksum_verified" ;
+    rdfs:label "검사숫자 검증"@ko .
+cnn:FormatMatched a cnn:ResolutionStatus ; cnn:statusCode "format_matched" ;
+    rdfs:label "형식 일치"@ko .
+cnn:FormatMatchedChecksumFailed a cnn:ResolutionStatus ;
+    cnn:statusCode "format_matched_checksum_failed" ; rdfs:label "형식 일치·검사숫자 불일치"@ko .
+cnn:UnverifiedScheme a cnn:ResolutionStatus ; cnn:statusCode "unverified_scheme" ;
+    rdfs:label "scheme 미확정"@ko .
+cnn:IdentifierAbsent a cnn:ResolutionStatus ; cnn:statusCode "absent" ;
+    rdfs:label "식별자 없음"@ko .
+cnn:DeclaredBySource a cnn:ResolutionStatus ; cnn:statusCode "declared_by_source" ;
+    rdfs:label "원천 선언"@ko .
+cnn:PlaceholderIdentifier a cnn:ResolutionStatus ; cnn:statusCode "placeholder" ;
+    rdfs:label "자리채움 값"@ko .
+
+cnn:MappingStatus a owl:Class ; rdfs:label "매핑 상태"@ko .
+cnn:ExactMapping a cnn:MappingStatus ; cnn:statusCode "exact" ; rdfs:label "정확 매핑"@ko .
+cnn:AmbiguousMapping a cnn:MappingStatus ; cnn:statusCode "ambiguous" ; rdfs:label "다건 후보"@ko .
+cnn:UnresolvedMapping a cnn:MappingStatus ; cnn:statusCode "unresolved" ; rdfs:label "미해결"@ko .
+
+cnn:SnapshotScope a owl:Class ; rdfs:label "스냅샷 범위"@ko .
+cnn:FullSnapshot a cnn:SnapshotScope ; cnn:statusCode "full" ; rdfs:label "전량"@ko .
+cnn:PartialSnapshot a cnn:SnapshotScope ; cnn:statusCode "partial" ; rdfs:label "부분"@ko .
+cnn:UnknownSnapshot a cnn:SnapshotScope ; cnn:statusCode "unknown" ;
+    rdfs:label "미확인"@ko ;
+    rdfs:comment "전량 여부를 확인하지 못했으므로 완전 coverage 주장에 쓰지 않는다."@ko .
+
+cnn:RelationKind a owl:Class ; rdfs:label "보유 관계 종류"@ko .
+cnn:DirectHoldingKind a cnn:RelationKind ; cnn:statusCode "direct_holding" ;
+    rdfs:label "직접 보유"@ko .
+cnn:LookThroughKind a cnn:RelationKind ; cnn:statusCode "look_through_exposure" ;
+    rdfs:label "look-through 익스포저"@ko .
+cnn:UnclassifiedRelationKind a cnn:RelationKind ; cnn:statusCode "unclassified" ;
+    rdfs:label "미분류"@ko .
+
+##  3. 개체 클래스
+
+cnn:ProjectProduct a owl:Class ;
+    rdfs:label "조회 대상 금융상품"@ko ;
+    cnn:approvedAlias "상품"@ko , "금융상품"@ko , "product"@en ;
+    cnn:semanticGrain cnn:ProductGrain ;
+    cnn:alignmentDecision "수정" ;
+    rdfs:comment "사용자에게 반환하는 상품 단위이며 원본 행과 같지 않다."@ko .
+
+cnn:ProductClass a owl:Class ;
+    rdfs:subClassOf cnn:ProjectProduct ;
+    rdfs:label "상품 클래스"@ko ;
+    cnn:approvedAlias "클래스"@ko , "판매 클래스"@ko , "share class"@en ;
+    cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:alignmentDecision "유지" ;
+    rdfs:comment "같은 포트폴리오를 공유할 수 있는 판매·보수 단위다."@ko .
+
+cnn:ProductClassGroup a owl:Class ;
+    rdfs:label "상품 클래스 그룹"@ko ;
+    cnn:approvedAlias "대표 클래스 그룹"@ko ;
+    cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:alignmentDecision "추가" ;
+    rdfs:comment "원천이 제공하는 대표 종목번호 기준 묶음이며 포트폴리오와 같지 않다."@ko .
+
+cnn:Portfolio a owl:Class ;
+    rdfs:label "포트폴리오"@ko ;
+    cnn:approvedAlias "운용 포트폴리오"@ko , "portfolio"@en ;
+    cnn:semanticGrain cnn:PortfolioGrain ;
+    cnn:alignmentDecision "추가" ;
+    rdfs:comment "보유내역 스냅샷의 보유 주체이며 상품·클래스와 분리한다."@ko .
+
+cnn:Security a owl:Class ;
+    rdfs:label "종목"@ko ;
+    cnn:approvedAlias "구성종목"@ko , "보유종목"@ko , "security"@en ;
+    cnn:semanticGrain cnn:SecurityGrain ;
+    cnn:alignmentDecision "수정" ;
+    rdfs:comment "식별자 scheme 과 해석 상태가 확인된 종목만 개체로 만든다."@ko .
+
+cnn:Observation a owl:Class ;
+    rdfs:label "관측"@ko ;
+    cnn:alignmentDecision "유지" .
+
+cnn:MetricObservation a owl:Class ;
+    rdfs:subClassOf cnn:Observation ;
+    rdfs:label "지표 관측"@ko ;
+    cnn:alignmentDecision "수정" ;
+    rdfs:comment "주체·지표·기간·실효일·출처가 함께 있는 하나의 수치 관측이다."@ko .
+
+cnn:AttributeObservation a owl:Class ;
+    rdfs:subClassOf cnn:Observation ;
+    rdfs:label "속성 관측"@ko ;
+    cnn:alignmentDecision "추가" ;
+    rdfs:comment "코드·라벨·일자 원문을 의미 확정 여부와 무관하게 보존한다."@ko .
+
+cnn:HoldingObservation a owl:Class ;
+    rdfs:subClassOf cnn:Observation ;
+    rdfs:label "원시 보유 관측"@ko ;
+    cnn:semanticGrain cnn:HoldingObservationGrain ;
+    cnn:alignmentDecision "수정" ;
+    rdfs:comment "종목 식별자가 없어도 보존하며 Security 연결은 조건부다."@ko .
+
+cnn:ProductPortfolioMapping a owl:Class ;
+    rdfs:label "상품·포트폴리오 매핑"@ko ;
+    cnn:alignmentDecision "추가" ;
+    rdfs:comment "매핑 상태와 근거를 관계와 함께 보존한다."@ko .
+
+cnn:Identifier a owl:Class ;
+    rdfs:label "식별자"@ko ;
+    cnn:alignmentDecision "수정" .
+
+cnn:IdentifierScheme a owl:Class ;
+    rdfs:label "식별자 scheme"@ko ;
+    cnn:alignmentDecision "수정" .
+
+cnn:DataSource a owl:Class ;
+    rdfs:label "데이터 출처"@ko ;
+    cnn:alignmentDecision "유지" .
+
+cnn:CoverageObservation a owl:Class ;
+    rdfs:label "coverage 관측"@ko ;
+    cnn:alignmentDecision "추가" ;
+    rdfs:comment "값 상태와 독립된 모집단·수집 결과 상태다."@ko .
+
+cnn:CollectionFailure a owl:Class ;
+    rdfs:label "수집 실패"@ko ;
+    cnn:alignmentDecision "추가" ;
+    rdfs:comment "실패를 0 이나 거짓 관계로 바꾸지 않기 위한 명시 상태다."@ko .
+
+cnn:SourceConflict a owl:Class ;
+    rdfs:label "출처 충돌"@ko ;
+    cnn:alignmentDecision "추가" .
+
+cnn:MetricType a owl:Class ;
+    rdfs:label "지표 종류"@ko ;
+    cnn:alignmentDecision "수정" .
+
+cnn:AttributeType a owl:Class ;
+    rdfs:label "속성 종류"@ko ;
+    cnn:alignmentDecision "추가" .
+
+##  4. 관계 - 방향과 grain 을 명시한다
+
+cnn:hasIdentifier a owl:ObjectProperty ;
+    rdfs:label "식별자를 가진다"@ko ;
+    rdfs:domain cnn:ProjectProduct ; rdfs:range cnn:Identifier ;
+    cnn:semanticGrain cnn:ProductGrain ;
+    cnn:evidenceRequirement cnn:RequiresIdentifierScheme ;
+    cnn:alignmentDecision "수정" .
+
+cnn:identifierScheme a owl:ObjectProperty ;
+    rdfs:label "식별자 scheme"@ko ;
+    rdfs:domain cnn:Identifier ; rdfs:range cnn:IdentifierScheme ;
+    cnn:alignmentDecision "수정" .
+
+cnn:memberOfClassGroup a owl:ObjectProperty ;
+    rdfs:label "클래스 그룹에 속한다"@ko ;
+    rdfs:domain cnn:ProductClass ; rdfs:range cnn:ProductClassGroup ;
+    cnn:semanticGrain cnn:ProductClassGrain ;
+    cnn:alignmentDecision "수정" ;
+    rdfs:comment "대표 종목번호 묶음이며 포트폴리오 관계로 대체하지 않는다."@ko .
+
+cnn:mapsToPortfolio a owl:ObjectProperty ;
+    rdfs:label "포트폴리오에 매핑된다"@ko ;
+    cnn:approvedAlias "운용 포트폴리오 연결"@ko ;
+    rdfs:domain cnn:ProjectProduct ; rdfs:range cnn:Portfolio ;
+    cnn:semanticGrain cnn:ProductGrain ;
+    cnn:allowedOperation cnn:ExistsOperation , cnn:FilterOperation ;
+    cnn:evidenceRequirement cnn:RequiresSourceRecord , cnn:RequiresCoverageUniverse ;
+    cnn:alignmentDecision "추가" .
+
+cnn:mappedSubject a owl:ObjectProperty ;
+    rdfs:label "매핑된 상품·클래스"@ko ;
+    rdfs:domain cnn:ProductPortfolioMapping ; rdfs:range cnn:ProjectProduct ;
+    cnn:alignmentDecision "추가" ;
+    rdfs:comment "매핑 기록의 주체이며 상품에서 포트폴리오로 가는 단축 관계와 구분한다."@ko .
+
+cnn:mappedPortfolio a owl:ObjectProperty ;
+    rdfs:label "매핑된 포트폴리오"@ko ;
+    rdfs:domain cnn:ProductPortfolioMapping ; rdfs:range cnn:Portfolio ;
+    cnn:alignmentDecision "추가" ;
+    rdfs:comment "미해결 매핑에는 이 관계가 없다."@ko .
+
+cnn:portfolioOfObservation a owl:ObjectProperty ;
+    rdfs:label "관측의 포트폴리오"@ko ;
+    rdfs:domain cnn:HoldingObservation ; rdfs:range cnn:Portfolio ;
+    cnn:semanticGrain cnn:HoldingObservationGrain ;
+    cnn:alignmentDecision "수정" .
+
+cnn:heldSecurity a owl:ObjectProperty ;
+    rdfs:label "관측이 가리키는 종목"@ko ;
+    rdfs:domain cnn:HoldingObservation ; rdfs:range cnn:Security ;
+    cnn:semanticGrain cnn:HoldingObservationGrain ;
+    cnn:evidenceRequirement cnn:RequiresIdentifierScheme ;
+    cnn:alignmentDecision "수정" ;
+    rdfs:comment "식별자가 해석되지 않은 관측에는 이 관계를 만들지 않는다."@ko .
+
+cnn:parentPortfolio a owl:ObjectProperty ;
+    rdfs:label "상위 포트폴리오"@ko ;
+    rdfs:domain cnn:HoldingObservation ; rdfs:range cnn:Portfolio ;
+    cnn:alignmentDecision "추가" ;
+    rdfs:comment "look-through 관측이 어떤 모펀드에서 왔는지 보존한다."@ko .
+
+cnn:directlyHoldsSecurity a owl:ObjectProperty ;
+    rdfs:label "종목을 직접 보유한다"@ko ;
+    cnn:approvedAlias "구성종목으로 담고 있다"@ko , "직접 편입"@ko ;
+    rdfs:domain cnn:ProjectProduct ; rdfs:range cnn:Security ;
+    owl:inverseOf cnn:isDirectlyHeldBy ;
+    cnn:semanticGrain cnn:ProductGrain ;
+    cnn:allowedOperation cnn:ExistsOperation , cnn:FilterOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresRelationKind , cnn:RequiresEffectiveAsOf ,
+        cnn:RequiresCoverageUniverse , cnn:RequiresProductGrainDedup ,
+        cnn:RequiresIdentifierScheme ;
+    cnn:alignmentDecision "수정" ;
+    rdfs:comment "포트폴리오 관측에서 파생되는 단축 관계이며 관측의 중복을 상품 수로 쓰지 않는다."@ko .
+
+cnn:isDirectlyHeldBy a owl:ObjectProperty ;
+    rdfs:label "이 종목을 직접 보유한 상품"@ko ;
+    cnn:approvedAlias "이 종목을 담은 상품"@ko ;
+    rdfs:domain cnn:Security ; rdfs:range cnn:ProjectProduct ;
+    cnn:semanticGrain cnn:SecurityGrain ;
+    cnn:allowedOperation cnn:ExistsOperation , cnn:FilterOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresRelationKind , cnn:RequiresCoverageUniverse ,
+        cnn:RequiresProductGrainDedup ;
+    cnn:alignmentDecision "추가" .
+
+cnn:hasLookThroughExposureTo a owl:ObjectProperty ;
+    rdfs:label "look-through 익스포저를 가진다"@ko ;
+    cnn:approvedAlias "모펀드를 통해 보유"@ko ;
+    rdfs:domain cnn:ProjectProduct ; rdfs:range cnn:Security ;
+    owl:inverseOf cnn:isLookThroughExposureOf ;
+    cnn:semanticGrain cnn:ProductGrain ;
+    cnn:allowedOperation cnn:ExistsOperation , cnn:FilterOperation ;
+    cnn:evidenceRequirement cnn:RequiresRelationKind , cnn:RequiresEffectiveAsOf ,
+        cnn:RequiresCoverageUniverse , cnn:RequiresProductGrainDedup ;
+    cnn:alignmentDecision "추가" ;
+    rdfs:comment "직접 보유와 합치지 않는다."@ko .
+
+cnn:isLookThroughExposureOf a owl:ObjectProperty ;
+    rdfs:label "이 종목에 look-through 익스포저를 가진 상품"@ko ;
+    rdfs:domain cnn:Security ; rdfs:range cnn:ProjectProduct ;
+    cnn:semanticGrain cnn:SecurityGrain ;
+    cnn:alignmentDecision "추가" .
+
+cnn:observedSubject a owl:ObjectProperty ;
+    rdfs:label "관측 대상"@ko ;
+    rdfs:domain cnn:Observation ; rdfs:range cnn:ProjectProduct ;
+    cnn:alignmentDecision "수정" .
+
+cnn:metricType a owl:ObjectProperty ;
+    rdfs:label "관측 지표"@ko ;
+    rdfs:domain cnn:MetricObservation ; rdfs:range cnn:MetricType ;
+    cnn:alignmentDecision "유지" .
+
+cnn:attributeType a owl:ObjectProperty ;
+    rdfs:label "관측 속성"@ko ;
+    rdfs:domain cnn:AttributeObservation ; rdfs:range cnn:AttributeType ;
+    cnn:alignmentDecision "추가" .
+
+cnn:fromSource a owl:ObjectProperty ;
+    rdfs:label "출처"@ko ;
+    rdfs:domain cnn:Observation ; rdfs:range cnn:DataSource ;
+    cnn:alignmentDecision "유지" .
+
+cnn:coverageOfFamily a owl:ObjectProperty ;
+    rdfs:label "coverage 대상 상품군"@ko ;
+    rdfs:domain cnn:CoverageObservation ; rdfs:range cnn:ProductFamily ;
+    cnn:alignmentDecision "추가" .
+
+##  5. 데이터 속성
+
+cnn:subjectKey a owl:DatatypeProperty ; rdfs:label "주체 key"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "추가" .
+cnn:familyOfSubject a owl:DatatypeProperty ; rdfs:label "상품군 식별자"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "추가" .
+cnn:identifierValue a owl:DatatypeProperty ; rdfs:label "식별자 값"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "유지" .
+cnn:resolutionStatus a owl:DatatypeProperty ; rdfs:label "식별 해석 상태"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "추가" .
+cnn:numericValue a owl:DatatypeProperty ; rdfs:label "수치 값"@ko ;
+    rdfs:range xsd:double ; cnn:alignmentDecision "유지" .
+cnn:rawTextValue a owl:DatatypeProperty ; rdfs:label "원문 값"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "추가" .
+cnn:codeValue a owl:DatatypeProperty ; rdfs:label "코드 값"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "수정" .
+cnn:labelValue a owl:DatatypeProperty ; rdfs:label "라벨 값"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "수정" .
+cnn:dateValue a owl:DatatypeProperty ; rdfs:label "일자 값"@ko ;
+    rdfs:range xsd:date ; cnn:alignmentDecision "수정" .
+cnn:unitCodeValue a owl:DatatypeProperty ; rdfs:label "단위 코드"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "수정" .
+cnn:currencyCode a owl:DatatypeProperty ; rdfs:label "통화 코드"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "유지" .
+cnn:periodCodeValue a owl:DatatypeProperty ; rdfs:label "기간 코드"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "추가" .
+cnn:effectiveAsOf a owl:DatatypeProperty ; rdfs:label "실효 기준일"@ko ;
+    rdfs:range xsd:date ; cnn:alignmentDecision "추가" .
+cnn:requestedAsOf a owl:DatatypeProperty ; rdfs:label "요청 기준일"@ko ;
+    rdfs:range xsd:date ; cnn:alignmentDecision "추가" .
+cnn:asOfStatus a owl:DatatypeProperty ; rdfs:label "기준일 상태"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "추가" .
+cnn:valueStatus a owl:DatatypeProperty ; rdfs:label "값 상태"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "수정" .
+cnn:relationKind a owl:DatatypeProperty ; rdfs:label "관계 종류"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "추가" .
+cnn:snapshotScope a owl:DatatypeProperty ; rdfs:label "스냅샷 범위"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "추가" .
+cnn:mappingStatusValue a owl:DatatypeProperty ; rdfs:label "매핑 상태"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "추가" .
+cnn:mappingBasis a owl:DatatypeProperty ; rdfs:label "매핑 근거"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "추가" .
+cnn:sourceRecordId a owl:DatatypeProperty ; rdfs:label "원본 record 식별자"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "유지" .
+cnn:sourceRowId a owl:DatatypeProperty ; rdfs:label "원본 행 식별자"@ko ;
+    rdfs:range xsd:string ; cnn:semanticGrain cnn:SourceRowGrain ;
+    cnn:alignmentDecision "추가" .
+cnn:heldSecurityIdentifierRaw a owl:DatatypeProperty ; rdfs:label "보유 종목 식별자 원값"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "추가" .
+cnn:heldSecurityNameRaw a owl:DatatypeProperty ; rdfs:label "보유 종목명 원값"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "추가" ;
+    rdfs:comment "이름만으로 종목 관계를 만들지 않는다."@ko .
+cnn:quantityValue a owl:DatatypeProperty ; rdfs:label "보유 수량"@ko ;
+    rdfs:range xsd:double ; cnn:alignmentDecision "유지" .
+cnn:weightValue a owl:DatatypeProperty ; rdfs:label "보유 비중"@ko ;
+    rdfs:range xsd:double ; cnn:alignmentDecision "수정" .
+cnn:valueAmount a owl:DatatypeProperty ; rdfs:label "보유 평가금액"@ko ;
+    rdfs:range xsd:double ; cnn:alignmentDecision "수정" .
+cnn:sourceDigest a owl:DatatypeProperty ; rdfs:label "출처 해시"@ko ;
+    rdfs:range xsd:string ; cnn:alignmentDecision "유지" .
+cnn:sourcePrecedence a owl:DatatypeProperty ; rdfs:label "출처 우선순위"@ko ;
+    rdfs:range xsd:integer ; cnn:alignmentDecision "추가" ;
+    rdfs:comment "공식 데이터가 외부 데이터보다 앞선다."@ko .
+
+##  6. 공통 식별자 scheme
+
+cnn:IsinIdentifier a cnn:IdentifierScheme ;
+    rdfs:label "ISIN"@ko ; cnn:approvedAlias "국제증권식별번호"@ko , "ISIN"@en ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+cnn:RicIdentifier a cnn:IdentifierScheme ;
+    rdfs:label "RIC"@ko ; cnn:approvedAlias "Refinitiv 코드"@ko ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+cnn:TickerIdentifier a cnn:IdentifierScheme ;
+    rdfs:label "티커"@ko ; cnn:approvedAlias "종목 티커"@ko , "ticker"@en ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+cnn:HouseProductNumber a cnn:IdentifierScheme ;
+    rdfs:label "사내 상품번호"@ko ; cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+cnn:KrxShortCodeIdentifier a cnn:IdentifierScheme ;
+    rdfs:label "KRX 단축코드"@ko ; cnn:approvedAlias "종목코드"@ko ;
+    cnn:meaningStatus "format_verified_only" ; cnn:alignmentDecision "추가" .
+cnn:SourceTickerIdentifierRaw a cnn:IdentifierScheme ;
+    rdfs:label "원천 티커 원값"@ko ; cnn:meaningStatus "scheme_unverified" ;
+    cnn:alignmentDecision "추가" .
+cnn:SourceDeclaredIdentifierRaw a cnn:IdentifierScheme ;
+    rdfs:label "원천 선언 식별자 원값"@ko ; cnn:meaningStatus "scheme_unverified" ;
+    cnn:alignmentDecision "추가" .
+cnn:NoIdentifierProvided a cnn:IdentifierScheme ;
+    rdfs:label "식별자 미제공"@ko ; cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "추가" .
+cnn:PortfolioIdentifier a cnn:IdentifierScheme ;
+    rdfs:label "포트폴리오 식별자"@ko ; cnn:meaningStatus "source_declared" ;
+    cnn:alignmentDecision "추가" .
+cnn:SourceProductIdentifierRaw a cnn:IdentifierScheme ;
+    rdfs:label "수집 원천 상품 식별자"@ko ; cnn:meaningStatus "source_declared" ;
+    cnn:alignmentDecision "추가" .
+cnn:HeldSecurityIdentifierRaw a cnn:IdentifierScheme ;
+    rdfs:label "보유 종목 식별자 원값"@ko ; cnn:meaningStatus "scheme_unverified" ;
+    cnn:alignmentDecision "추가" .
+
+##  7. 공통 속성 종류
+
+cnn:ProductName a cnn:AttributeType ;
+    rdfs:label "상품명"@ko ; cnn:approvedAlias "종목명"@ko , "펀드명"@ko , "이름"@ko ;
+    cnn:semanticGrain cnn:ProductGrain , cnn:ProductClassGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresSourceRecord ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "유지" .
+cnn:ProductShortName a cnn:AttributeType ;
+    rdfs:label "상품약어명"@ko ; cnn:approvedAlias "약어명"@ko ;
+    cnn:semanticGrain cnn:ProductGrain , cnn:ProductClassGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation ; cnn:meaningStatus "confirmed" ;
+    cnn:alignmentDecision "유지" .
+cnn:ProductNameEnglish a cnn:AttributeType ;
+    rdfs:label "상품영문명"@ko ; cnn:approvedAlias "영문명"@ko ;
+    cnn:semanticGrain cnn:ProductGrain , cnn:ProductClassGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation ; cnn:meaningStatus "confirmed" ;
+    cnn:alignmentDecision "유지" .
+cnn:ProductShortNameEnglish a cnn:AttributeType ;
+    rdfs:label "상품영문약어명"@ko ;
+    cnn:semanticGrain cnn:ProductGrain , cnn:ProductClassGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation ; cnn:meaningStatus "confirmed" ;
+    cnn:alignmentDecision "유지" .
+cnn:ProductCurrency a cnn:AttributeType ;
+    rdfs:label "상품 통화"@ko ; cnn:approvedAlias "통화"@ko , "표시통화"@ko ;
+    cnn:semanticGrain cnn:ProductGrain , cnn:ProductClassGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresUnitAndCurrency ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "유지" .
+cnn:ProductCountryCode a cnn:AttributeType ;
+    rdfs:label "국가 코드"@ko ; cnn:approvedAlias "설립국가"@ko ;
+    cnn:semanticGrain cnn:ProductGrain , cnn:ProductClassGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+cnn:ProductMidCategoryName a cnn:AttributeType ;
+    rdfs:label "상품 중분류명"@ko ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "유지" .
+cnn:ProductSubCategoryName a cnn:AttributeType ;
+    rdfs:label "상품 소분류명"@ko ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "유지" .
+cnn:ProductGroupKindRaw a cnn:AttributeType ;
+    rdfs:label "상품군 종류 원값"@ko ; cnn:approvedAlias "ETF 여부"@ko , "ETN 여부"@ko ;
+    cnn:semanticGrain cnn:ProductGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation , cnn:CountOperation ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+cnn:ProductRiskGrade a cnn:AttributeType ;
+    rdfs:label "상품 위험등급"@ko ; cnn:approvedAlias "위험등급"@ko , "투자위험등급"@ko ;
+    cnn:semanticGrain cnn:ProductGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation , cnn:CountOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "유지" .
+cnn:PensionTradingFlagRaw a cnn:AttributeType ;
+    rdfs:label "연금 거래 가능 여부 원값"@ko ; cnn:approvedAlias "퇴직연금 편입 가능"@ko ;
+    cnn:semanticGrain cnn:ProductGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "flag_polarity_unverified" ; cnn:alignmentDecision "수정" .
+cnn:SaleStatusRaw a cnn:AttributeType ;
+    rdfs:label "판매 상태 원값"@ko ; cnn:approvedAlias "판매여부"@ko , "판매중"@ko ;
+    cnn:semanticGrain cnn:ProductGrain , cnn:ProductClassGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation , cnn:CountOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "유지" ;
+    rdfs:comment "거래 상태와 다른 축이며 수집 scope 표현과 공식 판매 자격을 동일시하지 않는다."@ko .
+cnn:TradingStatusRaw a cnn:AttributeType ;
+    rdfs:label "거래 상태 원값"@ko ; cnn:approvedAlias "거래정지여부"@ko ;
+    cnn:semanticGrain cnn:ProductGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation , cnn:CountOperation ;
+    cnn:meaningStatus "flag_polarity_unverified" ; cnn:alignmentDecision "유지" .
+cnn:ListingStartDate a cnn:AttributeType ;
+    rdfs:label "거래 개시일"@ko ; cnn:approvedAlias "상장일"@ko , "거래가능일자"@ko ;
+    cnn:semanticGrain cnn:ProductGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "유지" .
+cnn:ListingEndDate a cnn:AttributeType ;
+    rdfs:label "거래 종료일"@ko ; cnn:approvedAlias "상장폐지일"@ko , "거래종료일자"@ko ;
+    cnn:semanticGrain cnn:ProductGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "유지" .
+cnn:ExchangeCodeRaw a cnn:AttributeType ;
+    rdfs:label "거래소 원값"@ko ; cnn:approvedAlias "거래소"@ko ;
+    cnn:semanticGrain cnn:ProductGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "entity_resolution_pending" ; cnn:alignmentDecision "미확정" .
+cnn:MarketCodeRaw a cnn:AttributeType ;
+    rdfs:label "거래시장 원값"@ko ; cnn:approvedAlias "시장"@ko ;
+    cnn:semanticGrain cnn:ProductGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "entity_resolution_pending" ; cnn:alignmentDecision "미확정" .
+cnn:ManagementCompanyNameRaw a cnn:AttributeType ;
+    rdfs:label "운용사명 원값"@ko ; cnn:approvedAlias "운용사"@ko , "자산운용사"@ko ;
+    cnn:semanticGrain cnn:ProductGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation , cnn:CountOperation ;
+    cnn:meaningStatus "entity_resolution_pending" ; cnn:alignmentDecision "미확정" ;
+    rdfs:comment "Organization 개체로 병합하지 않고 원문과 출처를 보존한다."@ko .
+cnn:InvestmentAssetTypeRaw a cnn:AttributeType ;
+    rdfs:label "투자 자산군 원값"@ko ; cnn:approvedAlias "자산군"@ko , "투자자산"@ko ;
+    cnn:semanticGrain cnn:ProductGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation , cnn:CountOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+cnn:InvestmentRegionRaw a cnn:AttributeType ;
+    rdfs:label "투자 지역 원값"@ko ; cnn:approvedAlias "투자지역"@ko , "지역"@ko ;
+    cnn:semanticGrain cnn:ProductGrain , cnn:ProductClassGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation , cnn:CountOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+cnn:ExternalProductNameRaw a cnn:AttributeType ;
+    rdfs:label "외부 출처 상품명"@ko ;
+    cnn:semanticGrain cnn:ProductGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "external_source_value" ; cnn:alignmentDecision "추가" ;
+    rdfs:comment "공식 상품명과 충돌하면 공식 값을 우선하고 충돌을 기록한다."@ko .
+cnn:HeldSecurityNameRawType a cnn:AttributeType ;
+    rdfs:label "보유 종목명 원값"@ko ;
+    cnn:semanticGrain cnn:HoldingObservationGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "entity_resolution_pending" ; cnn:alignmentDecision "추가" .
+cnn:MappingStatusType a cnn:AttributeType ;
+    rdfs:label "매핑 상태"@ko ; cnn:semanticGrain cnn:ProductGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:CountOperation ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "추가" .
+cnn:MappingBasisType a cnn:AttributeType ;
+    rdfs:label "매핑 근거"@ko ; cnn:semanticGrain cnn:ProductGrain ; cnn:unitKind cnn:NoUnit ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "추가" .
+cnn:SourceReferenceType a cnn:AttributeType ;
+    rdfs:label "출처 표기"@ko ; cnn:semanticGrain cnn:HoldingObservationGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "유지" .
+cnn:SourceRecordIdentifierType a cnn:AttributeType ;
+    rdfs:label "원본 record 식별자"@ko ; cnn:semanticGrain cnn:HoldingObservationGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "유지" .
+cnn:SnapshotScopeType a cnn:AttributeType ;
+    rdfs:label "스냅샷 범위"@ko ; cnn:semanticGrain cnn:HoldingObservationGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:evidenceRequirement cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "추가" .
+cnn:FailureStageType a cnn:AttributeType ;
+    rdfs:label "수집 실패 단계"@ko ; cnn:unitKind cnn:NoUnit ;
+    cnn:semanticGrain cnn:CollectionFailureGrain ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation , cnn:CountOperation ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "추가" .
+cnn:FailureCodeType a cnn:AttributeType ;
+    rdfs:label "수집 실패 코드"@ko ; cnn:unitKind cnn:NoUnit ;
+    cnn:semanticGrain cnn:CollectionFailureGrain ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation , cnn:CountOperation ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "추가" .
+cnn:HoldingWeightType a cnn:MetricType ;
+    rdfs:label "보유 비중"@ko ; cnn:approvedAlias "비중"@ko ;
+    cnn:semanticGrain cnn:HoldingObservationGrain ; cnn:unitKind cnn:PercentObserved ;
+    cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "holding_weight" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresCoverageUniverse , cnn:RequiresRelationKind ;
+    cnn:meaningStatus "source_coverage_limited" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "원천에 따라 비중이 비어 있거나 스왑 명목가 기준이라 상품군 간 비교에 쓰지 않는다."@ko .
+cnn:HoldingQuantityType a cnn:MetricType ;
+    rdfs:label "보유 수량"@ko ; cnn:approvedAlias "수량"@ko ;
+    cnn:semanticGrain cnn:HoldingObservationGrain ; cnn:unitKind cnn:CountUnit ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "holding_quantity" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresUnitAndCurrency ;
+    cnn:meaningStatus "unit_unverified" ; cnn:alignmentDecision "수정" .
+cnn:HoldingValueAmountType a cnn:MetricType ;
+    rdfs:label "보유 평가금액"@ko ; cnn:approvedAlias "평가금액"@ko ;
+    cnn:semanticGrain cnn:HoldingObservationGrain ; cnn:unitKind cnn:CurrencyAmount ;
+    cnn:currencyPolicy "from_observation_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "holding_value" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresUnitAndCurrency , cnn:RequiresEffectiveAsOf ;
+    cnn:meaningStatus "currency_mixed" ; cnn:alignmentDecision "수정" .
+
+##  8. SHACL - ABox 투영이 지켜야 하는 모양
+
+cnn:ProductShape a sh:NodeShape ;
+    sh:targetClass cnn:ProjectProduct ;
+    sh:property [ sh:path cnn:subjectKey ; sh:datatype xsd:string ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:familyOfSubject ; sh:datatype xsd:string ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:hasIdentifier ; sh:class cnn:Identifier ; sh:minCount 1 ] .
+
+cnn:ProductClassShape a sh:NodeShape ;
+    sh:targetClass cnn:ProductClass ;
+    sh:property [ sh:path cnn:memberOfClassGroup ; sh:class cnn:ProductClassGroup ;
+                  sh:maxCount 1 ;
+                  sh:description "대표 그룹은 선택이며 포트폴리오로 대체하지 않는다"@ko ] .
+
+cnn:IdentifierShape a sh:NodeShape ;
+    sh:targetClass cnn:Identifier ;
+    sh:property [ sh:path cnn:identifierValue ; sh:datatype xsd:string ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:identifierScheme ; sh:class cnn:IdentifierScheme ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:resolutionStatus ; sh:datatype xsd:string ;
+                  sh:minCount 1 ; sh:maxCount 1 ] .
+
+cnn:PortfolioShape a sh:NodeShape ;
+    sh:targetClass cnn:Portfolio ;
+    sh:property [ sh:path cnn:subjectKey ; sh:datatype xsd:string ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:identifierValue ; sh:datatype xsd:string ;
+                  sh:minCount 1 ; sh:maxCount 1 ] .
+
+cnn:SecurityShape a sh:NodeShape ;
+    sh:targetClass cnn:Security ;
+    sh:property [ sh:path cnn:identifierValue ; sh:datatype xsd:string ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:identifierScheme ; sh:class cnn:IdentifierScheme ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:resolutionStatus ; sh:minCount 1 ; sh:maxCount 1 ;
+                  sh:in ( "checksum_verified" "format_matched" ) ;
+                  sh:description "해석되지 않은 식별자는 Security 로 승격하지 않는다"@ko ] .
+
+cnn:MetricObservationShape a sh:NodeShape ;
+    sh:targetClass cnn:MetricObservation ;
+    sh:property [ sh:path cnn:observedSubject ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:metricType ; sh:class cnn:MetricType ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:valueStatus ; sh:datatype xsd:string ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:asOfStatus ; sh:datatype xsd:string ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:numericValue ; sh:datatype xsd:double ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:fromSource ; sh:class cnn:DataSource ; sh:minCount 1 ] ;
+    sh:property [ sh:path cnn:sourceRowId ; sh:datatype xsd:string ; sh:minCount 1 ] .
+
+cnn:AttributeObservationShape a sh:NodeShape ;
+    sh:targetClass cnn:AttributeObservation ;
+    sh:property [ sh:path cnn:observedSubject ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:attributeType ; sh:class cnn:AttributeType ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:valueStatus ; sh:datatype xsd:string ; sh:minCount 1 ] ;
+    sh:property [ sh:path cnn:fromSource ; sh:class cnn:DataSource ; sh:minCount 1 ] ;
+    sh:or ( [ sh:property [ sh:path cnn:codeValue ; sh:minCount 1 ] ]
+            [ sh:property [ sh:path cnn:labelValue ; sh:minCount 1 ] ]
+            [ sh:property [ sh:path cnn:dateValue ; sh:minCount 1 ] ] ) .
+
+cnn:HoldingObservationShape a sh:NodeShape ;
+    sh:targetClass cnn:HoldingObservation ;
+    sh:property [ sh:path cnn:portfolioOfObservation ; sh:class cnn:Portfolio ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:relationKind ; sh:datatype xsd:string ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:asOfStatus ; sh:datatype xsd:string ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:heldSecurity ; sh:class cnn:Security ; sh:maxCount 1 ;
+                  sh:description "식별자가 없는 원시 관측도 유효하다"@ko ] ;
+    sh:property [ sh:path cnn:sourceRecordId ; sh:datatype xsd:string ; sh:minCount 1 ] ;
+    sh:or ( [ sh:property [ sh:path cnn:heldSecurityIdentifierRaw ; sh:minCount 1 ] ]
+            [ sh:property [ sh:path cnn:heldSecurityNameRaw ; sh:minCount 1 ] ] ) .
+
+cnn:ProductPortfolioMappingShape a sh:NodeShape ;
+    sh:targetClass cnn:ProductPortfolioMapping ;
+    sh:property [ sh:path cnn:mappingStatusValue ; sh:datatype xsd:string ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:mappedSubject ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:mappedPortfolio ; sh:class cnn:Portfolio ; sh:maxCount 1 ;
+                  sh:description "미해결 매핑은 포트폴리오를 갖지 않는다"@ko ] .
+
+cnn:CoverageObservationShape a sh:NodeShape ;
+    sh:targetClass cnn:CoverageObservation ;
+    sh:property [ sh:path cnn:coverageOfFamily ; sh:class cnn:ProductFamily ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:snapshotScope ; sh:datatype xsd:string ; sh:maxCount 1 ] .
+
+cnn:CollectionFailureShape a sh:NodeShape ;
+    sh:targetClass cnn:CollectionFailure ;
+    sh:property [ sh:path cnn:codeValue ; sh:datatype xsd:string ; sh:minCount 1 ] ;
+    sh:property [ sh:path cnn:fromSource ; sh:class cnn:DataSource ; sh:minCount 1 ] .
+
+cnn:DataSourceShape a sh:NodeShape ;
+    sh:targetClass cnn:DataSource ;
+    sh:property [ sh:path cnn:sourceDigest ; sh:datatype xsd:string ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:sourcePrecedence ; sh:datatype xsd:integer ;
+                  sh:minCount 1 ; sh:maxCount 1 ] .

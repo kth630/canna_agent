@@ -206,7 +206,7 @@
 - 실제 Excel → 파생 적재 → Registry binding → 실행 → Evidence의 end-to-end 경로는
   아직 완료되지 않았다.
 
-### 실행 store 통과 조건
+### 실행 store 통과 조건 — 2026-08-31 충족
 
 - 공식 네 상품군과 현재 외부 holdings에서 재현 가능한 파생 적재가 생성됨
 - 상품 지표와 관계가 승인된 조회 grain으로 filter/order/count/aggregate/compare 또는
@@ -349,7 +349,33 @@ blocker가 생기면 기능을 근거 없이 성공 처리하지 않고 메인 �
 - observed universe를 global universe로 표현하지 않음
 - target outside coverage를 false로 판정하지 않음
 
-## 4. Registry generation — active after 0-D alignment
+## 3-A. 조회용 DB와 두 Registry — 2026-08-31 구축 완료
+
+### 산출물
+
+- `catalog/`의 Data Catalog 입력과 공식 field 280개 전수 binding
+- 재현 가능한 `data/processed/query_store.duckdb`(물리 table 26개 = 원본 mirror 8 + 파생 18)와
+  `data_catalog.json`, 실패해도 기존 산출물을 보존하고 같은 `build_id`로 함께 교체되는
+  generation publish
+- 제출용 `ontology/` TTL 5개와 SHACL, 여기서 생성한 `semantic_registry.json`
+- Data Catalog에서 생성하고 의미와 대조 검증한 `execution_registry.json`
+- store → ABox bounded sample 투영과 SHACL 검증 경로(전체 KG 적재는 아님)
+
+### 통과 조건과 결과
+
+- 원본 hash 불변 상태에서 전체 데이터 build 재현: `status=ok`, mismatch 0
+- source row / product / product class / portfolio / security / metric observation /
+  raw holding observation grain 분리와 uniqueness·참조 무결성 검증: 위반 0
+- Ontology 5개 parse와 SHACL 양방향 검증(합성 위반 거부, 실제 투영 sample ABox 통과)
+- semantic ID·type·grain·unit·period·operation·currency 불일치에서 build 실패 재현
+- 관계 양방향 조회와 product grain 중복 제거, 직접 보유와 look-through 분리 실행
+- 전체 테스트 307 passed / 1 skipped, architecture guard 포함
+
+상세 근거와 남은 데이터 한계는
+`provenance/workstreams/20260830_preintegration_parallel/query_store_registry/FINDINGS.md`에
+있다. 다음 작업은 이 Registry를 사용하는 Retriever, 서버 검증·compiler, Tool/Evidence다.
+
+## 4. Registry generation — generator 완료, 이후 확장은 계속
 
 ### 산출물
 
@@ -368,6 +394,13 @@ Registry는 현재 제출 범위의 공식 네 상품군과 현재 외부 holdin
 - semantic 의미와 physical binding의 source of truth가 중복되지 않음
 - dynamic coverage/freshness가 TTL에 고정되지 않음
 - mismatch build가 실제로 실패함
+
+### 완료 기록 (2026-08-31)
+
+세 조건을 모두 충족했다. Semantic Registry는 `ontology/`에서만 생성되고 물리 binding이
+섞이면 생성이 실패한다. coverage와 freshness는 build가 측정해 Data Catalog와 Execution
+Registry에만 기록한다. 불일치 실패는 합성 case 9종의 테스트와 실제 build에서 모두
+재현됐다.
 
 ## 5. Data grain completion and deterministic relation compiler — pending
 

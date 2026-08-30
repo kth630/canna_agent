@@ -1,0 +1,293 @@
+@prefix etgl: <https://canna.local/ontology/etf-gl#> .
+@prefix cnn:  <https://canna.local/ontology/core#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+<https://canna.local/ontology/etf-gl>
+    a owl:Ontology ;
+    owl:imports <https://canna.local/ontology/core> ;
+    rdfs:label "해외 상장지수상품 온톨로지"@ko ;
+    rdfs:comment """공식 해외 상장지수상품 표에는 다기간 수익률이 없고 1일 수익률만 있다. 가격 기준일이
+행마다 다르고 통화가 섞이므로 freshness 와 통화를 관측마다 보존한다."""@ko .
+
+##  1. 개체와 식별자
+
+etgl:GlobalExchangeTradedProduct a owl:Class ;
+    rdfs:subClassOf cnn:ProjectProduct ;
+    rdfs:label "해외 상장지수상품"@ko ;
+    cnn:approvedAlias "해외 ETF"@ko , "해외 ETN"@ko , "글로벌 ETF"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ;
+    cnn:semanticGrain cnn:ProductGrain ;
+    cnn:alignmentDecision "수정" ;
+    rdfs:comment "같은 ISIN 이 여러 행에 나타나므로 ISIN 으로 상품을 병합하지 않는다."@ko .
+
+etgl:GlobalExchangeTradedProductNumber a cnn:IdentifierScheme ;
+    rdfs:label "해외 상장지수상품 번호"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etgl:LipperIdentifier a cnn:IdentifierScheme ;
+    rdfs:label "Lipper 펀드코드"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etgl:SecCikIdentifier a cnn:IdentifierScheme ;
+    rdfs:label "미국 SEC CIK"@ko ; cnn:approvedAlias "CIK"@en ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ;
+    cnn:meaningStatus "zero_padding_differs_between_sources" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "공식 표는 선행 0 이 없고 외부 SEC 자료는 10자리로 채워 표기한다."@ko .
+
+##  2. 상품 속성
+
+etgl:EtnFlagRaw a cnn:AttributeType ;
+    rdfs:label "ETN 여부 원값"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:CountOperation ;
+    cnn:meaningStatus "flag_polarity_unverified" ; cnn:alignmentDecision "수정" .
+
+etgl:TradingCurrency a cnn:AttributeType ;
+    rdfs:label "거래통화"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:evidenceRequirement cnn:RequiresUnitAndCurrency ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "펀드통화와 다를 수 있어 가격 계열 지표의 통화 근거로 분리해 둔다."@ko .
+
+etgl:FundInceptionDate a cnn:AttributeType ;
+    rdfs:label "설정일"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etgl:BaseIndexNameRaw a cnn:AttributeType ;
+    rdfs:label "기초지수명 원값"@ko ; cnn:approvedAlias "기초지수"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "entity_resolution_pending" ; cnn:alignmentDecision "미확정" .
+
+etgl:StrategyRaw a cnn:AttributeType ;
+    rdfs:label "운용전략 원값"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+etgl:IndexReplicationMethodRaw a cnn:AttributeType ;
+    rdfs:label "인덱스 복제방법 원값"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation , cnn:GroupOperation ;
+    cnn:meaningStatus "code_meaning_unverified" ; cnn:alignmentDecision "수정" .
+
+etgl:IndexTrackingFlagRaw a cnn:AttributeType ;
+    rdfs:label "인덱스 추적 여부 원값"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "flag_polarity_unverified" ; cnn:alignmentDecision "수정" .
+
+etgl:InverseOrShortFlagRaw a cnn:AttributeType ;
+    rdfs:label "인버스·숏 여부 원값"@ko ; cnn:approvedAlias "인버스"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "flag_polarity_unverified" ; cnn:alignmentDecision "수정" .
+
+etgl:CoreProductFlagRaw a cnn:AttributeType ;
+    rdfs:label "핵심 상품 여부 원값"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:meaningStatus "flag_polarity_unverified" ; cnn:alignmentDecision "수정" .
+
+etgl:ClosePriceSourceColumnRaw a cnn:AttributeType ;
+    rdfs:label "선택된 종가의 원천 컬럼"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:evidenceRequirement cnn:RequiresSourceRecord ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "추가" ;
+    rdfs:comment "어느 원천 컬럼이 선택됐는지 보존해 종가의 출처를 설명할 수 있게 한다."@ko .
+
+etgl:NavCloseDateMatchFlagRaw a cnn:AttributeType ;
+    rdfs:label "NAV·종가 기준일 일치 여부"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:NoUnit ; cnn:allowedOperation cnn:FilterOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "추가" ;
+    rdfs:comment "괴리 계산과 freshness 판단에 필요한 원천 신호다."@ko .
+
+##  3. 지표
+
+etgl:Return1D a cnn:MetricType ;
+    rdfs:label "1일 수익률"@ko ; cnn:approvedAlias "일간 수익률"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period1D ;
+    cnn:comparisonGroup "overseas_etp:return" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "유지" ;
+    rdfs:comment "공식 표에 다기간 수익률이 없으므로 이 값을 장기 수익률로 환산하지 않는다."@ko .
+
+etgl:AnnualExpenseRate a cnn:MetricType ;
+    rdfs:label "연간보수율"@ko ; cnn:approvedAlias "총보수"@ko , "보수율"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:Period1Y ;
+    cnn:comparisonGroup "overseas_etp:expense_rate" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation ;
+    cnn:evidenceRequirement cnn:RequiresValueStatus ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "수정" .
+
+etgl:AssetsUnderManagement a cnn:MetricType ;
+    rdfs:label "순자산총액"@ko ; cnn:approvedAlias "AUM"@ko , "운용규모"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CurrencyAmount ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "overseas_etp:aum" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ,
+        cnn:CompareOperation , cnn:CountOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresUnitAndCurrency ,
+        cnn:RequiresValueStatus ;
+    cnn:meaningStatus "currency_mixed" ; cnn:alignmentDecision "유지" .
+
+etgl:EstimatedNetAssetValuePerShare a cnn:MetricType ;
+    rdfs:label "추정 주당 NAV"@ko ; cnn:approvedAlias "NAV"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_subject_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "overseas_etp:nav_per_share" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresUnitAndCurrency ,
+        cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "estimate" ; cnn:alignmentDecision "수정" .
+
+etgl:BasePrice a cnn:MetricType ;
+    rdfs:label "기준가"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_trading_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "overseas_etp:price" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresUnitAndCurrency ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etgl:ClosePrice a cnn:MetricType ;
+    rdfs:label "종가"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_trading_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "overseas_etp:price" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresUnitAndCurrency ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "행마다 기준일이 다르므로 통합 현재 시점 순위에 그대로 쓰지 않는다."@ko .
+
+etgl:OpenPrice a cnn:MetricType ;
+    rdfs:label "시가"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_trading_currency" ;
+    cnn:observationPeriod cnn:Period1D ; cnn:comparisonGroup "overseas_etp:price" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etgl:HighPrice a cnn:MetricType ;
+    rdfs:label "고가"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_trading_currency" ;
+    cnn:observationPeriod cnn:Period1D ; cnn:comparisonGroup "overseas_etp:price" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etgl:LowPrice a cnn:MetricType ;
+    rdfs:label "저가"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_trading_currency" ;
+    cnn:observationPeriod cnn:Period1D ; cnn:comparisonGroup "overseas_etp:price" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etgl:RealtimeMarketPrice a cnn:MetricType ;
+    rdfs:label "실시간 현재가"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_trading_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "overseas_etp:realtime_price" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresUnitAndCurrency ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etgl:RealtimeMarketVolume a cnn:MetricType ;
+    rdfs:label "실시간 거래량"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CountUnit ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "overseas_etp:volume" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresValueStatus ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etgl:PremiumDiscountRate a cnn:MetricType ;
+    rdfs:label "괴리율"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PercentObserved ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "overseas_etp:premium_discount" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "unit_observed_only" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "관측 가능한 행이 매우 적어 모집단을 반드시 밝힌다."@ko .
+
+etgl:TradingValue1D a cnn:MetricType ;
+    rdfs:label "일 외화 거래대금"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CurrencyAmount ; cnn:currencyPolicy "from_trading_currency" ;
+    cnn:observationPeriod cnn:Period1D ; cnn:comparisonGroup "overseas_etp:trading_value" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresUnitAndCurrency ,
+        cnn:RequiresValueStatus ;
+    cnn:meaningStatus "currency_mixed" ; cnn:alignmentDecision "수정" .
+
+etgl:TradingVolume1D a cnn:MetricType ;
+    rdfs:label "일 거래량"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CountUnit ; cnn:observationPeriod cnn:Period1D ;
+    cnn:comparisonGroup "overseas_etp:volume" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresEffectiveAsOf , cnn:RequiresValueStatus ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etgl:ListedShareCount a cnn:MetricType ;
+    rdfs:label "상장주식수"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:CountUnit ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "overseas_etp:share_count" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation , cnn:AggregateOperation ;
+    cnn:evidenceRequirement cnn:RequiresValueStatus ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" .
+
+etgl:FaceValue a cnn:MetricType ;
+    rdfs:label "액면가"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:PriceUnit ; cnn:currencyPolicy "from_trading_currency" ;
+    cnn:observationPeriod cnn:PeriodPointInTime ; cnn:comparisonGroup "overseas_etp:face_value" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresValueStatus , cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "대부분 0 이라 0 제외 모집단이 매우 작다."@ko .
+
+etgl:LeverageFactor a cnn:MetricType ;
+    rdfs:label "배수"@ko ; cnn:approvedAlias "레버리지 배수"@ko ;
+    cnn:appliesToFamily cnn:OverseasExchangeTradedFamily ; cnn:semanticGrain cnn:ProductGrain ;
+    cnn:unitKind cnn:MultiplierUnit ; cnn:observationPeriod cnn:PeriodPointInTime ;
+    cnn:comparisonGroup "overseas_etp:leverage" ;
+    cnn:allowedOperation cnn:FilterOperation , cnn:OrderOperation ;
+    cnn:evidenceRequirement cnn:RequiresCoverageUniverse ;
+    cnn:meaningStatus "confirmed" ; cnn:alignmentDecision "수정" ;
+    rdfs:comment "음수는 인버스를 뜻하므로 0 제외 규칙을 부호 판단과 혼동하지 않는다."@ko .
+
+##  4. SHACL
+
+etgl:GlobalExchangeTradedProductShape a sh:NodeShape ;
+    sh:targetClass etgl:GlobalExchangeTradedProduct ;
+    sh:property [ sh:path cnn:familyOfSubject ; sh:hasValue "overseas_etp" ;
+                  sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path cnn:hasIdentifier ; sh:class cnn:Identifier ; sh:minCount 1 ] ;
+    sh:property [ sh:path cnn:subjectKey ; sh:datatype xsd:string ;
+                  sh:minCount 1 ; sh:maxCount 1 ;
+                  sh:description "ISIN 이 아니라 상품번호가 상품 key 다"@ko ] .

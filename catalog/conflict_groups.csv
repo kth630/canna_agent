@@ -1,0 +1,4 @@
+conflict_group,left_source_kind,right_source_kind,policy,note
+official_product_name,official,external,official_precedence,공식 상품명과 외부 mapping 상품명이 다르면 공식 값을 우선하고 충돌을 기록한다
+management_company,official,official,record_only,같은 공식 파일 안의 두 출처가 다른 운용사 표기를 줄 수 있어 차이만 기록한다
+base_index,official,official,record_only,같은 공식 파일 안의 두 출처가 다른 기초지수 표기를 줄 수 있어 차이만 기록한다
