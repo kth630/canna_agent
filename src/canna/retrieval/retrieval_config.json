@@ -1,0 +1,14 @@
+{
+  "basis": "provisional_registry_wide_structural_sweep",
+  "recorded_at": "2026-08-31",
+  "note": "Registry-wide cross-form sweep is recorded in provenance/workstreams/20260830_preintegration_parallel/f_ontology_registry_retriever/FINDINGS.md. It does not settle natural-question product thresholds; every result preserves this provisional basis.",
+  "rule": {
+    "min_substring_characters": 2,
+    "substring_overlap_ratio": 0.6,
+    "max_candidates": 50
+  },
+  "embedding": {
+    "similarity_threshold": 0.5,
+    "top_k": 20
+  }
+}

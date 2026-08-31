@@ -19,6 +19,7 @@ pythonpath = ["src"]
 markers = [
     "real_data: uses ignored immutable local source data",
     "hcx_live: calls HyperCLOVA X and requires credentials and network",
+    "embedding_live: calls CLOVA Studio embeddings and requires credentials and network",
     "deployment: exercises an external deployment environment",
 ]
 
