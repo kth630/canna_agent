@@ -14,7 +14,14 @@ dependencies = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "--basetemp=.tmp/pytest -p no:cacheprovider"
+# External calls are opt-in. The two live markers are deselected by default so
+# that a plain ``pytest`` run never spends credentials or reaches the network;
+# each also demands its own environment variable, so selecting the marker alone
+# is still not enough. Run them deliberately, for example::
+#
+#     RUN_HCX_LIVE=1 pytest -m hcx_live
+#     RUN_CLOVA_EMBEDDING_LIVE=1 pytest -m embedding_live
+addopts = "--basetemp=.tmp/pytest -p no:cacheprovider -m 'not hcx_live and not embedding_live'"
 pythonpath = ["src"]
 markers = [
     "real_data: uses ignored immutable local source data",

@@ -1,0 +1,105 @@
+{
+  "audit_id": "composite-retrieval-gold-audit-20260831-v1",
+  "audited_proposal_id": "semantic-retrieval-composite-proposal-20260831-v1",
+  "registry_content_hash": "afb7f0c827495dcdd52c972d77c934c380a661c9ccf6e5b5b590b31e8dad6757",
+  "authored_at": "2026-08-31T00:00:00+09:00",
+  "audit_basis": [
+    "QUESTION_STRUCTURE.md 6절: fixture 질문은 의미가 유일하게 결정되어야 한다",
+    "ARCHITECTURE.md 3절: 관계 방향은 predicate domain/range와 anchor entity type으로 서버가 결정한다",
+    "사용자 지시 2026-08-31: forward/inverse는 Registry inverse 관계에 따른 equivalent alternative"
+  ],
+  "predicate_equivalence": "registry_inverse_of",
+  "preserved_artifacts": [
+    "COMPOSITE_RETRIEVAL_PROPOSAL.jsonl",
+    "data/processed/retrieval_evaluations/composite-bge-m3.json",
+    "data/processed/retrieval_evaluations/composite-bge-m3-budget-sweep.json"
+  ],
+  "case_audits": [
+    {
+      "case_id": "CMP-01",
+      "verdict": "valid",
+      "reason": "상품군, 조건 지표, 정렬 지표와 기간이 모두 명시돼 의미가 하나로 결정된다"
+    },
+    {
+      "case_id": "CMP-02",
+      "verdict": "valid",
+      "reason": "잔존기간, 신용등급, 개인 세후 수익률이 모두 명시돼 세후 수익률 3종이 구별된다"
+    },
+    {
+      "case_id": "CMP-03",
+      "verdict": "valid",
+      "reason": "기간이 명시된 두 지표와 두 requirement가 각각 결정된다"
+    },
+    {
+      "case_id": "CMP-04",
+      "verdict": "valid",
+      "reason": "'직접 담고 있는'으로 direct 관계가 명시됐고 관계 방향은 서버가 anchor로 결정한다"
+    },
+    {
+      "case_id": "CMP-05",
+      "verdict": "valid",
+      "reason": "'직접 보유한'으로 direct 관계가 명시됐고 평가금액 지표가 label로 결정된다"
+    },
+    {
+      "case_id": "CMP-09",
+      "verdict": "valid",
+      "reason": "'직접 보유한'으로 direct 관계가 명시됐다"
+    },
+    {
+      "case_id": "CMP-10",
+      "verdict": "valid",
+      "reason": "지목된 상품의 두 지표가 기간까지 명시돼 결정된다"
+    },
+    {
+      "case_id": "CMP-11",
+      "verdict": "invalid_gold_diagnostic",
+      "reason": "'담고 있는'만으로는 direct와 look-through가 구별되지 않아 predicate 의미가 유일하지 않고, isDirectlyHeldBy 하나만 정답으로 강제한 것은 관계 방향을 서버가 결정한다는 ARCHITECTURE 3절과 충돌한다. 이 케이스의 required 내용은 사실상 그 predicate 하나이므로 슬롯 제거가 아니라 전체를 adjusted 채점에서 제외한다",
+      "retained_as": "direction_and_relation_kind_diagnostic",
+      "supersedes_claim": "이전 보고의 '유일한 required 누락은 CMP-11' 주장은 이 감사로 철회된다"
+    },
+    {
+      "case_id": "CMP-12",
+      "verdict": "valid",
+      "reason": "'각각'으로 상품군별 분리 랭킹이 명시돼 동명 field 두 개가 모두 필요하다"
+    },
+    {
+      "case_id": "CMP-13",
+      "verdict": "valid",
+      "reason": "두 기간이 명시돼 인접 기간 field가 각각 결정된다"
+    },
+    {
+      "case_id": "CMP-16",
+      "verdict": "valid",
+      "reason": "클래스 판매채널과 운용보수가 label/alias로 결정되고 총보수 합성을 요구하지 않는다"
+    },
+    {
+      "case_id": "CMP-17",
+      "verdict": "valid",
+      "reason": "상품군이 명시돼 동음이의 보수·순자산의 목표 상품군이 결정된다"
+    },
+    {
+      "case_id": "CMP-18",
+      "verdict": "valid",
+      "reason": "상품군과 요구 지표가 명시되며 해당 지표의 부재가 정답이다"
+    },
+    {
+      "case_id": "CMP-19",
+      "verdict": "invalid_gold_partial",
+      "reason": "'비중이 높은'은 보유 관계를 함의하지만 direct와 look-through를 명시하지 않아 predicate 슬롯의 의미가 유일하지 않다. dataset과 비중 지표 슬롯은 명시적이므로 유지하고 predicate 슬롯만 제거한다. 이 케이스의 목적인 '회수 성공과 실행 가능성의 분리'는 남는 슬롯으로 계속 측정된다",
+      "required_overrides": {
+        "predicate": []
+      }
+    },
+    {
+      "case_id": "CMP-20",
+      "verdict": "valid",
+      "reason": "'통틀어'로 통합 랭킹 요구가 명시되고 두 상품군 field가 각각 필요하다"
+    }
+  ],
+  "withdrawn_claims": [
+    "종류별 budget이 동일 총량에서 all-required recall을 0.933에서 1.000으로 올린다",
+    "후보 종류별 budget 필요성이 직접 증명됐다",
+    "merged top-20/30의 유일한 required 누락은 CMP-11이다"
+  ],
+  "withdrawn_claim_basis": "세 주장은 모두 CMP-11의 무효 gold에 의존한다. budget 시뮬레이션 행은 유지된 후보 ID 목록을 저장하지 않아 offline 재계산이 불가능하며, 재확립하려면 embedding 재호출이 필요하므로 현재 지시에 따라 수행하지 않는다"
+}

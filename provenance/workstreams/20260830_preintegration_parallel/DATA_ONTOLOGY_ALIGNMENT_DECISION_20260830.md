@@ -74,6 +74,20 @@ LLM은 근거를 만들지 않는다. 실제 Tool 실행이 근거와 출처를 
 
 ## 5. Registry와 Retriever 경계
 
+### 2026-08-31 semantic query 책임 분담 보완
+
+0-A 재검증에서 HCX의 opaque ref 복사는 유지됐지만 조건값, 비교 연산자, 정렬
+방향, 관계 방향 보존 실패가 반복됐다. 사용자와 Codex는 다음으로 보완했다.
+
+- HCX는 Target·Condition·Requirement·Relationship 역할, Runtime View ref, 원문 span을
+  제출한다.
+- 서버가 조건값·단위·연산자·정렬·limit을 결정적으로 canonicalize하고 관계 방향은
+  predicate domain/range와 entity type으로 결정한다.
+- exact 또는 정규화 후 exact span alignment에 실패하거나 해석이 유일하지 않으면
+  실행을 막는다. HCX 제출값과 서버 해석값 중 하나를 조용히 우선하지 않는다.
+- 이 보완은 아래 2026-08-30 항목의 "HCX가 선택한 조건값·연산자·정렬·관계 방향"을
+  canonical 실행값이 아니라 typed role/ref와 원문 span으로 해석하도록 대체한다.
+
 - Semantic Registry는 새 Ontology/SHACL에서 생성한다.
 - Execution Registry는 조회용 DB의 실제 table/field/join, operation, coverage와 freshness를
   기록한다.
@@ -82,11 +96,12 @@ LLM은 근거를 만들지 않는다. 실제 Tool 실행이 근거와 출처를 
   의미 설명을 사용한다.
 - embedding은 후보 생성 수단이지 자동 의미 확정 수단이 아니다.
 - entity resolution은 일반 의미 embedding과 분리하고 검증된 identifier와 이름을 우선한다.
-- HCX가 선택한 ref, 조건값, 연산자, 정렬, 기간, 상품군, 관계 방향과 requirement 누락을
-  서버가 다시 검증한다.
+- HCX가 선택한 ref, typed role, 기간·상품군 소속, 원문 span과 requirement 누락을
+  서버가 검증한다. 조건값·연산자·정렬·관계 방향의 canonical 실행값은 위
+  2026-08-31 보완에 따라 서버가 결정한다.
 
-정확한 Tool surface(공통 Tool 하나 또는 상품군별 thin wrapper)는 실제 Registry와 HCX
-실험으로 결정한다. 이 문서는 특정 Tool 표현을 선제 확정하지 않는다.
+2026-08-31 결정으로 public LLM surface는 단일 `submit_semantic_query` Tool을 우선한다.
+정확한 JSON schema와 provider fallback encoding은 실제 Runtime View·HCX 실험으로 검증한다.
 
 ## 6. 병렬 책임
 

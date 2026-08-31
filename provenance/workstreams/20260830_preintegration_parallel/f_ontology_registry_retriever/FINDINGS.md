@@ -249,6 +249,20 @@ merged top-20 기준 누락은 다음과 같다.
 판정이 아니다. 의역·label/definition 정보 부족 가능성은 별도 human-review hypothesis로
 남겼다.
 
+#### 2026-08-31 post-run gold audit
+
+기존 report와 hash를 바꾸지 않고 gold 의미를 다시 감사했다. `DB-03`의 "국내채권이
+금리 변화에 얼마나 민감한지 나타내는 지표"는 `bdkr:Duration` 하나로 의미가 유일하게
+결정되지 않는다. 완전히 동일하지 않은 "금리 민감도"와 "듀레이션"을 단일 정답으로
+강제했으므로 clear gold로 무효다.
+
+- 원 실행 기록과 공식 수치 `34/35` 및 질문/Registry hash는 그대로 보존한다.
+- 무효 gold를 제외한 별도 adjusted 해석에서 BGE-M3 merged top-20 valid-clear candidate
+  recall은 `34/34` 이다. 이는 재실행 결과가 아니라 기존 case result의 human-reviewed 재해석이다.
+- `34/34`는 candidate inclusion이며 grounding, HCX 선택, 서버 검증, 관계 실행 또는 최종
+  답변 성공률이 아니다.
+- 이 case를 통과시키기 위한 Registry alias 추가, threshold 조정, top-k 확대는 하지 않는다.
+
 ### 관계·보유 후보
 
 세 모델 모두 `REL-01`~`REL-04`, `HOLD-01`~`HOLD-03`의 기대 ID를 merged top-20에 포함했다.
@@ -266,6 +280,11 @@ merged top-20 기준 누락은 다음과 같다.
 
 특히 역방향 관계 `REL-03`와 보유 관계는 embedding-only 순위가 모델별로 달라도 rule path가
 정답을 후보에 남겼다. 이는 실행 허가나 관계 방향 검증을 의미하지 않는다.
+
+`REL-01`·`REL-02`의 `grounding_eligible=false`는 exact rule에 의한 즉시 확정이 아니라는
+뜻이지, 관계 의미 후보나 DB 실행 binding이 없다는 뜻이 아니다. 조회 store에서 양방향
+관계 실행과 direct/look-through 분리는 별도 검증됐지만, Retriever 후보→HCX→서버
+검증→DB의 end-to-end 관계 경로는 아직 미통합이다.
 
 ### Ambiguous / unrelated
 
@@ -310,10 +329,11 @@ threshold는 모델별 score scale에서 독립 관측 quantile이다. 따라서
 STS 0.571429, BGE 0.971429). 그러나 동일한 rule path가 merged 후보를 보완해 merged
 top-20은 STS와 같고, production 제외를 아키텍처 확정사항으로 만들지 않는다.
 
-`bge-m3`는 다음 hard evaluation의 provisional primary model이다. clear 35개 중 merged
-top-20으로 34/35를 회수했다. rule 후보가 놓친 5개(`DB-03`, `DE-03`, `OE-03`, `PF-03`,
-`REL-03`) 중 BGE는 4개, STS와 EMB는 각각 2개를 embedding으로 보완했다. 모든 모델이 놓친
-`DB-03 → bdkr:Duration`은 BGE embedding rank 287이므로 top-k 확대만으로 해결하지 않는다.
+`bge-m3`는 다음 hard evaluation의 provisional primary model이다. 원 report에서 clear 35개 중
+merged top-20으로 34/35를 회수했다. rule 후보가 놓친 5개(`DB-03`, `DE-03`, `OE-03`,
+`PF-03`, `REL-03`) 중 BGE는 4개, STS와 EMB는 각각 2개를 embedding으로 보완했다.
+post-run gold audit에서 `DB-03` gold가 무효로 판정됐으므로, 이 case를 위해 top-k를 확대하거나
+Registry를 바꾸지 않는다. valid-clear adjusted candidate recall은 34/34이다.
 production 모델·threshold·top-k는 여전히 미확정이다.
 
 build는 세 모델 각각 519 calls로 순차 실행했고, provider/API 오류 없이 모두 publish됐다.
@@ -378,3 +398,248 @@ uv run --cache-dir .tmp/uv-cache python scripts/compare_retrieval_evaluations.py
 최초 생성물 세 개에는 사용자 승인 원문의 `_retrieval`이 `-retrieval`로 잘못 기록돼 있었다.
 cleanup에서 성능 값·질문·기대 ID·hash는 바꾸지 않고 approval metadata만 승인 원문으로
 정정한 뒤 comparison을 offline으로 다시 결합했다. live embedding/API는 다시 호출하지 않았다.
+
+## 11. Composite natural-question evaluation — 2026-08-31
+
+사용자 승인 reference `user_approval_2026-08-31_composite-retrieval-v1`로만 실행했다.
+proposal은 `COMPOSITE_RETRIEVAL_PROPOSAL.jsonl`이며 questions SHA-256
+`bd8ce5d2f727f31bfd7468b26acbebfcff8ba66854f85704bf1d8672db6b1cbd`, Registry SHA-256
+`afb7f0c827495dcdd52c972d77c934c380a661c9ccf6e5b5b590b31e8dad6757`이다. 질문 원문은
+report에 쓰지 않았다.
+
+10절의 easy baseline과 다른 목적이다. 이번 평가는 recall 재측정이 아니라 한 질문이
+필요로 하는 dataset·field·predicate 후보가 **함께** 회수되는지, 전역 top-k에서 어떤
+종류가 밀리는지, 불필요 후보가 얼마나 되는지를 측정한다.
+
+### 사용자 결정으로 범위에서 제외한 것
+
+- look-through 질문 3건: 현실적으로 사용자가 하지 않을 질문이라는 판단
+- 해외 ETF 1년 수익률 질문 2건: 해당 지표가 데이터에 없음
+- 역방향 관계는 종목 기준 방향만 required로 인정 (`cnn:isDirectlyHeldBy`)
+
+look-through 혼동은 질문을 만들지 않고 direct 질문의 `confusion_sets.relation_kind`로
+계속 측정한다.
+
+### 평가기 확장
+
+`src/canna/retrieval/composite.py`를 새로 추가했다. 기존 `benchmark.py`, Registry,
+Ontology, `retrieval_config.json`의 threshold 0.5·top_k 20, Execution Registry, 조회 DB와
+기존 결과 파일은 변경하지 않았다. 후보 종류는 Registry의 term kind에서 파생하며
+(class→dataset, metric/attribute/data_property→field, predicate→predicate,
+identifier_scheme→identifier) 질문별 분기는 없다. 종류별 budget은 런타임 설정을 바꾸지
+않고 merged 순서 위에서 offline으로 시뮬레이션한다.
+
+`confusion_sets`는 **측정 전용이며 실패 판정에 쓰지 않는다.** 인접 후보가 후보로
+등장하는 것은 이 계층의 정상 동작이다.
+
+### 종류별 회수 결과 (BGE-M3, 15 cases)
+
+| path | dataset(13) | field(12) | predicate(5) | all-required |
+|---|---:|---:|---:|---:|
+| rule only | 1.000 | 1.000 | **0.000** | 0.667 |
+| rule grounding only | 1.000 | 0.917 | **0.000** | 0.600 |
+| embedding only @20 | 1.000 | 0.917 | 0.800 | 0.867 |
+| merged @20 | 1.000 | 1.000 | 0.800 | 0.933 |
+| merged @30 | 1.000 | 1.000 | 0.800 | 0.933 |
+
+- 규칙 경로는 관계 predicate를 **5개 관계 질문 전부에서 회수하지 못했다.** 질문의
+  "직접 담고 있는 / 직접 보유한 / 담고 있는"과 Registry label "종목을 직접 보유한다",
+  alias "구성종목으로 담고 있다"의 표면형이 어긋난다. 현재 관계 회수는 전적으로
+  embedding에 의존한다.
+- merged top-20/30에서 유일한 required 누락은 `CMP-11 → cnn:isDirectlyHeldBy`다.
+  같은 종목 기준 질문에서 `cnn:directlyHoldsSecurity`는 embedding rank 3(CMP-09)에
+  들어오지만 역방향은 top-20 밖이다.
+
+### 전역 top-k와 종류별 budget (동일 총량 비교)
+
+| 구성 | 총 후보 | all-required | 평균 후보 | precision | 누락 |
+|---|---:|---:|---:|---:|---|
+| 전역 top-20 | 20 | 0.933 | 20.00 | 0.143 | CMP-11 |
+| dataset3/field14/pred2/id1 | 20 | 0.867 | 20.00 | 0.140 | CMP-04, CMP-11 |
+| dataset3/field12/pred4/id1 | 20 | 0.933 | 20.00 | 0.143 | CMP-11 |
+| dataset3/field10/pred6/id1 | 20 | 0.933 | 20.00 | 0.143 | CMP-11 |
+| **dataset3/field8/pred8/id1** | **20** | **1.000** | 20.00 | 0.147 | 없음 |
+| dataset3/field12/pred8/id1 | 24 | 1.000 | 24.00 | 0.122 | 없음 |
+
+**같은 총 후보 수 20에서** predicate 좌석을 8로 두면 all-required recall이 0.933에서
+1.000으로 올라가고, 2로 줄이면 0.867로 떨어진다. 후보 종류별 budget이 필요하다는 직접
+근거다. 다만 차이는 15문항 중 1문항이므로 production top-k·threshold·budget을 이
+결과로 확정하지 않는다.
+
+### 후보 precision
+
+merged top-20에서 평균 candidate precision은 0.143이고 평균 불필요 후보는 17.13개다.
+required 후보만 relevant로 세었으므로 이 값은 Runtime View가 HCX에 보낼 후보를 어떻게
+줄일지에 대한 하한 근거이지, 후보가 틀렸다는 뜻이 아니다.
+
+### 상품군 동음이의 grounding
+
+`confusion_sets.family`가 후보로 등장한 15건 중 **11건이 rule grounding까지 도달했다.**
+6개 질문에서 재현된다.
+
+| case | 잘못된 상품군으로 grounding된 ID |
+|---|---|
+| CMP-01 | `etgl:AnnualExpenseRate`, `fdpb:Return1Y` |
+| CMP-04 | `etgl:AnnualExpenseRate` |
+| CMP-10 | `etgl:AnnualExpenseRate`, `fdpb:Return1Y` |
+| CMP-13 | `fdpb:Return3M`, `fdpb:Return6M` |
+| CMP-17 | `etkr:AssetsUnderManagement`, `etkr:TotalExpenseRate` |
+| CMP-18 | `etgl:AnnualExpenseRate`, `etkr:TotalExpenseRate` |
+
+원인은 Registry 오류가 아니라 승인된 별칭이 상품군 간에 겹치기 때문이다. "총보수"는
+`etkr:TotalExpenseRate`와 `etgl:AnnualExpenseRate` 양쪽의 별칭이고, "1년 수익률"은
+`etkr:Return1Y`와 `fdpb:Return1Y` 양쪽에서 exact로 매칭된다. 규칙 경로는 상품군 단어를
+사용하지 않으므로 구조적으로 상품군을 가릴 수 없다.
+
+CMP-17은 더 날카롭다. "순자산 규모"는 국내 ETP `etkr:AssetsUnderManagement`의 label과
+정확히 일치하고, 해외 ETP `etgl:AssetsUnderManagement`의 label은 "순자산총액"이다.
+따라서 해외 ETF 질문인데 rule grounding은 국내 term을 가리켰고, 정답 term은 embedding
+후보로만 살아남았다.
+
+CMP-18은 이 문제가 coverage boundary와 만나는 경우다. 공모펀드에는 승인된 단일 총보수
+field가 없는데 "총보수"가 다른 두 상품군의 term을 grounding_eligible로 만든다.
+
+**결론: `grounding_eligible`은 "질문이 승인된 표현을 통째로 불렀다"는 뜻이지 상품군이
+해소됐다는 뜻이 아니다.** Runtime View 계약과 서버 검증은 이 값을 상품군 확정 근거로
+쓰면 안 되며, 후보의 `families` metadata로 별도 검증해야 한다.
+
+### 기간과 관계 혼동
+
+- 기간 인접 후보는 8건이 후보로 등장했고 **grounding은 0건**이다. 기간 구별은 현재
+  안전하다.
+- 관계 방향 혼동 3건, 관계 종류 혼동 2건 모두 후보 수준이고 grounding은 0건이다.
+  다만 이 0은 무해한 0이 아니다. 규칙 경로가 관계를 아예 회수하지 못하기 때문에
+  발생한 0이며, 관계 표면형이 보강되면 다시 측정해야 한다.
+
+### entity 후보
+
+5개 질문이 상품 또는 종목을 지목한다(entity mention 6건). Semantic Registry는 term만
+보유하고 instance를 보유하지 않으므로 entity candidate recall은 구조적으로 0.0이며,
+all-required recall 분모에서 제외했다. 이는 Retriever 실패가 아니라 미구현 계층의
+정량 기록이다.
+
+### latency와 재현성
+
+query 15건의 latency는 p50 564.8ms, p95 3166.6ms다. 같은 proposal로 두 번 실행했고
+merged all-required recall은 top-k 5/10/20/30에서 모두 동일했다.
+
+### 생성물
+
+`.gitignore`의 `data/processed/` 정책에 따라 force-add하지 않는다.
+
+| 생성물 | SHA-256 | bytes |
+|---|---|---:|
+| `retrieval_evaluations/composite-bge-m3.json` | `e208491fd05edaa374a18cd28a43f1dc8b4f2f63697cc13b5988d84d9c579b57` | 251290 |
+| `retrieval_evaluations/composite-bge-m3-budget-sweep.json` | `020c58e04b704a5939a06fbf7fb361426cc4b8ea5ff6072a865d4222445b5419` | 287709 |
+
+재현 명령은 다음과 같다. index는 10절에서 만든 BGE-M3 index를 그대로 사용하며 재빌드
+하지 않는다.
+
+```powershell
+uv run --cache-dir .tmp/uv-cache python scripts/run_composite_retrieval_evaluation.py --model bge-m3 --approval-reference user_approval_2026-08-31_composite-retrieval-v1 --output data/processed/retrieval_evaluations/composite-bge-m3.json
+```
+
+### 비교 모델
+
+사용자 조건에 따라 BGE-M3 단독으로 실행했다. required 후보 누락은 1건이고 그 원인이
+모델 열세가 아니라 역방향 관계 표면형과 후보 예산이므로, STS/EMB 재실행을 현재
+근거로 요청하지 않는다.
+
+### DB-03 재분류 (10절 결과는 변경하지 않음)
+
+10절의 easy baseline 공식 수치 34/35는 그대로 둔다. 별도 분석으로만 다음을 기록한다.
+`DB-03`은 "금리 변화에 얼마나 민감한지 나타내는 지표"를 `bdkr:Duration` 하나로 강제한다.
+Registry에는 `bdkr:Convexity`, `bdkr:RemainingDays`도 금리 민감도 계열로 존재하므로
+gold가 유일하지 않다. 사용자 원칙 "완전히 같지 않은 뜻을 정답 하나로 강제하지 않는다"에
+어긋나므로 `invalid_gold_single_answer_forced`로 표시한다. 이 케이스를 제외한 adjusted
+clear candidate recall은 34/34이며, 이는 공식 지표가 아니라 해석용 별도 분석이다.
+
+## 12. Composite evaluation gold audit and adjusted rescore — 2026-08-31
+
+11절의 proposal, report, hash와 원 실행 수치는 **변경하지 않았다.** 이 절은 사용자 감사
+지시에 따른 gold 정정과 offline 재계산만 기록한다. embedding 재호출은 0회다.
+
+정정 결정은 `COMPOSITE_RETRIEVAL_GOLD_AUDIT_20260831.json`에 데이터로 두고, 재계산은
+`src/canna/retrieval/composite_audit.py`와 `scripts/adjust_composite_evaluation.py`가
+수행한다. 코드에 case ID 분기는 없다.
+
+### 감사 결과
+
+| case | 판정 | 근거 |
+|---|---|---|
+| `CMP-11` | `invalid_gold_diagnostic` | "담고 있는"만으로 direct와 look-through가 구별되지 않아 predicate 의미가 유일하지 않다. `cnn:isDirectlyHeldBy` 하나만 정답으로 강제한 것은 "관계 방향은 predicate domain/range와 anchor entity type으로 서버가 결정한다"는 `ARCHITECTURE.md` 3절과 충돌한다. required 내용이 사실상 그 predicate 하나뿐이라 슬롯 제거가 아니라 전체를 채점에서 제외했다 |
+| `CMP-19` | `invalid_gold_partial` | "비중이 높은"이 보유 관계를 함의하지만 direct/look-through를 명시하지 않는다. dataset과 비중 지표 슬롯은 명시적이므로 유지하고 predicate 슬롯만 제거했다. 이 케이스의 목적인 "회수 성공과 실행 가능성의 분리"는 남은 슬롯으로 계속 측정된다 |
+| 나머지 13개 | `valid` | 상품군·기간·관계 명시 여부를 각각 확인했다 |
+
+forward/inverse predicate는 Registry의 `inverse_of` 선언에 따라 equivalent alternative로
+처리한다. 목록을 코드에 두지 않고 Registry에서 양방향으로 읽는다. 이에 따라
+`CMP-04`·`CMP-05`·`CMP-09`에서 `cnn:isDirectlyHeldBy`는 relation_direction 혼동이 아니라
+같은 의미의 다른 표현으로 재분류됐다.
+
+### 재계산 신뢰성 검증
+
+adjusted 계산 전에, 저장된 후보 목록만으로 **정정 이전 gold를 다시 채점**해 발표 수치와
+일치하는지 확인했다. top-k 5/10/20에서 merged all-required recall이
+`{5: 0.666667, 10: 0.866667, 20: 0.933333}`로 발표값과 동일했다. 불일치하면 스크립트가
+adjusted 산출을 거부한다. 저장 artifact가 보존한 깊이가 embedding top-20이므로 adjusted
+재계산은 top-k 20까지만 수행했다.
+
+### Adjusted 결과 (14 cases, CMP-11 제외)
+
+| path | dataset(12) | field(12) | predicate(3) | all-required |
+|---|---:|---:|---:|---:|
+| rule only | 1.000 | 1.000 | **0.000** | 0.7857 |
+| rule grounding only | 1.000 | 0.917 | **0.000** | 0.7143 |
+| embedding only @20 | 1.000 | 0.917 | 1.000 | 0.9286 |
+| merged @10 | 1.000 | 1.000 | 0.667 | 0.9286 |
+| **merged @20** | 1.000 | 1.000 | 1.000 | **1.0000** |
+
+merged top-20의 required 누락은 0건이다. merged top-10에서는 `CMP-04`의
+`cnn:directlyHoldsSecurity`가 아직 밖에 있고, top-5에서는 `CMP-04`·`CMP-05`의 관계와
+`CMP-17`의 `etgl:AssetsUnderManagement`가 밖에 있다.
+
+adjusted top-20 aggregate: 평균 후보 20.0, 평균 불필요 후보 16.93, candidate precision
+0.1536.
+
+### 유지되는 결론
+
+- **규칙 경로의 관계 회수는 `직접`이 명시된 유효 질문 3개에서 0.000이다.** 감사로
+  질문이 5개에서 3개로 줄었지만 결과는 바뀌지 않는다. 관계 회수는 현재 전적으로
+  embedding에 의존한다.
+- **상품군 동음이의 grounding 오염 11건은 그대로다.** 감사 대상 두 케이스와 무관하며
+  `CMP-01`, `CMP-04`, `CMP-10`, `CMP-13`, `CMP-17`, `CMP-18`에서 재현된다.
+- 기간 인접 후보 grounding 0건, 관계 종류 혼동 grounding 0건도 그대로다. 관계 혼동의 0은
+  규칙 경로가 관계를 아예 회수하지 못해 생긴 0이므로 안전 신호로 읽지 않는다.
+
+### 철회한 주장
+
+- "merged top-20/30의 유일한 required 누락은 CMP-11이다"
+- "동일 총량에서 종류별 budget이 all-required recall을 0.933에서 1.000으로 올린다"
+- "후보 종류별 budget 필요성이 직접 증명됐다"
+
+세 주장은 모두 무효 gold인 `CMP-11`에 의존한다. budget 시뮬레이션 행은 유지된 후보 ID
+목록을 저장하지 않아 offline 재계산이 불가능하고, 재확립하려면 embedding 재호출이
+필요하므로 수행하지 않았다. **production budget 값, threshold, top-k는 확정하지 않는다.**
+
+다만 감사와 무관하게 유지되는 관측은 남긴다. adjusted merged에서 관계 predicate는
+top-5에서 0.333, top-10에서 0.667, top-20에서 1.000으로 **후보 깊이에 가장 민감한
+종류**이며, dataset과 field는 top-5에서 이미 1.000과 0.917이다. 이는 budget 결론이 아니라
+깊이 민감도 관측이다.
+
+### 정정한 사실 진술
+
+entity mention은 **6개 질문에 6건**이다(이전 보고의 "5개 질문"은 오기).
+adjusted 채점 범위에서는 `CMP-11` 제외로 5개 질문 5건이 된다.
+
+### 생성물과 재현
+
+| 생성물 | SHA-256 | bytes |
+|---|---|---:|
+| `retrieval_evaluations/composite-bge-m3-adjusted.json` | `400121d9ca9ed9855e96f14f6d5ed7951f51e67ba5810dcb0a5f51d97a6827c8` | 69055 |
+
+```powershell
+uv run --cache-dir .tmp/uv-cache python scripts/adjust_composite_evaluation.py --report data/processed/retrieval_evaluations/composite-bge-m3.json --approval-reference user_approval_2026-08-31_composite-retrieval-v1 --output data/processed/retrieval_evaluations/composite-bge-m3-adjusted.json
+```
+
+Ontology alias는 추가하지 않았다. Registry, `retrieval_config.json`, Execution Registry,
+조회 DB, 기존 report 파일도 변경하지 않았다.

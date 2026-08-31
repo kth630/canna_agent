@@ -59,6 +59,8 @@ View가 후보를 누락하면 정확도의 천장이 낮아지므로 retrieval 
 
 - 질문의 explicit span을 Target, Condition, Requirement, Relationship으로 회계한다.
 - Runtime View가 제공한 opaque ref만 복사한다.
+- 조건값·비교 연산자·정렬 방향·개수는 정규화한 실행값이 아니라 의미 역할과
+  질문 원문 span으로 제출한다.
 - 물리 table/column, SQL, JOIN, product ID 목록을 생성하지 않는다.
 - 각 explicit requirement를 `mapped`, `unresolved`, `ambiguous` 중 하나로 남긴다.
 - 후보가 없거나 의미가 결정되지 않으면 ref를 발명하지 않는다.
@@ -66,11 +68,17 @@ View가 후보를 누락하면 정확도의 천장이 낮아지므로 retrieval 
 ### 서버 검증·컴파일
 
 - opaque ref의 존재, type, operation, grain, coverage를 검증한다.
+- HCX가 제출한 span을 원문 exact match 또는 정규화 후 exact match로만 정렬하고,
+  조건값·단위·연산자·정렬 방향·limit을 결정적으로 canonicalize한다.
+- 관계 방향은 모델의 traversal 선택을 실행 근거로 쓰지 않고 predicate domain/range와
+  anchor entity type으로 유일하게 결정되는 경우에만 생성한다.
 - semantic predicate를 Execution Registry의 물리 table/column/join binding으로 연결한다.
 - 관계 조건을 `EXISTS`, product-grain `DISTINCT`, JOIN 또는 CTE로 컴파일한다.
 - server-owned implicit invariant를 항상 적용한다.
 - parameterized DuckDB query만 실행한다.
 - requirement 누락, unresolved, ambiguous 또는 claim에 부족한 coverage를 조용히 무시하지 않는다.
+- span 정렬이 실패하거나 canonical 해석이 유일하지 않으면 모델값과 서버값 중 하나를
+  조용히 우선하지 않고 실행을 막는다.
 
 ### Evidence와 HCX ②
 
@@ -101,6 +109,11 @@ HCX ②는 Evidence 밖의 사실을 보충하거나 observed 결과를 global �
 opaque ref는 요청 단위로 생성하며 모델이 의미 있는 ID를 조합하거나 추측할 수 없게 한다.
 provider가 nested schema를 거부하면 반복되는 `requirement_id`를 가진 flat records로
 encoding한다. 서로 묶인 span/ref/status를 독립 parallel array로 분리하지 않는다.
+
+조건값·연산자·정렬·limit은 HCX가 생성한 canonical 값 대신 typed semantic ref와
+원문 span으로 보존할 수 있다. 서버가 검증한 canonical logical plan이 최종
+실행 계약이며, 이 책임 분담은 확정된 논리 정보를 줄이는 것이 아니라 wire encoding을
+구체화한다.
 
 ## 5. 상태, 원인, 모집단 — Confirmed
 

@@ -154,16 +154,24 @@
 
 - 논리 계약과 opaque ref 계약은 유지한다. 기본 encoding은 `nested`, 예비는 `grouped_flat`으로
   둔다. `delimited`는 enum을 실을 수 없어 ref 무결성까지 무너지므로 쓰지 않는다.
-- 서버는 HCX의 `mapped` 판정뿐 아니라 조건 값, 비교 연산자, 정렬 방향, 관계 방향도 독립
-  검증해야 한다. 관계 방향은 지목된 entity의 종류로 서버가 결정하는 편이 낫다.
-- 비교 요구를 모델이 남기지 않으므로, 1단계에서 비교를 강제할지 서버가 승격할지 정한다.
-- span 합성 때문에 요구의 출처 구간을 모델 출력만으로 신뢰할 수 없다. 서버 정렬(align) 또는
-  문자 위치 요구를 1단계에서 시험한다.
+- 2026-08-31 사용자·Codex 결정으로 HCX는 typed semantic ref와 조건값·비교 표현·
+  정렬 표현·개수의 원문 span을 제출한다. 서버가 값·단위·연산자·정렬 방향·
+  limit을 결정적으로 canonicalize하며, 유일하게 해석하지 못하면 실행을 막는다.
+- 관계 방향은 HCX traversal을 실행 근거로 쓰지 않고 predicate domain/range와 anchor
+  entity type으로 서버가 유일하게 결정한다.
+- 비교는 질문에 명시적 비교 표현이 있고, 서로 다른 target과 호환되는 동일 metric이
+  확인되는 bounded case에서만 서버가 canonical comparison으로 승격한다.
+- span은 원문 exact match 또는 정규화 후 exact match로만 정렬하고 fuzzy alignment를
+  production 규칙으로 사용하지 않는다.
 - 후보 제시 순서를 결정적으로 고정하고 순서 민감도를 계속 측정한다.
 - `40009` 재시도·backoff 정책을 0-B 배포 실험과 함께 정한다.
 - HCX는 JSON Schema `enum`을 강제하지 않으므로 서버가 enum 준수를 직접 검증한다.
 
-## 0-B. NCP minimal vertical slice — local verified, remote pending
+이 encoding 선택은 0-A synthetic 실험의 당시 결론이다. 실제 Semantic/Execution
+Registry를 사용하는 production Runtime View Tool 선언의 후속 결과는 아래 1단계의
+2026-08-31 기록이 우선한다.
+
+## 0-B. NCP minimal vertical slice — local and remote basic call verified, resilience pending
 
 ### 목적
 
@@ -179,8 +187,12 @@
 ### 현재 기록
 
 - 로컬 FastAPI transport와 공식 응답 envelope는 검증됐다.
+- 2026-08-31 NCP 서버에서 SSH, FastAPI/Uvicorn, systemd 실행과 외부 `GET /answer`
+  기본 호출 성공을 확인했다. 이는 전송 경계와 기본 상시 프로세스 기동 검증이며
+  실제 canna-agent 통합 배포는 아니다.
 - 실제 Runtime View, HCX, DuckDB, source data와 Evidence는 아직 연결되지 않았다.
-- NCP 외부 호출, cold/warm latency, memory, restart와 상시성 검증은 남아 있다.
+- cold/warm latency, memory, 재부팅 후 복구, 동시 요청, 장시간 상시성 검증은 남아 있어
+  0-B 전체 통과로 표시하지 않는다.
 
 ## 0-C. Official-data discovery — discovery complete, executable store active
 
@@ -308,6 +320,31 @@ blocker가 생기면 기능을 근거 없이 성공 처리하지 않고 메인 �
 - 규칙 경로와 embedding 경로의 후보 provenance와 recall을 분리 측정 가능
 - 누락된 표현이 조용히 실행으로 사라지지 않음
 - candidate budget과 latency가 기록됨
+
+### 현재 기록 — 2026-08-31
+
+- 실제 Semantic/Execution Registry를 읽는 Runtime View, 요청 단위 opaque ref,
+  provider-neutral `submit_semantic_query` 논리 schema, fail-closed parser/validator와
+  HCX grouped-flat wire adapter를 구현했다. grouped-flat은 반복 `requirement_id`로
+  requirement/ref/detail record를 결합하고 canonical submission으로 조립한 뒤 같은
+  서버 검증기를 사용한다.
+- 승인된 동일 질문으로 retry 없이 수행한 HCX live 호출 4회는 모두 Tool emit 전에
+  API `40009` `Unsupported function`으로 거부됐다: neutral schema, HCX keyword
+  projection, projection + 0-A 성공 function name, grouped-flat wire. Tool argument,
+  ref 선택, span 보존과 semantic validation은 네 호출 모두 평가되지 않았다.
+- 각 관측은 `b_semantic_compiler/HCX_RUNTIME_VIEW_LIVE_RESULT_20260831.md`,
+  `HCX_WIRE_PROJECTION_LIVE_RESULT_20260831.md`,
+  `HCX_NAME_PROBE_LIVE_RESULT_20260831.md`,
+  `HCX_GROUPED_FLAT_LIVE_RESULT_20260831.md`에 분리 기록했고, 누적 비교와 해석 한계는
+  같은 디렉터리의 `FINDINGS.md` H절에 기록했다. raw 응답, request/response ID,
+  header와 credential은 저장하지 않았다.
+- 현재 B 상태는 `provisional / correction required`다. 사용자 결정으로 추가 live
+  원인 분리는 여기서 중단한다. 다음 재개 시에는 description만 줄이는 compatibility
+  minimization, provider 문서·지원 채널 확인 또는 Tool 없는 구조화 출력 대안을
+  사용자·Codex 결정으로 비교한다.
+- 조건값·연산자·정렬·limit·집계 canonicalizer는 아직 없고 entity resolution과
+  계획 수준 실행 가능성 판정도 남아 있으므로, provider 수용과 별개로 production
+  수직 경로는 완료가 아니다.
 
 ## 2. Gold annotation and ablation — pending
 

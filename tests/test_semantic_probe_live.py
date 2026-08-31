@@ -1,8 +1,10 @@
 """Live reproduction of the smallest stage 0-A observation.
 
-Marked ``hcx_live``: it needs credentials and network. Run with::
+Marked ``hcx_live``: it needs credentials and network, and it is deselected by
+default. Having credentials in ``.env`` is not consent to spend them, so the
+call also requires an explicit opt-in::
 
-    pytest -m hcx_live
+    RUN_HCX_LIVE=1 pytest -m hcx_live
 
 It asserts only what the falsification actually established: the provider
 accepts all three accounting schemas, and the two object-shaped encodings copy
@@ -13,6 +15,7 @@ here, because it is an experiment result rather than a contract.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 import pytest
@@ -41,6 +44,8 @@ def _load_env() -> None:
 
 @pytest.fixture(scope="module")
 def live_provider() -> HcxSemanticProvider:
+    if os.environ.get("RUN_HCX_LIVE") != "1":
+        pytest.skip("set RUN_HCX_LIVE=1 to permit an external HyperCLOVA X call")
     _load_env()
     if not HcxSemanticProvider.credentials_available():
         pytest.skip("HyperCLOVA X credentials are not configured")
