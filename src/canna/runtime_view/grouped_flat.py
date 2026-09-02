@@ -144,36 +144,37 @@ CODE_UNKNOWN_DETAIL_KIND = "unknown_detail_kind"
 
 # ---------------------------------------------------------------- wire schema
 
-_ROLE_GUIDE = (
-    "which part of the requirement this reference is: "
-    "target_dataset is the product family the requirement is about; "
-    "field is a measure or attribute the requirement uses; "
-    "output_field is a value to show; "
-    "grouping_field is a field to group by; "
-    "relationship_predicate and relationship_anchor_entity are the relation and "
-    "the entity the question named. Each role accepts only its own kind of "
-    "reference."
-)
-_DETAIL_GUIDE = (
-    "condition: ref is the field compared, span is the comparison words and "
-    "value_span is the value words, both copied from the question. "
-    "ordering: ref is the field sorted on and span is the direction words. "
-    "aggregation: ref is the field aggregated and span is the function words. "
-    "One record is one condition; do not split its comparison and value across "
-    "records."
-)
-_SPAN_GUIDE = "text copied from the question, not a normalised value"
+# Compatibility minimisation, 2026-08-31. A minimal declaration (244 bytes) was
+# accepted by the provider on the same model, key and client that refused four
+# project declarations of 3.6-4.4 KB. Descriptions were most of that weight —
+# 2,167 bytes across 19 of them — so they are cut to what a reader needs to fill
+# the slot correctly, and the longer guidance about roles and detail kinds moves
+# into the system message, which is instruction rather than declaration.
+#
+# Nothing the contract depends on was cut: every property name, enum value,
+# required entry, nesting level and ``additionalProperties`` is unchanged, and
+# the parser is untouched.
 
 DESCRIPTION = (
-    "Account for the question's explicit requirements using only the references this "
-    "request offered. One record per requirement, and every other record repeats its "
-    "requirement_id. Values, comparisons, directions and limits are submitted as spans "
-    "copied from the question; the server derives their executable form."
+    "Account for the question's explicit requirements using the references this "
+    "request offered. Every record repeats its requirement_id."
 )
+
+_SPAN_GUIDE = "copied from the question, not normalised"
 
 
 def _text_property(description: str) -> dict[str, Any]:
     return {"type": "string", "description": description}
+
+
+def _string() -> dict[str, Any]:
+    """A string slot whose own name already says what it holds.
+
+    Every description costs about seventeen bytes before a word of it is
+    written, and the declaration's weight is the thing being reduced. What these
+    slots need said is said once in the system message instead.
+    """
+    return {"type": "string"}
 
 
 def _object(properties: dict[str, Any], required: list[str]) -> dict[str, Any]:
@@ -191,85 +192,50 @@ def _array(items: dict[str, Any], description: str) -> dict[str, Any]:
 
 _REQUIREMENT_RECORD_SCHEMA = _object(
     {
-        P_REQUIREMENT_ID: _text_property(
-            "an id you choose for this requirement; every other record repeats it"
-        ),
-        P_KIND: {
-            "type": "string",
-            "enum": list(REQUIREMENT_KINDS),
-            "description": "the result unit this requirement asks for",
-        },
-        P_STATUS: {
-            "type": "string",
-            "enum": list(REQUIREMENT_STATUSES),
-            "description": (
-                "mapped when this request offered references that carry the meaning, "
-                "unresolved when it offered none, ambiguous when several meanings are "
-                "possible and nothing decides between them"
-            ),
-        },
-        P_SOURCE_SPAN: _text_property(
-            "the part of the question that asks for this requirement, copied verbatim"
-        ),
-        P_LIMIT_SPAN: _text_property(
-            "the words that say how many, copied from the question; omit when the "
-            "question does not say"
-        ),
+        P_REQUIREMENT_ID: _text_property("an id you choose; other records repeat it"),
+        P_KIND: {"type": "string", "enum": list(REQUIREMENT_KINDS)},
+        P_STATUS: {"type": "string", "enum": list(REQUIREMENT_STATUSES)},
+        P_SOURCE_SPAN: _text_property(f"the words asking for this, {_SPAN_GUIDE}"),
+        P_LIMIT_SPAN: _string(),
     },
     [P_REQUIREMENT_ID, P_KIND, P_STATUS, P_SOURCE_SPAN],
 )
 
 _REF_RECORD_SCHEMA = _object(
     {
-        P_REQUIREMENT_ID: _text_property("the requirement this reference belongs to"),
-        P_ROLE: {
-            "type": "string",
-            "enum": list(REF_ROLES),
-            "description": _ROLE_GUIDE,
-        },
-        P_REF: _text_property("an opaque reference offered by this request"),
+        P_REQUIREMENT_ID: _string(),
+        P_ROLE: {"type": "string", "enum": list(REF_ROLES)},
+        P_REF: _text_property("an opaque reference this request offered"),
     },
     [P_REQUIREMENT_ID, P_ROLE, P_REF],
 )
 
 _DETAIL_RECORD_SCHEMA = _object(
     {
-        P_REQUIREMENT_ID: _text_property("the requirement this detail belongs to"),
-        P_DETAIL_KIND: {
-            "type": "string",
-            "enum": list(DETAIL_KINDS),
-            "description": _DETAIL_GUIDE,
-        },
-        P_REF: _text_property("the field reference this detail applies to"),
-        P_SPAN: _text_property(_SPAN_GUIDE),
-        P_VALUE_SPAN: _text_property(f"{_SPAN_GUIDE}; only a condition uses this"),
+        P_REQUIREMENT_ID: _string(),
+        P_DETAIL_KIND: {"type": "string", "enum": list(DETAIL_KINDS)},
+        P_REF: _string(),
+        P_SPAN: _text_property(f"comparison, direction or function words, {_SPAN_GUIDE}"),
+        P_VALUE_SPAN: _text_property("the value words; condition only"),
     },
     [P_REQUIREMENT_ID, P_DETAIL_KIND, P_REF, P_SPAN],
 )
 
+# The root carries no description: the function envelope already states it, and
+# stating it twice was 309 bytes of the refused declaration.
 GROUPED_FLAT_SCHEMA: dict[str, Any] = {
     "type": "object",
-    "description": DESCRIPTION,
     "additionalProperties": False,
     "properties": {
         P_REQUIREMENT_RECORDS: _array(
-            _REQUIREMENT_RECORD_SCHEMA,
-            "one record per requirement the question actually states",
+            _REQUIREMENT_RECORD_SCHEMA, "one per requirement the question states"
         ),
-        P_REF_RECORDS: _array(
-            _REF_RECORD_SCHEMA,
-            "references, each tied to its requirement by a repeated requirement_id",
-        ),
+        P_REF_RECORDS: _array(_REF_RECORD_SCHEMA, "references, by requirement_id"),
         P_DETAIL_RECORDS: _array(
             _DETAIL_RECORD_SCHEMA,
-            "conditions, ordering and aggregation, each tied to its requirement by a "
-            "repeated requirement_id",
+            "conditions, ordering, aggregation, by requirement_id",
         ),
-        P_UNACCOUNTED_SPANS: _array(
-            _text_property(_SPAN_GUIDE),
-            "parts of the question this accounting did not cover; a non-empty list "
-            "prevents execution",
-        ),
+        P_UNACCOUNTED_SPANS: _array(_string(), "question parts not accounted for"),
     },
     "required": [P_REQUIREMENT_RECORDS],
 }

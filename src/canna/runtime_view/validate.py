@@ -20,11 +20,18 @@ never substituted for the other.
 
 The third is that an operation nobody can canonicalise cannot be executed.
 Ordering, limits, comparisons, aggregations and groupings must be derived
-deterministically from the question span before they can run, and none of those
-derivations exists yet. Rather than invent a descending default or an implicit
-top ten, such a requirement comes back refused with the missing canonicaliser
-named. The submitted spans and references survive into the plan either way, so
-nothing is lost for whoever implements them.
+deterministically from the question span before they can run. Four of those
+derivations now exist and are applied here: the span is read, the Registry is
+asked whether the field permits the operation, and a slot that cannot be turned
+into an execution value refuses rather than guessing a descending default or an
+implicit top ten. Grouping, whole comparison requirements and explanations still
+have no canonicaliser and are still refused by name. The submitted spans and
+references survive into the plan either way, so nothing is lost.
+
+A requirement that refused anything hands out no execution values. The
+canonicalisation is kept on the plan as a record, failures included, but
+``execution_values`` releases it only when the requirement passed, so a compiler
+cannot reach past a refusal to the values produced before it.
 
 Two distinctions run through the result. The model's ``submitted_status`` and
 the server's ``server_decision`` are kept apart, because a requirement the model
@@ -41,6 +48,12 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Any
 
+from .canonicalize import (
+    FieldMetadata,
+    RequirementCanonicalization,
+    canonicalize_requirement,
+    field_metadata,
+)
 from .contract import (
     AVAILABLE_CANONICALIZERS,
     CANONICALIZER_COMPARISON,
@@ -52,6 +65,7 @@ from .contract import (
     DECISION_UNRESOLVED,
     KIND_CANONICALIZERS,
     KINDS_REQUIRING_OUTPUT,
+    REQUIREMENT_KIND_AGGREGATION,
     REQUIREMENT_KIND_RANKING,
     STATUS_AMBIGUOUS,
     STATUS_MAPPED,
@@ -59,7 +73,7 @@ from .contract import (
 from .query import SubmittedQuery, SubmittedRequirement
 from .refs import KIND_DATASET, KIND_FIELD, KIND_PREDICATE, RefError
 from .registry_facts import RegistryFacts
-from .spans import aligned
+from .spans import CODE_SPAN_ALIGNMENT_FAILED, aligned
 from .view import SCOPE_UNPROVEN, RuntimeView, inverse_partners
 
 # Provisional internal reason codes. No shared contract has been approved for
@@ -79,7 +93,9 @@ CODE_DIRECTION_UNDECIDABLE = "relation_direction_undecidable"
 CODE_RELATION_TARGET_MISMATCH = "relation_target_mismatch"
 CODE_CANONICALIZER_UNAVAILABLE = "canonicalizer_unavailable"
 CODE_UNACCOUNTED_SPAN = "unaccounted_explicit_span"
-CODE_SPAN_ALIGNMENT_FAILED = "span_alignment_failed"
+# CODE_SPAN_ALIGNMENT_FAILED is not defined here. It belongs to spans.py, which
+# owns alignment, and a second copy of the string would be a second contract.
+CODE_CANONICALIZATION_REFUSED = "canonicalization_refused"
 CODE_MISSING_SOURCE_SPAN = "missing_source_span"
 CODE_EMPTY_REQUIREMENT = "empty_requirement"
 
@@ -206,7 +222,19 @@ class CanonicalRequirement:
     field_bindings: tuple[FieldBinding, ...]
     relation: RelationBinding | None
     preserved: PreservedSubmission
+    canonical: RequirementCanonicalization | None
     blocking_codes: tuple[str, ...]
+
+    @property
+    def execution_values(self) -> RequirementCanonicalization | None:
+        """The values a compiler may execute, and only when nothing was refused.
+
+        ``canonical`` is the record and keeps its failures for whoever reads the
+        plan. This is the gate: a requirement that did not pass validation hands
+        out no execution values at all, so a caller cannot reach past a refusal
+        by looking at the values it produced before the refusal.
+        """
+        return self.canonical if self.semantic_valid else None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -219,8 +247,31 @@ class CanonicalRequirement:
             "field_bindings": [binding.to_dict() for binding in self.field_bindings],
             "relation": self.relation.to_dict() if self.relation else None,
             "preserved": self.preserved.to_dict(),
+            "canonical": _canonical_dict(self.canonical),
+            "execution_values_released": self.execution_values is not None,
             "blocking_codes": list(self.blocking_codes),
         }
+
+
+def _canonical_dict(canonical: RequirementCanonicalization | None) -> dict[str, Any] | None:
+    """The derived execution values, and every slot that refused to produce one."""
+    if canonical is None:
+        return None
+    return {
+        "conditions": [
+            {
+                "operator": item.operator,
+                "value": item.value.to_dict() if item.value else None,
+            }
+            for item in canonical.conditions
+        ],
+        "ordering_direction": canonical.ordering.direction if canonical.ordering else "",
+        "limit": canonical.limit.limit if canonical.limit and canonical.limit.ok else None,
+        "aggregation_function": (
+            canonical.aggregation.function if canonical.aggregation else ""
+        ),
+        "failures": [failure.to_dict() for failure in canonical.failures],
+    }
 
 
 @dataclass(frozen=True)
@@ -367,6 +418,24 @@ def _preserved(view: RuntimeView, requirement: SubmittedRequirement) -> Preserve
     )
 
 
+def _field_metadata_lookup(facts: RegistryFacts, view: RuntimeView):
+    """Answer a submitted field reference with what the Registry says about it.
+
+    The canonicaliser needs a declared unit and a declared set of permitted
+    operations, and it must get them from the Registry rather than from the
+    submission. A reference that does not resolve gets ``None``, which the
+    canonicaliser turns into a refusal rather than a default.
+    """
+
+    def lookup(ref: str) -> FieldMetadata | None:
+        semantic_id, _code = _resolve(view, ref, KIND_FIELD)
+        if semantic_id is None or not facts.has(semantic_id):
+            return None
+        return field_metadata(facts.term(semantic_id))
+
+    return lookup
+
+
 def _missing_canonicalizers(requirement: SubmittedRequirement) -> tuple[str, ...]:
     """Which deterministic derivations this requirement needs and nobody has."""
     needed = set(KIND_CANONICALIZERS.get(requirement.kind, ()))
@@ -458,6 +527,21 @@ def _check_completeness(
                 ),
             )
         )
+    if requirement.kind == REQUIREMENT_KIND_AGGREGATION and (
+        requirement.aggregation is None
+        or not requirement.aggregation.field_ref
+        or not requirement.aggregation.function_span
+    ):
+        issues.append(
+            ValidationIssue(
+                code=CODE_REQUIREMENT_INCOMPLETE,
+                requirement_id=requirement.requirement_id,
+                detail=(
+                    "an aggregation has to name the field it aggregates and quote the "
+                    "word that says which aggregation; neither is inferred"
+                ),
+            )
+        )
     if requirement.kind == REQUIREMENT_KIND_RANKING and (
         requirement.ordering is None or not requirement.limit_span
     ):
@@ -529,6 +613,21 @@ def _validate_requirement(
         for name in _missing_canonicalizers(requirement)
     )
 
+    canonical = canonicalize_requirement(
+        view.question, requirement, _field_metadata_lookup(facts, view)
+    )
+    issues.extend(
+        ValidationIssue(
+            code=CODE_CANONICALIZATION_REFUSED,
+            requirement_id=requirement.requirement_id,
+            detail=(
+                f"{failure.slot} could not be turned into an execution value: "
+                f"{failure.detail}"
+            ),
+        )
+        for failure in canonical.failures
+    )
+
     blocking = tuple(
         sorted(
             {
@@ -554,6 +653,7 @@ def _validate_requirement(
             ),
             relation=relation,
             preserved=preserved,
+            canonical=canonical,
             blocking_codes=blocking,
         ),
         issues,
@@ -576,6 +676,7 @@ def _blocked(
         field_bindings=(),
         relation=None,
         preserved=preserved,
+        canonical=None,
         blocking_codes=codes,
     )
 

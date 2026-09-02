@@ -19,6 +19,7 @@ import pytest
 
 from canna.runtime_view import (
     CONTRACT_STATUS,
+    ENVELOPE_PROPERTY,
     SUBMISSION_SCHEMA,
     hcx_tool_definition,
     hcx_wire_schema,
@@ -293,7 +294,8 @@ def test_the_adapter_reaches_the_existing_tool_binding_factory_without_a_call() 
     provider._build_chat(hcx_tool_definition())
 
     assert seen["schema"]["function"]["name"] == FUNCTION_NAME
-    assert seen["tools"][0]["function"]["parameters"]["additionalProperties"] is False
+    # the declaration is the 2026-08-31 bridge envelope: one required string
+    assert seen["tools"][0]["function"]["parameters"]["required"] == [ENVELOPE_PROPERTY]
     assert seen["tool_choice"]["function"]["name"] == FUNCTION_NAME
     # nothing here touched the network
     assert json.dumps(seen["schema"])

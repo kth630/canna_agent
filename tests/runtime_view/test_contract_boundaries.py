@@ -13,7 +13,7 @@ import json
 import pytest
 
 from canna.runtime_view import (
-    CODE_CANONICALIZER_UNAVAILABLE,
+    CODE_CANONICALIZATION_REFUSED,
     CODE_CROSS_FAMILY_FIELD,
     CODE_EMPTY_REQUIREMENT,
     CODE_MISSING_SOURCE_SPAN,
@@ -300,11 +300,42 @@ def test_a_span_quoted_from_the_question_passes_alignment(facts) -> None:
             )
         ),
     )
-    # the spans are quoted, so what stops it is the missing canonicaliser alone
-    assert _codes(result) == [
-        CODE_CANONICALIZER_UNAVAILABLE,
-        CODE_CANONICALIZER_UNAVAILABLE,
-    ]
+    # The spans are quoted, so alignment is not what stops this. What stops it
+    # is that "낮은 순으로" is not an expression the direction grammar reads:
+    # the approved form is "낮은 순" and the trailing particle is unexplained
+    # text. Quoting the question and saying something the server can act on are
+    # two different things, and the codes say which one failed.
+    assert CODE_SPAN_ALIGNMENT_FAILED not in _codes(result)
+    assert _codes(result) == [CODE_CANONICALIZATION_REFUSED]
+    assert result.plan.requirements[0].execution_values is None
+
+
+def test_a_quoted_and_readable_ranking_produces_its_execution_values(facts) -> None:
+    """The other side of the previous test: quoted and readable both hold."""
+    view = _view(facts, ["syn:AlphaProduct", "syn:AlphaCost"])
+    result = validate(
+        facts,
+        view,
+        SubmittedQuery(
+            (
+                _requirement(
+                    kind="ranking",
+                    target_dataset_refs=(view.ref_for("syn:AlphaProduct"),),
+                    field_refs=(view.ref_for("syn:AlphaCost"),),
+                    ordering=SubmittedOrdering(
+                        field_ref=view.ref_for("syn:AlphaCost"), direction_span="낮은 순"
+                    ),
+                    limit_span="10개",
+                ),
+            )
+        ),
+    )
+    assert _codes(result) == []
+    assert result.semantic_valid
+    values = result.plan.requirements[0].execution_values
+    assert values is not None
+    assert values.ordering.direction == "asc"
+    assert values.limit.limit == 10
 
 
 def test_alignment_accepts_the_one_approved_normalisation() -> None:

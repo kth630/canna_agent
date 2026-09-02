@@ -24,6 +24,12 @@ ALIGNMENT_EXACT = "exact"
 ALIGNMENT_NORMALIZED = "normalized_exact"
 ALIGNMENT_FAILED = "not_in_question"
 
+# The one reason code for "the model did not quote the question". It lives here
+# rather than in a caller because every reader of a span has to refuse the same
+# thing for the same stated reason; two copies of the string would be two
+# contracts. Provisional internal, like every other code in this package.
+CODE_SPAN_ALIGNMENT_FAILED = "span_alignment_failed"
+
 NORMALIZATION_RULE = "unicode_nfkc_then_collapse_whitespace_then_strip"
 
 _WHITESPACE = re.compile(r"\s+")

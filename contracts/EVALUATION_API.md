@@ -54,6 +54,9 @@ semantic query wire format, Tool 수, retry 횟수, deterministic fixture plan�
 - result truncation과 `retrieved_context` size limit
 - health/readiness endpoint
 - NCP deployment의 timeout/concurrency 정책
-- semantic query의 nested 또는 grouped-flat wire encoding
+- HCX ① 내부 계약. nested/grouped-flat/JSON-in-string/line/one-line은 후속 실험에서
+  production 생성 안정성을 확보하지 못했다. 현재 후보는 서버가 만든 전체 PlanOption의
+  요청 단위 opaque `selected_plan_ref` 하나를 고르게 하는 방식이지만, 이는 Confirmed
+  아키텍처 변경 승인 전 제안이며 외부 API 계약이 아니다.
 
 위 항목은 실험과 배포 결과로 정하되 외부 `GET /answer` 계약을 깨지 않는다.

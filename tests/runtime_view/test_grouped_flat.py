@@ -485,8 +485,14 @@ def test_the_wire_schema_offers_no_slot_for_a_physical_plan() -> None:
         assert forbidden not in serialised
 
 
-def test_the_tool_definition_keeps_the_logical_name_and_carries_the_wire_schema() -> None:
+def test_the_tool_definition_keeps_the_logical_name() -> None:
+    """The grouped-flat schema is no longer what the provider is shown.
+
+    Since the 2026-08-31 bridge it travels as a JSON string inside one
+    property, so this schema describes the payload rather than the declaration.
+    ``test_hcx_bridge.py`` covers the declaration.
+    """
     tool = hcx_tool_definition()
     assert tool["type"] == "function"
     assert tool["function"]["name"] == FUNCTION_NAME == "submit_semantic_query"
-    assert tool["function"]["parameters"] == grouped_flat_schema()
+    assert tool["function"]["parameters"] != grouped_flat_schema()

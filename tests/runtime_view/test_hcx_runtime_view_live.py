@@ -1,9 +1,10 @@
 """Exactly one opt-in HCX call for the approved Runtime View schema probe.
 
-Since 2026-08-31 the declaration sent is the grouped-flat encoding, so the
-arguments that come back are records and are read by ``parse_grouped_flat``.
-Everything the server decides afterwards is unchanged: assembly hands the
-canonical shape to the same parser and the same validator.
+Since 2026-09-01 the declaration is one required ``submission_text`` string
+carrying one record per line. The arguments are read by
+``one_line_records.parse_tool_arguments``, which unwraps and hands on.
+Everything the server decides afterwards is unchanged: the same assembly, the
+same parser, the same validator.
 
 This test asserts provider acceptance, so a refusal fails it. That is the point
 of it; the three refusals recorded on 2026-08-31 are in the provenance
@@ -24,10 +25,11 @@ from canna.experiments.semantic_probe.provider import (
     classify_error,
 )
 from canna.runtime_view import (
-    CODE_CANONICALIZER_UNAVAILABLE,
+    ONE_LINE_DIAGNOSTIC_FIELDS,
     align,
     hcx_tool_definition,
-    parse_grouped_flat,
+    one_line_envelope_diagnostics,
+    parse_tool_arguments,
     validate,
 )
 from canna.runtime_view.query import SubmittedQuery
@@ -117,6 +119,7 @@ def test_actual_runtime_view_schema_is_accepted_once() -> None:
         model=DEFAULT_MODEL,
         timeout=40,
         max_retries=0,
+        max_completion_tokens=8192,
         reasoning_effort="none",
     )
     bound = llm.bind_tools(
@@ -137,6 +140,14 @@ def test_actual_runtime_view_schema_is_accepted_once() -> None:
         pytest.fail(f"provider rejected the one approved call: kind={kind}, code={code}")
 
     report["provider_schema_acceptance"] = "accepted"
+    # why generation stopped, and how much of the budget it used. Metadata only:
+    # a truncation at the end of the payload is either a budget that ran out or a
+    # model that stopped, and finish_reason is what tells those apart.
+    metadata = getattr(response, "response_metadata", None) or {}
+    usage = getattr(response, "usage_metadata", None) or {}
+    report["finish_reason"] = str(metadata.get("finish_reason", "unreported"))
+    report["output_tokens"] = usage.get("output_tokens", "unreported")
+    report["max_completion_tokens_sent"] = 8192
     calls = [
         call
         for call in (getattr(response, "tool_calls", None) or ())
@@ -149,10 +160,23 @@ def test_actual_runtime_view_schema_is_accepted_once() -> None:
     call = calls[0]
     report["tool_name_exact"] = "yes" if call.get("name") == FUNCTION_NAME else "no"
     arguments = _arguments(call)
-    parsed = parse_grouped_flat(arguments) if arguments is not None else None
+    parsed = parse_tool_arguments(arguments) if arguments is not None else None
     report["parser_well_formed"] = (
         "yes" if parsed is not None and parsed.well_formed else "no"
     )
+    # Shape metadata only, so a refusal is diagnosable without keeping what the
+    # model wrote: fixed argument shape classes, the document's outline, how many
+    # records of each kind arrived, and the parsers' codes. The approved list is
+    # DIAGNOSTIC_FIELDS and the assertion below holds the record to it, so no
+    # payload text, span, reference, credential or request identifier can enter
+    # the report by anyone adding a field here later.
+    report["envelope"] = one_line_envelope_diagnostics(
+        arguments,
+        parsed,
+        finish_reason=report["finish_reason"],
+        output_tokens=report["output_tokens"],
+    )
+    assert set(report["envelope"]) <= set(ONE_LINE_DIAGNOSTIC_FIELDS)
 
     if parsed is not None and parsed.well_formed and parsed.query is not None:
         allowed_refs = {
@@ -220,8 +244,9 @@ def test_actual_runtime_view_schema_is_accepted_once() -> None:
     assert not leaked_stable_id
     assert not physical_leak
     assert isinstance(report["semantic_validation"], dict)
-    assert report["semantic_validation"]["semantic_valid"] is False
-    assert set(report["semantic_validation"]["issue_codes"]) == {
-        CODE_CANONICALIZER_UNAVAILABLE
-    }
+    # The four canonicalisers are registered, so a correctly quoted ranking has
+    # nothing left to refuse and the meanings check out. Execution is still not
+    # claimed: that verdict belongs to the Execution Registry, not to this layer.
+    assert report["semantic_validation"]["issue_codes"] == []
+    assert report["semantic_validation"]["semantic_valid"] is True
     assert report["execution_readiness"] == "not_evaluated_by_semantic_validation"

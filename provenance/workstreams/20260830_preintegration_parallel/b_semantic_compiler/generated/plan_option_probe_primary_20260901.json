@@ -1,0 +1,705 @@
+{
+  "blocking_reasons": {
+    "anchor_has_no_runtime_view_candidate": 5,
+    "canonicalization_refused": 5,
+    "canonicalizer_unavailable": 2,
+    "unaccounted_modifier_span": 5
+  },
+  "canonicalisation_codes": {
+    "canonicalizer_unavailable": 2,
+    "ordering_field_unresolved": 2,
+    "span_alignment_failed": 1,
+    "unit_not_canonicalizable": 1,
+    "value_expression_unsupported": 1
+  },
+  "cap_boundary": {
+    "at_or_over_option_cap": 0,
+    "at_or_over_plan_cap": 0,
+    "at_or_over_requirement_cap": 0,
+    "cases_with_lossy_discard": 0
+  },
+  "distributions": {
+    "plan_options_per_question": {
+      "max": 1,
+      "median": 1,
+      "min": 1,
+      "n": 24,
+      "sum": 24
+    },
+    "raw_candidates_per_requirement": {
+      "max": 5,
+      "median": 2,
+      "min": 0,
+      "n": 33,
+      "sum": 63
+    },
+    "requirement_frames_per_question": {
+      "max": 3,
+      "median": 1,
+      "min": 1,
+      "n": 24,
+      "sum": 33
+    },
+    "requirement_options_per_requirement": {
+      "max": 1,
+      "median": 1,
+      "min": 1,
+      "n": 33,
+      "sum": 33
+    }
+  },
+  "experiment": "plan_option_offline_falsification",
+  "external_calls": {
+    "database": 0,
+    "embedding": 0,
+    "hcx": 0
+  },
+  "failures": {
+    "required_candidate_key_not_recalled": 1,
+    "required_operation_slot_not_recognised": 1
+  },
+  "generation_status": {
+    "complete": 13,
+    "no_candidate": 11
+  },
+  "modifier_residue_cases": 5,
+  "non_requirement_reasons": {
+    "connective": 9,
+    "discourse": 15,
+    "inflection": 1,
+    "particle": 24,
+    "politeness": 24,
+    "punctuation": 24,
+    "result_grain_noun": 15
+  },
+  "pass": false,
+  "per_case": [
+    {
+      "blocking_reasons": [],
+      "canonicalisation_codes": [],
+      "capability": "field_retrieval_neighbor",
+      "failures": [],
+      "frames_expected": [
+        1
+      ],
+      "frames_produced": 1,
+      "generation_status": "complete",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1
+      ],
+      "selectable": 1,
+      "split": "primary",
+      "test_id": "rv_field_period_neighbor_001"
+    },
+    {
+      "blocking_reasons": [],
+      "canonicalisation_codes": [],
+      "capability": "cross_family_homonym_retrieval",
+      "failures": [],
+      "frames_expected": [
+        2
+      ],
+      "frames_produced": 2,
+      "generation_status": "complete",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1,
+        1
+      ],
+      "selectable": 1,
+      "split": "primary",
+      "test_id": "rv_cross_family_homonym_001"
+    },
+    {
+      "blocking_reasons": [],
+      "canonicalisation_codes": [],
+      "capability": "multi_requirement_retrieval",
+      "failures": [],
+      "frames_expected": [
+        2
+      ],
+      "frames_produced": 2,
+      "generation_status": "complete",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1,
+        1
+      ],
+      "selectable": 1,
+      "split": "primary",
+      "test_id": "rv_multi_requirement_condition_001"
+    },
+    {
+      "blocking_reasons": [],
+      "canonicalisation_codes": [],
+      "capability": "multi_target_retrieval",
+      "failures": [],
+      "frames_expected": [
+        2
+      ],
+      "frames_produced": 2,
+      "generation_status": "complete",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1,
+        1
+      ],
+      "selectable": 1,
+      "split": "primary",
+      "test_id": "rv_multi_target_bond_and_overseas_001"
+    },
+    {
+      "blocking_reasons": [],
+      "canonicalisation_codes": [],
+      "capability": "relationship_retrieval_direction",
+      "failures": [],
+      "frames_expected": [
+        1
+      ],
+      "frames_produced": 1,
+      "generation_status": "complete",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1
+      ],
+      "selectable": 1,
+      "split": "primary",
+      "test_id": "rv_relationship_security_to_product_001"
+    },
+    {
+      "blocking_reasons": [],
+      "canonicalisation_codes": [],
+      "capability": "relationship_mode_retrieval",
+      "failures": [],
+      "frames_expected": [
+        1
+      ],
+      "frames_produced": 1,
+      "generation_status": "complete",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1
+      ],
+      "selectable": 1,
+      "split": "primary",
+      "test_id": "rv_relationship_lookthrough_001"
+    },
+    {
+      "blocking_reasons": [
+        "anchor_has_no_runtime_view_candidate",
+        "unaccounted_modifier_span",
+        "canonicalizer_unavailable"
+      ],
+      "canonicalisation_codes": [
+        "canonicalizer_unavailable"
+      ],
+      "capability": "capability_coverage_declaration",
+      "failures": [],
+      "frames_expected": [
+        1
+      ],
+      "frames_produced": 1,
+      "generation_status": "no_candidate",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1
+      ],
+      "selectable": 0,
+      "split": "primary",
+      "test_id": "rv_capability_unsupported_forward_001"
+    },
+    {
+      "blocking_reasons": [
+        "anchor_has_no_runtime_view_candidate",
+        "canonicalization_refused"
+      ],
+      "canonicalisation_codes": [
+        "ordering_field_unresolved"
+      ],
+      "capability": "capability_coverage_declaration",
+      "failures": [],
+      "frames_expected": [
+        1
+      ],
+      "frames_produced": 1,
+      "generation_status": "no_candidate",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1
+      ],
+      "selectable": 0,
+      "split": "primary",
+      "test_id": "rv_capability_unsupported_weight_001"
+    },
+    {
+      "blocking_reasons": [],
+      "canonicalisation_codes": [],
+      "capability": "retrieval_failure_reporting",
+      "failures": [],
+      "frames_expected": [
+        1
+      ],
+      "frames_produced": 1,
+      "generation_status": "complete",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1
+      ],
+      "selectable": 1,
+      "split": "primary",
+      "test_id": "rv_budget_boundary_required_loss_001"
+    },
+    {
+      "blocking_reasons": [],
+      "canonicalisation_codes": [],
+      "capability": "retrieval_failure_reporting",
+      "failures": [],
+      "frames_expected": [
+        1
+      ],
+      "frames_produced": 1,
+      "generation_status": "complete",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1
+      ],
+      "selectable": 1,
+      "split": "primary",
+      "test_id": "rv_budget_boundary_neighbor_loss_001"
+    },
+    {
+      "blocking_reasons": [],
+      "canonicalisation_codes": [],
+      "capability": "retrieval_failure_reporting",
+      "failures": [],
+      "frames_expected": [
+        1
+      ],
+      "frames_produced": 1,
+      "generation_status": "complete",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1
+      ],
+      "selectable": 1,
+      "split": "primary",
+      "test_id": "rv_budget_boundary_exact_fit_001"
+    },
+    {
+      "blocking_reasons": [
+        "unaccounted_modifier_span"
+      ],
+      "canonicalisation_codes": [],
+      "capability": "field_grounding",
+      "failures": [],
+      "frames_expected": [
+        1
+      ],
+      "frames_produced": 1,
+      "generation_status": "no_candidate",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1
+      ],
+      "selectable": 0,
+      "split": "primary",
+      "test_id": "sg_field_period_neighbor_001"
+    },
+    {
+      "blocking_reasons": [
+        "canonicalization_refused"
+      ],
+      "canonicalisation_codes": [
+        "unit_not_canonicalizable"
+      ],
+      "capability": "field_grounding",
+      "failures": [],
+      "frames_expected": [
+        1
+      ],
+      "frames_produced": 1,
+      "generation_status": "no_candidate",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1
+      ],
+      "selectable": 0,
+      "split": "primary",
+      "test_id": "sg_field_meaning_neighbor_001"
+    },
+    {
+      "blocking_reasons": [
+        "unaccounted_modifier_span"
+      ],
+      "canonicalisation_codes": [],
+      "capability": "field_grounding",
+      "failures": [],
+      "frames_expected": [
+        1
+      ],
+      "frames_produced": 1,
+      "generation_status": "no_candidate",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1
+      ],
+      "selectable": 0,
+      "split": "primary",
+      "test_id": "sg_field_fee_neighbor_001"
+    },
+    {
+      "blocking_reasons": [
+        "canonicalization_refused"
+      ],
+      "canonicalisation_codes": [
+        "value_expression_unsupported"
+      ],
+      "capability": "requirement_accounting",
+      "failures": [],
+      "frames_expected": [
+        2,
+        2
+      ],
+      "frames_produced": 2,
+      "generation_status": "no_candidate",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1,
+        1
+      ],
+      "selectable": 0,
+      "split": "primary",
+      "test_id": "sg_requirements_two_001"
+    },
+    {
+      "blocking_reasons": [
+        "unaccounted_modifier_span",
+        "canonicalization_refused"
+      ],
+      "canonicalisation_codes": [
+        "span_alignment_failed"
+      ],
+      "capability": "requirement_accounting",
+      "failures": [],
+      "frames_expected": [
+        3,
+        3
+      ],
+      "frames_produced": 3,
+      "generation_status": "no_candidate",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1,
+        1,
+        1
+      ],
+      "selectable": 0,
+      "split": "primary",
+      "test_id": "sg_requirements_three_001"
+    },
+    {
+      "blocking_reasons": [],
+      "canonicalisation_codes": [],
+      "capability": "dataset_and_field_grounding",
+      "failures": [],
+      "frames_expected": [
+        2
+      ],
+      "frames_produced": 2,
+      "generation_status": "complete",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1,
+        1
+      ],
+      "selectable": 1,
+      "split": "primary",
+      "test_id": "sg_multi_target_two_requirements_001"
+    },
+    {
+      "blocking_reasons": [],
+      "canonicalisation_codes": [],
+      "capability": "relationship_grounding",
+      "failures": [],
+      "frames_expected": [
+        1
+      ],
+      "frames_produced": 1,
+      "generation_status": "complete",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1
+      ],
+      "selectable": 1,
+      "split": "primary",
+      "test_id": "sg_relationship_security_to_product_001"
+    },
+    {
+      "blocking_reasons": [],
+      "canonicalisation_codes": [],
+      "capability": "relationship_grounding",
+      "failures": [],
+      "frames_expected": [
+        1
+      ],
+      "frames_produced": 1,
+      "generation_status": "complete",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1
+      ],
+      "selectable": 1,
+      "split": "primary",
+      "test_id": "sg_relationship_product_to_security_001"
+    },
+    {
+      "blocking_reasons": [],
+      "canonicalisation_codes": [],
+      "capability": "requirement_accounting",
+      "failures": [],
+      "frames_expected": [
+        2,
+        2
+      ],
+      "frames_produced": 2,
+      "generation_status": "complete",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1,
+        1
+      ],
+      "selectable": 1,
+      "split": "primary",
+      "test_id": "sg_nested_reuse_001"
+    },
+    {
+      "blocking_reasons": [
+        "canonicalizer_unavailable"
+      ],
+      "canonicalisation_codes": [
+        "canonicalizer_unavailable"
+      ],
+      "capability": "comparison_grounding",
+      "failures": [],
+      "frames_expected": [
+        1,
+        3
+      ],
+      "frames_produced": 1,
+      "generation_status": "no_candidate",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1
+      ],
+      "selectable": 0,
+      "split": "primary",
+      "test_id": "sg_comparison_two_entities_001"
+    },
+    {
+      "blocking_reasons": [
+        "anchor_has_no_runtime_view_candidate",
+        "unaccounted_modifier_span"
+      ],
+      "canonicalisation_codes": [],
+      "capability": "absent_candidate_refusal",
+      "failures": [],
+      "frames_expected": [
+        1,
+        1
+      ],
+      "frames_produced": 1,
+      "generation_status": "no_candidate",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1
+      ],
+      "selectable": 0,
+      "split": "primary",
+      "test_id": "sg_absent_field_unresolved_001"
+    },
+    {
+      "blocking_reasons": [
+        "anchor_has_no_runtime_view_candidate"
+      ],
+      "canonicalisation_codes": [],
+      "capability": "requirement_accounting",
+      "failures": [],
+      "frames_expected": [
+        2
+      ],
+      "frames_produced": 2,
+      "generation_status": "no_candidate",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1,
+        1
+      ],
+      "selectable": 0,
+      "split": "primary",
+      "test_id": "sg_partial_unresolved_mix_001"
+    },
+    {
+      "blocking_reasons": [
+        "anchor_has_no_runtime_view_candidate",
+        "canonicalization_refused"
+      ],
+      "canonicalisation_codes": [
+        "ordering_field_unresolved"
+      ],
+      "capability": "absent_candidate_refusal",
+      "failures": [
+        "required_candidate_key_not_recalled",
+        "required_operation_slot_not_recognised"
+      ],
+      "frames_expected": [
+        1,
+        1
+      ],
+      "frames_produced": 1,
+      "generation_status": "no_candidate",
+      "lossy_discards": 0,
+      "plan_options": 1,
+      "requirement_options": [
+        1
+      ],
+      "selectable": 0,
+      "split": "primary",
+      "test_id": "sg_absent_metric_on_relation_001"
+    }
+  ],
+  "policy": {
+    "join_beam": 32,
+    "max_options_per_requirement": 8,
+    "max_plan_options": 16,
+    "max_requirements": 8,
+    "version": "offline_probe_provisional_v1"
+  },
+  "prompt_budget_estimate": {
+    "16": {
+      "bytes": {
+        "max": 17197,
+        "median": 6477,
+        "min": 5357,
+        "n": 24,
+        "sum": 196552
+      },
+      "estimated_tokens": {
+        "max": 4720,
+        "median": 1788,
+        "min": 1404,
+        "n": 24,
+        "sum": 53172
+      }
+    },
+    "2": {
+      "bytes": {
+        "max": 2161,
+        "median": 821,
+        "min": 681,
+        "n": 24,
+        "sum": 24842
+      },
+      "estimated_tokens": {
+        "max": 593,
+        "median": 227,
+        "min": 179,
+        "n": 24,
+        "sum": 6725
+      }
+    },
+    "4": {
+      "bytes": {
+        "max": 4309,
+        "median": 1629,
+        "min": 1349,
+        "n": 24,
+        "sum": 49372
+      },
+      "estimated_tokens": {
+        "max": 1183,
+        "median": 450,
+        "min": 354,
+        "n": 24,
+        "sum": 13365
+      }
+    },
+    "8": {
+      "bytes": {
+        "max": 8605,
+        "median": 3245,
+        "min": 2685,
+        "n": 24,
+        "sum": 98432
+      },
+      "estimated_tokens": {
+        "max": 2362,
+        "median": 896,
+        "min": 704,
+        "n": 24,
+        "sum": 26634
+      }
+    }
+  },
+  "real_registry_anchor_availability": {
+    "candidates_offered": {
+      "max": 21,
+      "median": 18,
+      "min": 3,
+      "n": 24,
+      "sum": 340
+    },
+    "cases_with_a_missing_anchor": 8,
+    "recalled_by_kind": {
+      "dataset": 27,
+      "field": 21,
+      "predicate": 0
+    },
+    "required_by_kind": {
+      "dataset": 27,
+      "field": 24,
+      "predicate": 5
+    }
+  },
+  "split": "primary",
+  "totals": {
+    "anchor_keys_recalled_only_by_derivation": 3,
+    "blocked_cases": 11,
+    "cases": 24,
+    "content_span_classified_as_non_requirement": 0,
+    "lossy_truncation_reported_as_success": 0,
+    "option_used_a_candidate_the_view_did_not_bind": 0,
+    "plan_payload_leaked_a_forbidden_value": 0,
+    "required_anchor_keys": 63,
+    "required_candidate_key_not_recalled": 1,
+    "required_operation_slot_not_recognised": 1,
+    "required_span_anchor_not_covered": 0,
+    "requirement_frame_count_mismatch": 0,
+    "requirement_frame_kind_mismatch": 0,
+    "selectable_cases": 13,
+    "semantic_canonicalisation_execution_states_collapsed": 0
+  }
+}

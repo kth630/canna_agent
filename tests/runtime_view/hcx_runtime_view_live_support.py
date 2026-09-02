@@ -21,6 +21,7 @@ from canna.runtime_view import (
     RegistryFacts,
     RuntimeView,
     build_runtime_view,
+    one_line_submission_guidance,
 )
 from canna.runtime_view.view import MATCH_EXACT, MATCH_PARTIAL, is_dataset, is_field
 
@@ -203,16 +204,21 @@ def build_approved_live_case() -> ApprovedLiveCase:
 
 def model_messages(case: ApprovedLiveCase) -> tuple[str, str]:
     system = (
+        # The grouped-flat structure no longer travels as JSON Schema: the
+        # provider refused every declaration that carried it. Nor does it
+        # travel as JSON inside the string any more — writing JSON there cost
+        # quote escaping, non-ASCII escaping and brace balance at once, and one
+        # of the three failed every time. It travels as record lines, whose
+        # fields and enums are stated here, rendered from the same tables the
+        # server routes by. Since 2026-09-01 a record is one line, which is
+        # the shape the provider wrote on both calls that reached the reader.
         "You account for every explicit requirement in the user's question. "
-        "Call submit_semantic_query exactly once. Use only opaque refs present in "
-        "runtime_view. Write one requirement_record per requirement and repeat its "
-        "requirement_id on every ref_record and detail_record that belongs to it. "
-        "Copy source_span, limit_span and every detail span verbatim from the "
-        "question; never normalize them into values. Represent this request as one "
-        "ranking requirement with a target_dataset ref_record, an ordering "
-        "detail_record carrying the field and the direction words, and a limit_span. "
-        "Do not create SQL, tables, columns, joins, stable identifiers, or physical "
-        "execution information."
+        "Call submit_semantic_query exactly once. "
+        + one_line_submission_guidance()
+        + " Represent this request as one REQ line whose kind is ranking and "
+        "which carries a limit_span, one REF line whose role is target_dataset, "
+        "and one DETAIL line whose detail_kind is ordering carrying the field "
+        "reference and the direction words."
     )
     human = json.dumps(
         {

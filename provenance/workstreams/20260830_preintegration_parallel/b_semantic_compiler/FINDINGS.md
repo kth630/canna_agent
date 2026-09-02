@@ -4,6 +4,34 @@
 > 2026-08-31 사용자 감사에서 11개 계약 결함이 지적됐고, 이 문서는 그 수정 이후 상태를
 > 기록한다. `IMPLEMENTATION_PLAN.md`의 B 단계는 사용자 승인 전까지 완료로 바꾸지 않는다.
 
+## 현재 상태 요약 — 2026-09-01
+
+이 문서는 append-only에 가까운 workstream provenance다. 아래 1~8절과 A~Q절의 당시 상태와
+실험 순서는 보존하되, 현재 판정은 이 요약과 다음 최신 문서가 우선한다.
+
+- `RUNTIME_INTEGRATION_20260831.md`: ordering, limit, comparison condition, aggregation 네
+  canonicalizer와 fail-closed `execution_values` 관문이 offline Runtime 경로에 연결됐다.
+  따라서 아래의 `AVAILABLE_CANONICALIZERS=∅`와 "canonicalizer가 하나도 없다"는 문구는
+  역사적 snapshot이며 현재 상태가 아니다.
+- `HCX_ONE_LINE_RECORDS_OFFLINE_20260901.md`: one-line wire의 offline parser→validator→
+  canonicalizer 통합은 통과했다.
+- `HCX_ONE_LINE_RECORDS_LIVE_RESULT_20260901.md`: HCX-007은 최소 string envelope Tool을
+  수용하고 정확한 이름으로 emit했지만, custom one-line field assignment를 일관되게 생성하지
+  못해 parser에서 차단됐다. semantic validation과 DB 실행에는 도달하지 않았다.
+- 현재 blocker는 provider Tool 기능의 부재나 `40009`가 아니라 HCX가 자유 문자열 내부의
+  복잡한 semantic 문법을 안정적으로 생성하지 못한다는 점이다. 추가 delimiter·prompt
+  미세조정은 중단했다.
+- 실제 Registry의 row provenance/selection/dataset population binding과
+  CanonicalPlan→ResolvedProductQuery production compiler는 여전히 없다. 따라서 production
+  execution은 `provenance_binding_unavailable`로 차단되는 것이 정답이다.
+- 다음 아키텍처 후보는 서버가 requirement별 후보를 factorize하되 HCX wire에는 전체
+  PlanOption의 요청 단위 opaque ref 하나만 노출하는 방식이다. 비정본 제안서
+  `HCX_ROLE_REDUCTION_CONTRACT_PROPOSAL_20260901.md`는 검토 중이며 아직 Confirmed 변경이나
+  구현 승인이 아니다.
+
+이 요약은 과거 관측을 삭제하지 않는다. 아래의 `40009`, JSON bridge, line/one-line 실패는
+원인 축을 좁힌 역사적 근거이고, current status로 읽어서는 안 된다.
+
 작업 게이트: `GATE_RUNTIME_VIEW_FAMILY_BINDING.md`
 근거 결정: `RUNTIME_VIEW_TOOL_DECISION_20260831.md` (사용자·Codex 승인),
 `ARCHITECTURE.md` 3~4절, `QUESTION_STRUCTURE.md` 2·5절,
@@ -868,7 +896,233 @@ grouped-flat 선언 1회다. 논리 필드를 하나도 제거하지 않으므�
 거부되면 provider 문서·지원 채널 확인 또는 tool 사용을 쓰지 않는 대안을 사용자·Codex
 결정으로 검토할 것을 권고한다. 서버 검증 계약은 어느 경우에도 그대로 둔다.
 
-## I. 남은 미결정
-- 공유 reason code 계약과 wire schema 정식 승인 — 새 code 5개도 provisional internal이다
-- 조건값·연산자·정렬·limit canonicalizer 구현. 없는 동안 해당 요구는 계속 non-executable
-- entity resolution 계층, 계획 수준 실행 가능성 판정
+## I. `40009` offline 진단 (2026-08-31, 외부 호출 0회)
+
+정본은 `HCX_40009_OFFLINE_DIAGNOSIS_20260831.md`다. `httpx.MockTransport`로 실제 전송
+body를 프로세스 안에서 캡처했고 header·API key·request ID는 읽지 않았다.
+
+- endpoint `/v1/openai/chat/completions`, model `HCX-007`, `max_completion_tokens` 단독
+  전송(`max_tokens` 부재), `tools` OpenAI function envelope, 강제 `tool_choice` 이름 일치를
+  모두 확인했다.
+- `thinking={"effort":"none"}`과 `reasoning_effort="none"`은 adapter가 **같은 wire field로
+  변환**하므로 등가다(`chat_models.py`의 `validate_environment`). 둘을 충돌시키는 경로가 없다.
+- 재직렬화 비교: 현재 설치된 SDK로 두 요청을 재구성하면 1–3회차 거부 요청과 0-A
+  `grouped_flat` 선언 요청은 top-level key·envelope·JSON Schema keyword 집합이 같다.
+  `max_completion_tokens`는 4회차에만 있었고 1–3회차도 거부됐으므로 4회차 거부의 원인은
+  아니다.
+- **판정 강도 정정.** adapter 직렬화 문제와 endpoint/API 종류 문제는 "배제"가 아니라
+  **현재 SDK 재구성에서 차이 미발견 / 지지 관측 없음**이다. 0-A 당시의 raw HTTP body가
+  보존돼 있지 않으므로 당시의 SDK 버전·클라이언트 설정·서비스 상태까지 같았다고 증명하지
+  못한다.
+- **"남은 차이는 선언 내용량뿐"이라는 표현은 철회한다.** 남은 차이는 Tool 선언 전체
+  내용이며 최소한 function name, parameters byte와 description 총량, property 이름과 개수,
+  enum 값, `required` 배열, 각 description의 내용, schema 내부 조합이 모두 다르다. 0-A
+  안에서 더 작은 `nested`(2,012 byte)가 24회 거부되고 더 큰 `grouped_flat`(2,186 byte)이
+  0회 거부돼 **단순 크기 임계값 가설**은 약화되지만, 특정 이름·property·enum 값·
+  description·조합은 어느 것도 배제되지 않았다.
+- 남는 두 가설은 (1) Tool 선언 내용과 (2) provider/서비스 앱의 HCX-007 Tool 지원 상태이며
+  **현재 증거로 원인 순위를 정할 수 없다.** 어느 쪽이 더 유력하다고 적지 않는다. 사실은
+  다음뿐이다. 서로 다른 선언 4개가 모두 tool emit 이전에 같은 code로 거부됐고(현재 4/4
+  거부 관측, 표본 4회이며 같은 선언의 반복 관측 없음), 0-A에는 `40009`의 과거 일부 거부
+  기록(24/93)이 있으며, 0-A 안에서 더 작은 선언이 더 자주 거부돼 크기 축은 약화된다.
+- **"control 1회로 결정적으로 분리된다"는 철회한다.** 0-A에 같은 선언이 어떤 때는 수용되고
+  어떤 때는 거부된 과거 일부 거부 기록이 있으므로 단일 관측은 다음까지만 말한다. control **수용** = 현재 시점에 최소 선언이 한 번 수용됐다는
+  증거, control **거부** = 현재 시점에 최소 선언도 거부됐다는 증거. 어느 한 번의 결과도
+  서비스 문제 또는 우리 선언 문제를 확정하지 못한다. 반복 관측 횟수는 사용자 승인 사항이다.
+- control을 실행한다면 기존 `HcxSemanticProvider.call` 경로를 그대로 쓰지 않는다. 그 경로는
+  자체 prompt·payload·retry·view 빌더를 함께 들고 오므로 tool 선언 외 변수가 같이 움직인다.
+  현재 live harness의 endpoint·model·message·`reasoning_effort`·`max_completion_tokens=8192`·
+  `max_retries=0`을 전부 고정하고 `tools`와 그에 종속된 `tool_choice` 이름만 0-A
+  grouped-flat으로 교체하는 **격리 probe를 offline으로 먼저 준비**해야 한다. 승인 전에는
+  probe 구현도 live 호출도 하지 않으며, 이번 작업에서는 준비하지 않았다.
+- 회귀 테스트 `tests/runtime_view/test_hcx_request_body.py` 10개를 추가했다. 네트워크를
+  쓰지 않으며 production 동작을 바꾸지 않는다. 두 선언 비교 테스트가 입증하는 것은
+  **같은 schema keyword 집합과 서로 다른 직렬화 크기**뿐이며, 그 이름과 설명을 그렇게
+  정정했다.
+
+## J. HCX-007 Function Calling은 동작한다 — 최소 선언 control 수용 (2026-08-31)
+
+정본은 `HCX_MINIMAL_TOOL_CONTROL_20260831.md`다.
+
+- 프로젝트 내용이 전혀 없는 최소 선언(244 byte)을 같은 model·key·client·생성 파라미터로
+  1회 호출했다. `accepted`, tool emit 1회, 이름 정확, arguments 파싱 성공. 외부 호출 1회,
+  retry 0, embedding 0.
+- 따라서 **HCX-007 Tool 경로를 blocked로 기록하지 않는다.** HCX-005 전환, selector/answer
+  모델 분리, 구조화 출력 fallback은 모두 `40009` 분기의 대응이었고 이번에 발동하지 않았다.
+- 이 1회는 앞선 4회 거부의 원인을 말해 주지 않는다. 최소 선언과 프로젝트 선언은 이름·
+  property·enum·required·description·크기·조합이 모두 다르다.
+- 성공 분기에 따라 **compatibility minimization을 구현했다.** wire `parameters`
+  3,975 → 2,030 byte, tool definition 4,386 → 2,264 byte, description 19개 2,167 byte →
+  9개 412 byte. 0-A에서 수용된 선언(2,186 / 2,445)보다 작다.
+- 논리 계약은 그대로다. property 이름·개수, enum 값, `required`, 중첩,
+  `additionalProperties: false`, tool 이름, `SUBMISSION_SCHEMA`, `parse_grouped_flat`,
+  parser, validator, Runtime View, Registry, Ontology, DB 모두 미변경.
+- 선언에서 뺀 안내(role 6종·detail_kind 3종의 의미, "condition 하나가 record 하나",
+  status 선택 기준, span 원문 복사 금지 정규화)는 system message로 옮겼다.
+- 다음은 축소된 선언으로 승인 질문 1회 호출이며 승인 전에는 실행하지 않는다.
+
+## K. 축소 선언도 거부됨 — 크기·구조 가설 제거 (2026-08-31, 6회차)
+
+정본은 `HCX_MINIMISED_DECLARATION_LIVE_RESULT_20260831.md`다.
+
+- 축소 grouped-flat 선언(2,264 byte)으로 승인 질문 1회 호출 → `rejected`, `40009`.
+  tool emit 없음, arguments 없음, ref validity `not_evaluated`, semantic validation `not_run`.
+  외부 호출 1회, retry 0, 다른 schema·model 실험 0.
+- **크기 가설과 구조 구성 가설이 제거된다.** 거부된 우리 선언은 0-A에서 93/93 수용된
+  선언보다 작고(2,264 < 2,445), array 4·enum 4·`additionalProperties` 4·깊이 2·property
+  수까지 사실상 같다.
+- 남은 축은 (1) 선언의 구체 내용(function name, property 이름 14종, enum 값, 남은
+  description 9개의 텍스트와 그 조합)과 (2) 서비스 측 변화다. 같은 날 최소 선언은
+  수용됐으므로 function calling 자체가 꺼진 것은 아니다. 두 축은 현재 증거로 분리되지 않는다.
+- 다음 권고는 **0-A 선언(`record_question_semantics`, 2,445 byte)을 오늘 그대로 1회 전송**
+  하는 것이다. 크기·구조가 이미 맞춰져 있으므로 이 1회가 두 축을 가른다. 수용되면 내용
+  축을 이분 탐색하고, 거부되면 declaration 조정을 멈추고 NCP 설정·문서·지원 채널 확인을
+  사용자·Codex 결정으로 반환한다.
+- `HCX-005` 전환과 Structured Output fallback은 실행하지 않았다.
+
+## L. provider compatibility bridge — `40009` 해소 (2026-08-31, 7회차)
+
+정본은 `HCX_BRIDGE_LIVE_RESULT_20260831.md`다.
+
+- HCX wire tool `parameters`를 required string 하나(`submission_json`, tool definition
+  332 byte)로 축소하고 grouped-flat payload를 그 문자열에 담았다. 필드·enum·작성 지침은
+  system message가 싣는다(`hcx_bridge.submission_guidance()`가 서버 라우팅 표에서 생성).
+- live 1회: **`provider_schema_acceptance=accepted`, `tool_emitted=yes`,
+  `tool_name_exact=yes`.** 4회 연속이던 `40009`가 사라졌다.
+- 다만 `parser_well_formed=no`로 **envelope/제출 파싱 단계에서 차단**됐다. 이번 harness가
+  problem code를 남기지 않아 어떤 구조 문제였는지는 특정하지 못한다. 추가 호출 없이
+  원인을 확정하지 않는다. 다음 호출부터 특정되도록 harness에 `parser_problem_codes`와
+  `argument_keys` 기록만 추가했다(외부 호출 0, 계약 무변경).
+- 서버 계약은 유지된다. `hcx_bridge`는 envelope 검사 4개(arguments가 object,
+  `submission_json` 단독, JSON 파싱, 그 JSON이 object)만 추가하고 그 아래는 전부 기존
+  `parse_grouped_flat` → `parse_submission` → `validate`가 결정한다. `test_hcx_bridge.py`
+  32개가 거부 케이스마다 bridge 경유 결과와 기존 parser 직접 호출 결과의 code 집합·query가
+  같은지 대조한다.
+- `SUBMISSION_SCHEMA`, grouped-flat canonical 계약, parser, validator, Runtime View,
+  Registry, Ontology, DB는 변경하지 않았다. 바뀐 것은 HCX wire envelope과 system message다.
+
+## M. wire 지시 보완 — envelope은 맞고 JSON 유효성이 남았다 (2026-08-31, 8회차)
+
+정본은 `HCX_BRIDGE_GUIDANCE_LIVE_RESULT_20260831.md`다. **`40009` compatibility 작업은
+성공으로 종료했다.** 추가 schema minimization과 0-A control은 하지 않았다.
+
+- `submission_guidance()`에 envelope 규칙 4개를 명시했다: 값은 object가 아니라 string,
+  decode 결과가 grouped-flat object이며 `{`로 시작해 `}`로 끝날 것, code fence·설명·앞뒤
+  문자 금지, `submission_json` 외 tool argument 금지. 질문·ref·상품군 예시는 넣지 않았다.
+- `envelope_diagnostics()`로 승인된 5개 metadata만 남긴다(raw args type, argument keys,
+  `submission_json` value type, JSON decode 여부, parser problem codes). payload 텍스트·
+  span·reference는 기록하지 않으며 테스트가 강제한다.
+- live 1회: provider `accepted`, tool emit `yes`, 이름 일치 `yes`,
+  `raw_args_type=dict`, `argument_keys=["submission_json"]`,
+  `submission_json_value_type=str`, **`json_decoded=no`**,
+  최초 problem code **`malformed_submission_json`**.
+- 보완이 목표한 두 가지는 달성됐다. 다른 tool argument가 없고, 값이 object가 아니라
+  string이다. 남은 실패는 그 string이 유효한 JSON 문서가 아니라는 점 하나다.
+- 원문을 기록하지 않으므로 code fence·앞뒤 문자·따옴표·잘림 중 무엇인지는 특정되지
+  않는다. 추가 호출 없이 추측하지 않는다.
+- Tool schema, Runtime View, grouped-flat canonical 계약, parser, validator, Registry,
+  Ontology, DB는 변경하지 않았다.
+- 다음은 내용이 아니라 **형태만** 남기는 진단 몇 개(code fence 시작 여부, 첫/끝 글자가
+  `{`/`}`인지, 길이 대비 decode 오류 위치)를 승인받아 추가한 뒤 같은 호출 1회로 원인을
+  특정하는 것이다.
+
+## N. decode 실패 원인 특정 — 깨진 유니코드 이스케이프 (2026-08-31, 9회차)
+
+정본은 `HCX_BRIDGE_SHAPE_DIAGNOSIS_20260831.md`다. Codex 토큰 소진으로 사용자가 직접
+승인했다.
+
+- 형태 전용 진단(길이, fence 시작 여부, 첫/끝 글자가 중괄호인지, 파서 오류 메시지, 오류
+  위치 비율)을 추가했다. payload 문자·span·reference는 기록하지 않으며 테스트가 강제한다.
+- live 1회: provider `accepted`, tool emit `yes`, 이름 일치, `argument_keys` 단독,
+  값 타입 `str`, fence 없음, 첫 글자 `{` — 여기까지 정상. 차단은
+  **`decode_error = "Invalid uXXXX escape"`(깨진 유니코드 이스케이프), 위치 비율 0.208**,
+  `parser_problem_codes = ["malformed_submission_json"]`.
+- 즉 모델이 한글 본문을 문자 그대로 쓰지 않고 유니코드 이스케이프로 쓰다가 하나를
+  깨뜨렸다. `last_char_is_close_brace=false`는 이후 어긋남과 잘림 중 어느 쪽인지 원문 없이는
+  가르지 않는다.
+- 대응은 system message 지시 한 문단이다: 비ASCII는 문자 그대로 쓰고 유니코드 이스케이프로
+  바꾸지 말 것, 백슬래시는 JSON이 요구하는 것만, 문서는 닫는 중괄호까지 완결할 것.
+  질문·ref·상품군 예시는 넣지 않았다.
+- Tool schema, Runtime View, grouped-flat canonical 계약, parser, validator, Registry,
+  Ontology, DB는 변경하지 않았다. parser·validator 완화 없음.
+- 다음은 같은 호출 1회다. 통과해 `canonicalizer_unavailable`만 남으면 provider/semantic
+  mapping 경로 확보로 판정하되, `semantic_valid`는 False이며 실행은 계속 차단된다.
+
+## O. 이스케이프 축 해결, 실패 축이 잘림으로 이동 (2026-08-31, 10회차)
+
+정본은 `HCX_BRIDGE_TRUNCATION_20260831.md`다.
+
+- live 1회: provider `accepted`, tool emit `yes`, 이름 일치, `argument_keys` 단독,
+  값 타입 `str`, fence 없음, 첫 글자 `{`. 여기까지 계속 정상이다.
+- **이스케이프 축은 해결됐다.** `decode_error`가 깨진 유니코드 이스케이프에서
+  `Expecting ',' delimiter`로 바뀌었고 오류 위치 비율이 0.208 → **1.0**으로 옮겨갔다.
+  닫는 중괄호도 없다. 이 저장소 진단 테스트가 **잘림**으로 정의한 형태다.
+- 길이도 486 → 571로 늘었다. 이스케이프를 쓰지 않으면 같은 내용이 토큰을 덜 쓰므로 예산이
+  고정돼 있을 때 더 많은 문자가 통과한다는 방향과 맞는다.
+- 잘림의 원인이 생성 예산 소진인지, provider의 tool-call argument 제한인지, 모델이 스스로
+  멈춘 것인지는 이 관측으로 가려지지 않는다. `max_completion_tokens: 8192`이 실제 body에
+  실린다는 것은 offline 회귀 테스트가 이미 확인했다.
+- 다음 1회에서 이를 가르도록 응답 metadata 3개(`finish_reason`, `output_tokens`,
+  `max_completion_tokens_sent`)를 기록하도록 harness만 고쳤다. 내용이 아니라 응답
+  metadata이며, 앞서 승인받은 목록을 넘어서므로 명시해 둔다. 계약·parser·validator·
+  schema·Registry·Ontology·DB는 변경하지 않았다.
+
+## P. 잘림 원인 판별 — 예산 소진이 아니다 (2026-08-31, 11회차)
+
+정본은 `HCX_BRIDGE_FINISH_REASON_20260831.md`다.
+
+- live 1회: provider `accepted`, tool emit `yes`, 이름 일치. **`finish_reason="tool_calls"`,
+  `output_tokens=269` / `max_completion_tokens_sent=8192`.**
+- 따라서 생성 토큰 예산 소진은 **배제**된다. provider의 argument 길이 제한도 예산의 3%
+  지점에서 정상 종료가 보고된 이상 지지 관측이 없다. 남는 설명은 **모델이 문서를 다
+  썼다고 판단하고 열린 괄호를 남긴 채 종료했다**는 것이다.
+- envelope 진단은 그대로 정상이다: `argument_keys` 단독, 값 타입 `str`, fence 없음,
+  첫 글자 `{`. 오류는 여전히 맨 끝(`decode_error_position_ratio=1.0`,
+  `Expecting ',' delimiter`, 닫는 중괄호 없음).
+- 지금까지 축이 순서대로 해소됐다: `40009` → argument 오염 → object/string →
+  fence·앞 설명문 → 깨진 유니코드 이스케이프 → **남은 것은 문서 완결성 하나**.
+- 대응은 system message 한 문단이다: 한 줄 compact로 쓰고 줄바꿈·들여쓰기 금지, 내용 없는
+  property는 비워 보내지 말고 생략, `requirement_id`는 한두 글자, 끝내기 전에 연 괄호가
+  모두 닫혔는지 확인. 예산이 아니라 모델이 추적할 양을 줄이는 조치다.
+- Tool schema, Runtime View, grouped-flat canonical 계약, parser, validator, Registry,
+  Ontology, DB는 변경하지 않았다.
+- 다음 1회에서도 같은 형태가 나오면, 지시로 완결성을 얻는 접근이 통하지 않는 것이다. 그때의
+  선택지는 문자열 **안의 형식**을 따옴표 이스케이프가 필요 없는 줄 단위 표기로 바꾸는 것이며
+  (wire 표현만 변경, canonical 계약·parser·validator 불변) 적용은 사용자 결정 사항이다.
+
+## Q. 완결성 해결, 이스케이프 재발 — 두 결함이 번갈아 난다 (2026-08-31, 12회차)
+
+정본은 `HCX_BRIDGE_ALTERNATION_20260831.md`다.
+
+- live 1회: provider `accepted`, tool emit `yes`, 이름 일치, `finish_reason="tool_calls"`,
+  `output_tokens=218` / 8192.
+- **문서 완결성은 해결됐다.** `last_char_is_close_brace`가 처음으로 `true`다. 대신
+  `decode_error`가 다시 이스케이프 결함이고 위치 비율은 0.208로 9회차와 같다.
+- 두 지시(이스케이프 금지 / 완결·compact)가 **모두 프롬프트에 있는 상태에서** 11회차는
+  이스케이프를 지키고 문서를 닫지 않았고, 12회차는 문서를 닫고 이스케이프를 썼다. 모델이
+  한 번에 하나씩만 만족시킨다.
+- 토큰은 계속 예산의 3% 이하이므로 공간 문제가 아니다. 남은 결함은 "JSON을 문자열 안에 다시
+  쓰는" 과제 자체에서 나온다: 큰따옴표 이스케이프, 한글 비이스케이프, 괄호 균형이 서로
+  경쟁한다.
+- 해소된 축: `40009`, argument 오염, object/string, fence·앞 설명문, 문서 완결성.
+  **남은 축: JSON 문법 정확성 하나.**
+- 제안(승인 전 구현 금지): `submission_json` 안을 JSON이 아니라 **줄 단위 표기**로 바꾼다.
+  따옴표도 괄호도 없으므로 이스케이프 결함과 불균형이 구조적으로 사라진다. 0-A에서
+  `delimited`의 기각 사유는 provider 수용성이 아니라 enum 부재로 인한 ref 무결성이었고,
+  지금은 enum을 system message가 싣고 서버가 전수 검증하므로 그 사유가 그대로 적용되지
+  않는다. 다만 모델의 ref 선택 정확도 저하 가능성은 남는다.
+- 바뀌는 것은 문자열 안의 표기와 그것을 grouped-flat 구조로 읽는 얇은 reader, 그리고 작성
+  지침뿐이다. Tool schema, tool 이름, grouped-flat canonical 계약, parser, validator,
+  Runtime View, Registry, Ontology, DB는 그대로다.
+
+## R. 남은 미결정
+- HCX 역할 축소안과 Confirmed HCX ①/semantic-query 작성 책임 변경 승인 여부
+- 역할 축소안의 SpanLedger 실현 가능성, HCX가 선택할 candidate choice와 사람이 물어야 할
+  materially ambiguous 상태의 구분
+- option generation cap과 request-lifetime ref 정책의 측정·승인
+- 공유 reason/status 축 계약. semantic mapping, canonicalization, execution readiness와
+  answer status를 다시 합치지 않는다
+- grouping, whole-comparison requirement, explanation canonicalizer
+- entity resolution 계층과 계획 수준 실행 가능성 판정
+- CanonicalPlan→ResolvedProductQuery production compiler
+- Execution Registry row provenance/selection/dataset population binding

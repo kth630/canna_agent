@@ -674,6 +674,13 @@ def test_a_ranking_without_a_direction_or_a_limit_is_not_given_defaults(facts) -
 
 
 def test_an_operation_with_no_canonicalizer_is_returned_non_executable(facts) -> None:
+    """Four canonicalisers exist; the ones that do not are still refused by name.
+
+    Grouping is the case that has no deterministic derivation, so a grouping
+    requirement is stopped before anything else about it is considered. The rule
+    under test is the same one as before the four were registered: an operation
+    the server cannot derive is not executed on a guess.
+    """
     view = _view(facts, ["syn:AlphaProduct", "syn:AlphaCost"])
     result = validate(
         facts,
@@ -684,11 +691,8 @@ def test_an_operation_with_no_canonicalizer_is_returned_non_executable(facts) ->
                     view,
                     targets=["syn:AlphaProduct"],
                     fields=["syn:AlphaCost"],
-                    kind="ranking",
-                    ordering=SubmittedOrdering(
-                        field_ref=view.ref_for("syn:AlphaCost"), direction_span="높은 순"
-                    ),
-                    limit_span="10개",
+                    kind="grouping",
+                    grouping_field_refs=(view.ref_for("syn:AlphaCost"),),
                 ),
             )
         ),
@@ -697,6 +701,7 @@ def test_an_operation_with_no_canonicalizer_is_returned_non_executable(facts) ->
     assert CODE_CANONICALIZER_UNAVAILABLE in _codes(result)
     blocking = result.plan.requirements[0].blocking_codes
     assert CODE_CANONICALIZER_UNAVAILABLE in blocking
+    assert result.plan.requirements[0].execution_values is None
 
 
 def test_the_plan_preserves_every_span_and_reference_it_could_not_execute(facts) -> None:

@@ -1,0 +1,166 @@
+{
+  "policy": "offline_probe_provisional_v1",
+  "caps": {
+    "requirements": 8,
+    "options_per_requirement": 8,
+    "join_beam": 32,
+    "plan_options": 16
+  },
+  "observations": [
+    {
+      "cap": "max_options_per_requirement",
+      "cap_value": 8,
+      "position": "below",
+      "requested": 7,
+      "requirement_options": [
+        7
+      ],
+      "plan_options": 7,
+      "plans_before_cap": 7,
+      "lossy_discards": 0,
+      "generation_status": "choice_required",
+      "blocked": false,
+      "truncated": false
+    },
+    {
+      "cap": "max_options_per_requirement",
+      "cap_value": 8,
+      "position": "at",
+      "requested": 8,
+      "requirement_options": [
+        8
+      ],
+      "plan_options": 8,
+      "plans_before_cap": 8,
+      "lossy_discards": 0,
+      "generation_status": "choice_required",
+      "blocked": false,
+      "truncated": false
+    },
+    {
+      "cap": "max_options_per_requirement",
+      "cap_value": 8,
+      "position": "above",
+      "requested": 9,
+      "requirement_options": [
+        8
+      ],
+      "plan_options": 8,
+      "plans_before_cap": 8,
+      "lossy_discards": 1,
+      "generation_status": "truncated",
+      "blocked": true,
+      "truncated": true
+    },
+    {
+      "cap": "max_requirements",
+      "cap_value": 8,
+      "position": "below",
+      "requested": 7,
+      "requirement_options": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "plan_options": 1,
+      "plans_before_cap": 1,
+      "lossy_discards": 0,
+      "generation_status": "complete",
+      "blocked": false,
+      "truncated": false
+    },
+    {
+      "cap": "max_requirements",
+      "cap_value": 8,
+      "position": "at",
+      "requested": 8,
+      "requirement_options": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "plan_options": 1,
+      "plans_before_cap": 1,
+      "lossy_discards": 0,
+      "generation_status": "complete",
+      "blocked": false,
+      "truncated": false
+    },
+    {
+      "cap": "max_requirements",
+      "cap_value": 8,
+      "position": "above",
+      "requested": 9,
+      "requirement_options": [],
+      "plan_options": 0,
+      "plans_before_cap": 0,
+      "lossy_discards": 0,
+      "generation_status": "truncated",
+      "blocked": true,
+      "truncated": true
+    },
+    {
+      "cap": "max_plan_options",
+      "cap_value": 16,
+      "position": "below",
+      "requested": 8,
+      "requirement_options": [
+        2,
+        2,
+        2
+      ],
+      "plan_options": 8,
+      "plans_before_cap": 8,
+      "lossy_discards": 0,
+      "generation_status": "choice_required",
+      "blocked": false,
+      "truncated": false
+    },
+    {
+      "cap": "max_plan_options",
+      "cap_value": 16,
+      "position": "at",
+      "requested": 16,
+      "requirement_options": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "plan_options": 16,
+      "plans_before_cap": 16,
+      "lossy_discards": 0,
+      "generation_status": "choice_required",
+      "blocked": false,
+      "truncated": false
+    },
+    {
+      "cap": "max_plan_options",
+      "cap_value": 16,
+      "position": "above",
+      "requested": 32,
+      "requirement_options": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "plan_options": 16,
+      "plans_before_cap": 32,
+      "lossy_discards": 16,
+      "generation_status": "truncated",
+      "blocked": true,
+      "truncated": true
+    }
+  ]
+}

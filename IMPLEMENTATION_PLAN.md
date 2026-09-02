@@ -152,6 +152,14 @@
 
 ### 이 결과가 바꾸는 다음 행동
 
+> **상태 주의 — 2026-09-01:** 아래 bullet은 0-A synthetic 실험 직후의 역사적 다음
+> 행동이다. 실제 Registry Runtime View 후속 실험에서는 최소 string Tool envelope가
+> provider에 수용되고 정확한 Tool emit까지 확인됐지만, HCX가 string 내부 JSON·multiline·
+> one-line custom 문법을 안정적으로 생성하지 못했다. 현재 production 방향은 추가 문법
+> 미세조정이 아니라 `HCX_ROLE_REDUCTION_CONTRACT_PROPOSAL_20260901.md`의 요청 단위 opaque
+> PlanOption 선택안을 사용자·Codex가 검토하는 단계이며, 아직 Confirmed 아키텍처 변경으로
+> 승인되지 않았다.
+
 - 논리 계약과 opaque ref 계약은 유지한다. 기본 encoding은 `nested`, 예비는 `grouped_flat`으로
   둔다. `delimited`는 enum을 실을 수 없어 ref 무결성까지 무너지므로 쓰지 않는다.
 - 2026-08-31 사용자·Codex 결정으로 HCX는 typed semantic ref와 조건값·비교 표현·
@@ -321,30 +329,32 @@ blocker가 생기면 기능을 근거 없이 성공 처리하지 않고 메인 �
 - 누락된 표현이 조용히 실행으로 사라지지 않음
 - candidate budget과 latency가 기록됨
 
-### 현재 기록 — 2026-08-31
+### 현재 기록 — 2026-09-01
 
 - 실제 Semantic/Execution Registry를 읽는 Runtime View, 요청 단위 opaque ref,
-  provider-neutral `submit_semantic_query` 논리 schema, fail-closed parser/validator와
-  HCX grouped-flat wire adapter를 구현했다. grouped-flat은 반복 `requirement_id`로
-  requirement/ref/detail record를 결합하고 canonical submission으로 조립한 뒤 같은
-  서버 검증기를 사용한다.
-- 승인된 동일 질문으로 retry 없이 수행한 HCX live 호출 4회는 모두 Tool emit 전에
-  API `40009` `Unsupported function`으로 거부됐다: neutral schema, HCX keyword
-  projection, projection + 0-A 성공 function name, grouped-flat wire. Tool argument,
-  ref 선택, span 보존과 semantic validation은 네 호출 모두 평가되지 않았다.
-- 각 관측은 `b_semantic_compiler/HCX_RUNTIME_VIEW_LIVE_RESULT_20260831.md`,
-  `HCX_WIRE_PROJECTION_LIVE_RESULT_20260831.md`,
-  `HCX_NAME_PROBE_LIVE_RESULT_20260831.md`,
-  `HCX_GROUPED_FLAT_LIVE_RESULT_20260831.md`에 분리 기록했고, 누적 비교와 해석 한계는
-  같은 디렉터리의 `FINDINGS.md` H절에 기록했다. raw 응답, request/response ID,
-  header와 credential은 저장하지 않았다.
-- 현재 B 상태는 `provisional / correction required`다. 사용자 결정으로 추가 live
-  원인 분리는 여기서 중단한다. 다음 재개 시에는 description만 줄이는 compatibility
-  minimization, provider 문서·지원 채널 확인 또는 Tool 없는 구조화 출력 대안을
-  사용자·Codex 결정으로 비교한다.
-- 조건값·연산자·정렬·limit·집계 canonicalizer는 아직 없고 entity resolution과
-  계획 수준 실행 가능성 판정도 남아 있으므로, provider 수용과 별개로 production
-  수직 경로는 완료가 아니다.
+  provider-neutral semantic query, fail-closed parser/validator를 구현했다. JSON,
+  grouped-flat, multiline과 one-line bridge는 같은 서버 검증 경로를 보존하며 실험·회귀
+  기록으로 남아 있다.
+- HCX-007은 최소 required string envelope의 `submit_semantic_query` Tool을 수용하고 정확한
+  이름으로 emit했다. 과거 `40009`는 Tool 기능 전체의 부재가 아니며 최소 envelope로
+  해소됐다.
+- JSON-in-string은 escape/완결성이 번갈아 실패했고, multiline record는 한 줄로 압축됐다.
+  one-line `key=value`와 `key value`도 record/pipe 일부만 따르고 field assignment를
+  일관되게 생성하지 못해 parser에서 차단됐다. 최신 live 판정은
+  `provider accepted / tool emitted / one-line text grammar rejected`이며 semantic validation과
+  DB 실행에는 도달하지 않았다. 추가 delimiter·prompt 미세조정은 중단했다.
+- ordering, limit, comparison condition, aggregation 네 deterministic canonicalizer는
+  offline Runtime 경로에 연결됐다. span 또는 Registry 권한 해석이 하나라도 실패하면 해당
+  requirement의 `execution_values` 전체가 방출되지 않는다. grouping, whole-comparison
+  requirement와 explanation canonicalizer는 여전히 없다.
+- 실제 Execution Registry에는 row-level provenance/as-of, selection policy와 dataset
+  population binding이 아직 없어 production execution은 의도대로
+  `unavailable / provenance_binding_unavailable`이다. CanonicalPlan에서
+  `ResolvedProductQuery`를 만드는 production compiler도 아직 없다.
+- 현재 B 상태는 계속 `provisional / correction required`다. 다음 결정은 HCX가 semantic
+  문서를 직접 쓰는 대신 서버가 만든 전체 PlanOption의 요청 단위 opaque ref 하나만 고르는
+  역할 축소안이다. 이는 wire 변경만이 아니라 Confirmed HCX ① 책임 변경이므로
+  `HCX_ROLE_REDUCTION_CONTRACT_PROPOSAL_20260901.md` 검토와 사용자 승인이 먼저다.
 
 ## 2. Gold annotation and ablation — pending
 

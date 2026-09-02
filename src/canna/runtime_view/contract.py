@@ -61,9 +61,10 @@ DATASET_GRAINS_SOURCE = (
 
 # Canonicalisers the server actually has. ARCHITECTURE.md section 3 requires the
 # server to derive comparison operators, ordering, limits and aggregations from
-# the question span deterministically; none of those is implemented yet, so the
-# set is empty and every requirement that needs one is refused rather than
-# executed on a guess.
+# the question span deterministically. Four of those are implemented and
+# verified in ``canonicalize.py`` and were approved on 2026-08-31; grouping,
+# whole comparison requirements and explanations are not, so they stay out of
+# the set and every requirement needing one is refused rather than guessed.
 CANONICALIZER_COMPARISON = "comparison_operator_and_value"
 CANONICALIZER_ORDERING = "ordering_direction"
 CANONICALIZER_LIMIT = "limit"
@@ -72,7 +73,14 @@ CANONICALIZER_GROUPING = "grouping"
 CANONICALIZER_COMPARISON_REQUIREMENT = "comparison_requirement"
 CANONICALIZER_EXPLANATION = "explanation_requirement"
 
-AVAILABLE_CANONICALIZERS: frozenset[str] = frozenset()
+AVAILABLE_CANONICALIZERS: frozenset[str] = frozenset(
+    {
+        CANONICALIZER_ORDERING,
+        CANONICALIZER_LIMIT,
+        CANONICALIZER_COMPARISON,
+        CANONICALIZER_AGGREGATION,
+    }
+)
 
 # Which canonicaliser each requirement kind needs before it may execute.
 KIND_CANONICALIZERS: dict[str, tuple[str, ...]] = {

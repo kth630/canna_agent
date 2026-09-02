@@ -41,8 +41,8 @@ from __future__ import annotations
 from typing import Any
 
 from .contract import CONTRACT_STATUS, REQUIREMENT_KINDS, REQUIREMENT_STATUSES
-from .grouped_flat import DESCRIPTION as GROUPED_FLAT_DESCRIPTION
-from .grouped_flat import grouped_flat_schema
+from .one_line_records import FUNCTION_DESCRIPTION as BRIDGE_DESCRIPTION
+from .one_line_records import one_line_parameters_schema
 from .query import (
     AGGREGATION_PROPERTIES,
     CONDITION_PROPERTIES,
@@ -177,20 +177,28 @@ def tool_definition() -> dict[str, Any]:
 
 
 def hcx_wire_schema() -> dict[str, Any]:
-    """What HCX is actually sent: the grouped-flat encoding of this contract.
+    """What HCX is actually sent: one object with one required string.
 
-    Not this module's schema. Three single calls on 2026-08-31 refused
-    ``SUBMISSION_SCHEMA`` and its keyword projection with API ``40009`` before
-    any tool was emitted, and ``RUNTIME_VIEW_TOOL_DECISION_20260831.md``
-    section 5 had already approved grouped-flat as the encoding to move to if
-    that constraint reproduced. The logical contract below is unchanged and
-    still the one the server enforces; ``grouped_flat.parse_grouped_flat``
-    assembles a wire payload into it.
+    Not this module's schema, and since 2026-08-31 not the grouped-flat schema
+    either. Both were refused with ``40009`` before any tool was emitted, while
+    a declaration of exactly this shape was accepted and emitted a call. The
+    declaration shape is therefore unchanged; what travels inside the string is
+    not. Writing JSON inside a JSON string cost the model quote escaping,
+    non-ASCII escaping and brace balance at once, and it failed one of the three
+    on every attempt. Record lines have no quotes to escape and no brackets to
+    balance, so both defects are gone from the notation rather than argued about
+    in the prompt.
 
-    A fresh deep copy every call, so nothing a provider adapter does can reach
-    the contract it was built from.
+    Since 2026-09-01 those lines are one record each. Two calls emitted a tool
+    against this declaration and both wrote a record on a line — three of them,
+    no free-standing key line, one closing line for the whole document — so the
+    notation inside the string follows what was observed rather than arguing
+    with it. ``one_line_records.parse_tool_arguments`` reads it and hands it to
+    the parsers that already existed.
+
+    A fresh object every call.
     """
-    return grouped_flat_schema()
+    return one_line_parameters_schema()
 
 
 def hcx_tool_definition() -> dict[str, Any]:
@@ -198,12 +206,8 @@ def hcx_tool_definition() -> dict[str, Any]:
 
     The probe's provider passes one tool mapping straight through to
     ``bind_tools``, and that client expects the OpenAI-style function envelope.
-    The schema inside it is the grouped-flat wire encoding, and its description
-    is that encoding's own, because a description that told the model to nest
-    would contradict the schema it accompanies.
-
-    The name stays ``submit_semantic_query``. It is the logical tool's name and
-    the server's, and the 2026-08-31 probe found no evidence that changing it
+    The name stays ``submit_semantic_query``: it is the logical tool's name and
+    the server's, and the 2026-08-31 probes found no evidence that changing it
     helps. If a provider ever needs a different name on the wire, it belongs
     here in the adapter and nowhere behind it.
     """
@@ -211,7 +215,7 @@ def hcx_tool_definition() -> dict[str, Any]:
         "type": "function",
         "function": {
             "name": FUNCTION_NAME,
-            "description": GROUPED_FLAT_DESCRIPTION,
+            "description": BRIDGE_DESCRIPTION,
             "parameters": hcx_wire_schema(),
         },
     }
